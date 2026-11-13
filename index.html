@@ -7,13 +7,6 @@
   <title>UNREALMAT PRO+ | Central de Deportes</title>
   
   <meta content='Agenda deportiva en vivo: FIFA 2026, Fútbol, NBA, F1 y Wrestling. Sigue los eventos de UNREALMAT PRO+ en tiempo real.' name='description'/>
-  <meta content='deportes en vivo, agenda wwe, f1 uruguay, nba en vivo, fifa 2026, unrealmat pro' name='keywords'/>
-  
-  <meta content='UNREALMAT PRO+' property='og:site_name'/>
-  <meta content='es_UY' property='og:locale'/>
-  <meta content='UNREALMAT PRO+ | Central de Deportes' property='og:title'/>
-  <meta content='https://wallpapers4screen.com/Uploads/12-1-2026/97736/thumb2-2026-fifa-world-cup-logo-4k-black-silk-texture-2026-fifa-world-cup-football-championship.jpg' property='og:image'/>
-
   <link href='https://fonts.googleapis.com' rel='preconnect'/>
   <link crossorigin='' href='https://fonts.gstatic.com' rel='preconnect'/>
   <link href='https://www.googleapis.com' rel='preconnect'/>
@@ -77,55 +70,28 @@
 
   <main class='grid-v4' id='grid'>
     <a class='card-v4' href='/futbol/'>
-      <div class='card-media-v4'>
-        <img alt='Fútbol Mundial' src='https://external-preview.redd.it/cristiano-ronaldo-im-the-most-complete-footballer-ever-i-v0-AQQhDce_VkxjDq7BO21dIMqsoD4YuHdqn6U13UWzhtI.jpg?auto=webp&s=1dd86ddee6d2b2f6979509cc28418655dce2e88d'/>
-      </div>
-      <div class='card-info-v4'>
-        <h3>FÚTBOL</h3>
-        <small class='card-next' data-tag='FUTBOL_BLOG'>Cargando&#8230;</small>
-      </div>
+      <div class='card-media-v4'><img alt='Fútbol Mundial' src='https://external-preview.redd.it/cristiano-ronaldo-im-the-most-complete-footballer-ever-i-v0-AQQhDce_VkxjDq7BO21dIMqsoD4YuHdqn6U13UWzhtI.jpg?auto=webp&s=1dd86ddee6d2b2f6979509cc28418655dce2e88d'/></div>
+      <div class='card-info-v4'><h3>FÚTBOL</h3><small class='card-next' data-tag='FUTBOL_BLOG'>Cargando&#8230;</small></div>
     </a>
-
     <a class='card-v4' href='/nba/'>
-      <div class='card-media-v4'>
-        <img alt='NBA Basketball' src='https://elgurudelbasket.com/wp-content/uploads/2019/09/top100_feature.jpg'/>
-      </div>
-      <div class='card-info-v4'>
-        <h3>NBA</h3>
-        <small class='card-next' data-tag='NBA'>Cargando&#8230;</small>
-      </div>
+      <div class='card-media-v4'><img alt='NBA Basketball' src='https://elgurudelbasket.com/wp-content/uploads/2019/09/top100_feature.jpg'/></div>
+      <div class='card-info-v4'><h3>NBA</h3><small class='card-next' data-tag='NBA'>Cargando&#8230;</small></div>
     </a>
-
-    <a class='card-v4' href='/f1/'>
-      <div class='card-media-v4'>
-        <img alt='Formula 1' src='https://a.espncdn.com/photo/2020/0629/r713850_1296x729_16-9.jpg'/>
-      </div>
-      <div class='card-info-v4'>
-        <h3>Formula 1</h3>
-        <small class='card-next' data-tag='F1'>Cargando&#8230;</small>
-      </div>
+    <a class='card-v4' href='/F1/'>
+      <div class='card-media-v4'><img alt='Formula 1' src='https://a.espncdn.com/photo/2020/0629/r713850_1296x729_16-9.jpg'/></div>
+      <div class='card-info-v4'><h3>Formula 1</h3><small class='card-next' data-tag='F1'>Cargando&#8230;</small></div>
     </a>
-
     <a class='card-v4' href='/wrestling/'>
-      <div class='card-media-v4'>
-        <img alt='Wrestling News' src='https://i.ytimg.com/vi/C4NFvTvi1MY/hq720.jpg'/>
-      </div>
-      <div class='card-info-v4'>
-        <h3>WRESTLING</h3>
-        <small class='card-next' data-tag='WWE,AEW,TNA,NJPW'>Cargando&#8230;</small>
-      </div>
+      <div class='card-media-v4'><img alt='Wrestling News' src='https://i.ytimg.com/vi/C4NFvTvi1MY/hq720.jpg'/></div>
+      <div class='card-info-v4'><h3>WRESTLING</h3><small class='card-next' data-tag='WWE,AEW,TNA,NJPW'>Cargando&#8230;</small></div>
     </a>
   </main>
 
   <footer class='um-ticker-wrap'>
     <small id='ticker-updated'>Actualizado &#8212;:&#8212;</small>
     <div class='ticker-label'>PRÓXIMO:</div>
-    <div class='ticker-viewport'>
-      <div class='ticker-canvas' id='ticker-mount'>
-        <div class='t-event'>📡 SINCRONIZANDO CRONOGRAMA DE EVENTOS DEPORTIVOS...</div>
-      </div>
-    </div>
-    <button aria-label='Pausar cintillo' class='ticker-pause' id='ticker-pause' type='button'>&#9208;</button>
+    <div class='ticker-viewport'><div class='ticker-canvas' id='ticker-mount'><div class='t-event'>📡 SINCRONIZANDO CRONOGRAMA...</div></div></div>
+    <button class='ticker-pause' id='ticker-pause' type='button'>&#9208;</button>
   </footer>
 
   <script>
@@ -139,7 +105,6 @@
         { label: 'F1',   id: 'i3vhcidiluqakvb92ue0hl3nmg@group.calendar.google.com' }
       ]
     };
-
     const CACHE_KEY = 'um_events_v12'; 
     const CACHE_TTL = 10 * 60 * 1000; 
     const HORAS_LIMITE_MS = 2.5 * 60 * 60 * 1000;
@@ -149,78 +114,35 @@
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
     function fmtDate(ts) { return new Date(ts).toLocaleDateString('es-UY', { day: '2-digit', month: 'short' }); }
     function fmtTime(ts) { return new Date(ts).toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' }); }
-
     function parseEventDate(e) {
-        if (e.fecha_completa) {
-            let d = new Date(e.fecha_completa);
-            if (!isNaN(d.getTime())) return d;
-            if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)) {
-                let d2 = new Date(e.fecha_completa.replace(" ", "T") + ":00-05:00");
-                if (!isNaN(d2.getTime())) return d2;
-            }
-        }
-        if (e.hora && e.hora !== "00:00") {
-            const now = new Date();
-            const utcDate = new Date(now.getTime() - (5 * 60 * 60 * 1000));
-            const isoStr = `${utcDate.getUTCFullYear()}-${String(utcDate.getUTCMonth()+1).padStart(2,'0')}-${String(utcDate.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`;
-            let d3 = new Date(isoStr);
-            if (!isNaN(d3.getTime())) return d3;
-        }
+        if (e.fecha_completa) { let d = new Date(e.fecha_completa); if (!isNaN(d.getTime())) return d; if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)) { let d2 = new Date(e.fecha_completa.replace(" ", "T") + ":00-05:00"); if (!isNaN(d2.getTime())) return d2; } }
+        if (e.hora && e.hora !== "00:00") { const now = new Date(); const utcDate = new Date(now.getTime() - (5 * 60 * 60 * 1000)); const isoStr = `${utcDate.getUTCFullYear()}-${String(utcDate.getUTCMonth()+1).padStart(2,'0')}-${String(utcDate.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3 = new Date(isoStr); if (!isNaN(d3.getTime())) return d3; }
         return null;
     }
-
     async function fetchAllEvents() {
       const timeMin = new Date(Date.now() - HORAS_LIMITE_MS).toISOString(); 
       const pool = [];
       const nowTs = Date.now();
-
       const jsonSources = [
         { url: './output/agenda_futbol.json', tag: 'FUTBOL_BLOG' },
         { url: './output/agenda_nba.json', tag: 'NBA' },
         { url: './output/agenda_f1.json', tag: 'F1' }
       ];
-
-      await Promise.all(
-        jsonSources.map(async src => {
+      await Promise.all(jsonSources.map(async src => {
           try {
             const res = await fetch(`${src.url}?v=${Date.now()}`);
-            if (res.ok) {
-              const data = await res.json();
-              (data.eventos || []).forEach(e => {
-                const dateObj = parseEventDate(e);
-                if (dateObj && dateObj.getTime() >= nowTs - HORAS_LIMITE_MS) {
-                  pool.push({ name: e.titulo || 'Evento', tag: src.tag, torneo: e.torneo || src.tag, time: dateObj.getTime() });
-                }
-              });
-            }
-          } catch (err) { console.log("Error:", src.url); }
-        })
-      );
-
-      await Promise.all(
-        APP_CONFIG.calendars.map(cal =>
+            if (res.ok) { const data = await res.json(); (data.eventos || []).forEach(e => { const dateObj = parseEventDate(e); if (dateObj && dateObj.getTime() >= nowTs - HORAS_LIMITE_MS) { pool.push({ name: e.titulo || 'Evento', tag: src.tag, torneo: e.torneo || src.tag, time: dateObj.getTime() }); } }); }
+          } catch (err) {}
+      }));
+      await Promise.all(APP_CONFIG.calendars.map(cal =>
           fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(cal.id)}/events?key=${APP_CONFIG.apiKey}&timeMin=${timeMin}&maxResults=5&singleEvents=true&orderBy=startTime`)
             .then(r => r.ok ? r.json() : null)
             .then(data => {
-              if (data && data.items) {
-                data.items.forEach(ev => {
-                  const raw = ev.start.dateTime || (ev.start.date + 'T00:00:00');
-                  const evTs = new Date(raw).getTime();
-                  
-                  if (cal.label === 'F1' && !cachedF1Event && evTs >= nowTs) {
-                      cachedF1Event = { name: ev.summary || 'Sesión F1', time: evTs };
-                  }
-                  if (evTs >= nowTs - HORAS_LIMITE_MS) {
-                      pool.push({ name: ev.summary || 'Sin título', tag: cal.label, torneo: cal.label, time: evTs });
-                  }
-                });
-              }
+              if (data && data.items) { data.items.forEach(ev => { const raw = ev.start.dateTime || (ev.start.date + 'T00:00:00'); const evTs = new Date(raw).getTime(); if (cal.label === 'F1' && !cachedF1Event && evTs >= nowTs) { cachedF1Event = { name: ev.summary || 'Sesión F1', time: evTs }; } if (evTs >= nowTs - HORAS_LIMITE_MS) { pool.push({ name: ev.summary || 'Sin título', tag: cal.label, torneo: cal.label, time: evTs }); } }); }
             }).catch(() => null)
-        )
-      );
+      ));
       return pool.sort((a, b) => a.time - b.time);
     }
-
     function renderTicker(pool) {
       const mount = document.getElementById('ticker-mount');
       if (!mount) return;
@@ -229,76 +151,26 @@
       mount.innerHTML = content + content;
       mount.style.animationDuration = `${Math.max(pool.slice(0, 15).length * 3, 15)}s`;
     }
-
     function updateCards(pool) {
       document.querySelectorAll('.card-next').forEach(el => {
         const tags = (el.dataset.tag || '').split(',').map(t => t.trim());
-        if (tags.includes('F1') && cachedF1Event) {
-            const shortName = cachedF1Event.name.length > 28 ? cachedF1Event.name.substring(0, 28) + '…' : cachedF1Event.name;
-            el.textContent = `${shortName} · ${fmtDate(cachedF1Event.time)} ${fmtTime(cachedF1Event.time)}`;
-            return;
-        }
+        if (tags.includes('F1') && cachedF1Event) { const shortName = cachedF1Event.name.length > 28 ? cachedF1Event.name.substring(0, 28) + '…' : cachedF1Event.name; el.textContent = `${shortName} · ${fmtDate(cachedF1Event.time)} ${fmtTime(cachedF1Event.time)}`; return; }
         const ev = pool.find(e => tags.includes(e.tag));
-        if (ev) {
-          const shortName = ev.name.length > 28 ? ev.name.substring(0, 28) + '…' : ev.name;
-          el.textContent = `${shortName} · ${fmtDate(ev.time)} ${fmtTime(ev.time)}`;
-        } else { el.textContent = 'Sin eventos próximos'; }
+        if (ev) { const shortName = ev.name.length > 28 ? ev.name.substring(0, 28) + '…' : ev.name; el.textContent = `${shortName} · ${fmtDate(ev.time)} ${fmtTime(ev.time)}`; } else { el.textContent = 'Sin eventos próximos'; }
       });
     }
-
-    function updateLastUpdated() {
-      const el = document.getElementById('ticker-updated');
-      if (el) el.textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' });
-    }
-
-    function refreshDisplay() {
-        const nowTs = Date.now();
-        const activePool = cachedPool.filter(e => e.time >= nowTs - HORAS_LIMITE_MS);
-        if (cachedF1Event && cachedF1Event.time < nowTs - HORAS_LIMITE_MS) cachedF1Event = null;
-        renderTicker(activePool);
-        updateCards(activePool);
-    }
-
+    function updateLastUpdated() { const el = document.getElementById('ticker-updated'); if (el) el.textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' }); }
+    function refreshDisplay() { const nowTs = Date.now(); const activePool = cachedPool.filter(e => e.time >= nowTs - HORAS_LIMITE_MS); if (cachedF1Event && cachedF1Event.time < nowTs - HORAS_LIMITE_MS) cachedF1Event = null; renderTicker(activePool); updateCards(activePool); }
     async function syncEvents() {
       let pool = null;
-      try {
-        const raw = localStorage.getItem(CACHE_KEY);
-        if (raw) {
-          const cached = JSON.parse(raw);
-          if (Date.now() - cached.ts < CACHE_TTL && Array.isArray(cached.data) && cached.f1Event) {
-            pool = cached.data; cachedF1Event = cached.f1Event;
-          }
-        }
-      } catch (e) { }
-
-      if (!pool) {
-        try {
-          cachedF1Event = null;
-          pool = await fetchAllEvents();
-          try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: pool, f1Event: cachedF1Event })); } catch (e) { }
-        } catch (e) {
-          const mount = document.getElementById('ticker-mount');
-          if (mount) mount.innerHTML = '<div class="t-event">⚠️ ERROR AL SINCRONIZAR CRONOGRAMAS</div>';
-          return;
-        }
-      }
-      cachedPool = pool; 
-      refreshDisplay();
-      updateLastUpdated();
+      try { const raw = localStorage.getItem(CACHE_KEY); if (raw) { const cached = JSON.parse(raw); if (Date.now() - cached.ts < CACHE_TTL && Array.isArray(cached.data) && cached.f1Event) { pool = cached.data; cachedF1Event = cached.f1Event; } } } catch (e) { }
+      if (!pool) { try { cachedF1Event = null; pool = await fetchAllEvents(); try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: pool, f1Event: cachedF1Event })); } catch (e) { } } catch (e) { return; } }
+      cachedPool = pool; refreshDisplay(); updateLastUpdated();
     }
-
     window.addEventListener('DOMContentLoaded', () => {
-      syncEvents();
-      setInterval(syncEvents, 300000); 
-      setInterval(refreshDisplay, 60000);
+      syncEvents(); setInterval(syncEvents, 300000); setInterval(refreshDisplay, 60000);
       const pauseBtn = document.getElementById('ticker-pause');
-      if (pauseBtn) {
-        pauseBtn.addEventListener('click', () => {
-          const canvas = document.getElementById('ticker-mount');
-          const paused = canvas.classList.toggle('paused');
-          pauseBtn.textContent = paused ? '▶' : '⏸';
-        });
-      }
+      if (pauseBtn) { pauseBtn.addEventListener('click', () => { const canvas = document.getElementById('ticker-mount'); const paused = canvas.classList.toggle('paused'); pauseBtn.textContent = paused ? '▶' : '⏸'; }); }
     });
   </script>
 </body>
