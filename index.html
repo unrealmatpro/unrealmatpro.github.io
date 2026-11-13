@@ -6,17 +6,14 @@
   <meta content='#020d08' name='theme-color'/>
   <title>UNREALMAT PRO+ | Central de Deportes</title>
   
-  <!-- SEO y Meta Tags -->
   <meta content='Agenda deportiva en vivo: FIFA 2026, Fútbol, NBA, F1 y Wrestling. Sigue los eventos de UNREALMAT PRO+ en tiempo real.' name='description'/>
   <meta content='deportes en vivo, agenda wwe, f1 uruguay, nba en vivo, fifa 2026, unrealmat pro' name='keywords'/>
   
-  <!-- Open Graph -->
   <meta content='UNREALMAT PRO+' property='og:site_name'/>
   <meta content='es_UY' property='og:locale'/>
   <meta content='UNREALMAT PRO+ | Central de Deportes' property='og:title'/>
   <meta content='https://wallpapers4screen.com/Uploads/12-1-2026/97736/thumb2-2026-fifa-world-cup-logo-4k-black-silk-texture-2026-fifa-world-cup-football-championship.jpg' property='og:image'/>
 
-  <!-- Preconnects y Fuentes -->
   <link href='https://fonts.googleapis.com' rel='preconnect'/>
   <link crossorigin='' href='https://fonts.gstatic.com' rel='preconnect'/>
   <link href='https://www.googleapis.com' rel='preconnect'/>
@@ -79,7 +76,6 @@
   </section>
 
   <main class='grid-v4' id='grid'>
-    <!-- FÚTBOL -->
     <a class='card-v4' href='/futbol/'>
       <div class='card-media-v4'>
         <img alt='Fútbol Mundial' src='https://external-preview.redd.it/cristiano-ronaldo-im-the-most-complete-footballer-ever-i-v0-AQQhDce_VkxjDq7BO21dIMqsoD4YuHdqn6U13UWzhtI.jpg?auto=webp&s=1dd86ddee6d2b2f6979509cc28418655dce2e88d'/>
@@ -90,7 +86,6 @@
       </div>
     </a>
 
-    <!-- NBA -->
     <a class='card-v4' href='/nba/'>
       <div class='card-media-v4'>
         <img alt='NBA Basketball' src='https://elgurudelbasket.com/wp-content/uploads/2019/09/top100_feature.jpg'/>
@@ -101,7 +96,6 @@
       </div>
     </a>
 
-    <!-- FORMULA 1 -->
     <a class='card-v4' href='/f1/'>
       <div class='card-media-v4'>
         <img alt='Formula 1' src='https://a.espncdn.com/photo/2020/0629/r713850_1296x729_16-9.jpg'/>
@@ -112,7 +106,6 @@
       </div>
     </a>
 
-    <!-- WRESTLING -->
     <a class='card-v4' href='/wrestling/'>
       <div class='card-media-v4'>
         <img alt='Wrestling News' src='https://i.ytimg.com/vi/C4NFvTvi1MY/hq720.jpg'/>
@@ -177,7 +170,6 @@
     }
 
     async function fetchAllEvents() {
-      // AQUI ESTA LA MAGIA: Ahora leemos desde ./output/ en lugar de raw.githubusercontent
       const timeMin = new Date(Date.now() - HORAS_LIMITE_MS).toISOString(); 
       const pool = [];
       const nowTs = Date.now();
