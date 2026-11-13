@@ -82,16 +82,12 @@ async def _scrape_url(url: str) -> List[Dict]:
                 if not titulo or len(titulo) < 3:
                     continue
 
-                # --- EXTRACCIÓN DE FECHA EXACTA (SIN FORZAR HORAS) ---
                 time_div = art.find("div", class_="event-time") or art.find("span", class_="compact-list-time")
                 fecha_completa = None
                 time_str = "00:00"
                 if time_div:
-                    # Intentar obtener la fecha exacta con zona horaria
                     raw_date = time_div.get("data-full-time") or time_div.get("data-time")
-                    
                     if raw_date:
-                        # Si la fecha no tiene zona horaria (ej. "2026-11-10 13:00"), le agregamos -05:00 (Lima)
                         if "T" in raw_date:
                             fecha_completa = raw_date
                             if not ("+" in raw_date or "-" in raw_date.split("T")[1]):
@@ -146,14 +142,8 @@ async def _scrape_url(url: str) -> List[Dict]:
                 if not servidores: continue
 
                 eventos.append({
-                    "id": f"evt_{idx}", 
-                    "titulo": titulo, 
-                    "hora": time_str, 
-                    "fecha_completa": fecha_completa, 
-                    "status": status_text,
-                    "servidores": servidores, 
-                    "torneo": torneo, 
-                    "sport_hint": sport_hint
+                    "id": f"evt_{idx}", "titulo": titulo, "hora": time_str, "fecha_completa": fecha_completa, 
+                    "status": status_text, "servidores": servidores, "torneo": torneo, "sport_hint": sport_hint
                 })
             
             if eventos: return eventos
@@ -223,6 +213,10 @@ async def main():
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     if not token: sys.exit(1)
     
+    # ESTO ES LO NUEVO: Lee el repositorio automáticamente desde GitHub Actions
+    repo_full = os.environ.get("GITHUB_REPOSITORY", "unrealmatpro/unrealmatpro.github.io")
+    user, repo = repo_full.split("/")
+    
     eventos_crudos = await obtener_eventos()
     if not eventos_crudos:
         LOG.error("❌ No se extrajeron eventos válidos.")
@@ -236,7 +230,8 @@ async def main():
 
     for deporte, lista in clasificados.items():
         payload = {"fecha_actualizacion": ahora, "total": len(lista), "eventos": lista}
-        subir_github(token, "adrunreal24", "isoposports", f"output/agenda_{deporte}.json", json.dumps(payload, ensure_ascii=False, indent=2))
+        # Aquí usa las variables user y repo que leyó automáticamente
+        subir_github(token, user, repo, f"output/agenda_{deporte}.json", json.dumps(payload, ensure_ascii=False, indent=2))
     
     return 0
 
