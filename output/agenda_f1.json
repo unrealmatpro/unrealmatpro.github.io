@@ -1,0 +1,20 @@
+{
+  "fecha_actualizacion": "2026-11-13T17:19:04Z",
+  "total": 1,
+  "eventos": [
+    {
+      "id": "evt_42",
+      "titulo": "Qatar vs Australia",
+      "hora": "06:45",
+      "fecha_completa": "2026-11-13T09:45:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "EVENTO4",
+          "url": "https://streamxhd.sbs/live1.php?stream=evento4"
+        }
+      ],
+      "torneo": "Amistoso Internacional"
+    }
+  ]
+}
