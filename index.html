@@ -105,20 +105,22 @@
         { label: 'F1',   id: 'i3vhcidiluqakvb92ue0hl3nmg@group.calendar.google.com' }
       ]
     };
-    const CACHE_KEY = 'um_events_v12'; 
+
+    const CACHE_KEY = 'um_events_v13'; 
     const CACHE_TTL = 10 * 60 * 1000; 
     const HORAS_LIMITE_MS = 2.5 * 60 * 60 * 1000;
     let cachedPool = [];
-    let cachedF1Event = null;
 
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
     function fmtDate(ts) { return new Date(ts).toLocaleDateString('es-UY', { day: '2-digit', month: 'short' }); }
     function fmtTime(ts) { return new Date(ts).toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' }); }
+    
     function parseEventDate(e) {
         if (e.fecha_completa) { let d = new Date(e.fecha_completa); if (!isNaN(d.getTime())) return d; if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)) { let d2 = new Date(e.fecha_completa.replace(" ", "T") + ":00-05:00"); if (!isNaN(d2.getTime())) return d2; } }
         if (e.hora && e.hora !== "00:00") { const now = new Date(); const utcDate = new Date(now.getTime() - (5 * 60 * 60 * 1000)); const isoStr = `${utcDate.getUTCFullYear()}-${String(utcDate.getUTCMonth()+1).padStart(2,'0')}-${String(utcDate.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3 = new Date(isoStr); if (!isNaN(d3.getTime())) return d3; }
         return null;
     }
+
     async function fetchAllEvents() {
       const timeMin = new Date(Date.now() - HORAS_LIMITE_MS).toISOString(); 
       const pool = [];
@@ -128,21 +130,44 @@
         { url: './output/agenda_nba.json', tag: 'NBA' },
         { url: './output/agenda_f1.json', tag: 'F1' }
       ];
+      
+      // 1. Leer JSONs locales
       await Promise.all(jsonSources.map(async src => {
           try {
             const res = await fetch(`${src.url}?v=${Date.now()}`);
-            if (res.ok) { const data = await res.json(); (data.eventos || []).forEach(e => { const dateObj = parseEventDate(e); if (dateObj && dateObj.getTime() >= nowTs - HORAS_LIMITE_MS) { pool.push({ name: e.titulo || 'Evento', tag: src.tag, torneo: e.torneo || src.tag, time: dateObj.getTime() }); } }); }
+            if (res.ok) { 
+              const data = await res.json(); 
+              (data.eventos || []).forEach(e => { 
+                const dateObj = parseEventDate(e); 
+                if (dateObj && dateObj.getTime() >= nowTs - HORAS_LIMITE_MS) { 
+                  pool.push({ name: e.titulo || 'Evento', tag: src.tag, torneo: e.torneo || src.tag, time: dateObj.getTime() }); 
+                } 
+              }); 
+            }
           } catch (err) {}
       }));
+
+      // 2. Leer Calendarios de Google (F1 y Wrestling)
       await Promise.all(APP_CONFIG.calendars.map(cal =>
           fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(cal.id)}/events?key=${APP_CONFIG.apiKey}&timeMin=${timeMin}&maxResults=5&singleEvents=true&orderBy=startTime`)
             .then(r => r.ok ? r.json() : null)
             .then(data => {
-              if (data && data.items) { data.items.forEach(ev => { const raw = ev.start.dateTime || (ev.start.date + 'T00:00:00'); const evTs = new Date(raw).getTime(); if (cal.label === 'F1' && !cachedF1Event && evTs >= nowTs) { cachedF1Event = { name: ev.summary || 'Sesión F1', time: evTs }; } if (evTs >= nowTs - HORAS_LIMITE_MS) { pool.push({ name: ev.summary || 'Sin título', tag: cal.label, torneo: cal.label, time: evTs }); } }); }
+              if (data && data.items) { 
+                data.items.forEach(ev => { 
+                  const raw = ev.start.dateTime || (ev.start.date + 'T00:00:00'); 
+                  const evTs = new Date(raw).getTime(); 
+                  if (evTs >= nowTs - HORAS_LIMITE_MS) { 
+                    // Etiquetamos con el nombre del calendario (WWE, F1, etc.)
+                    pool.push({ name: ev.summary || 'Sin título', tag: cal.label, torneo: cal.label, time: evTs }); 
+                  } 
+                }); 
+              }
             }).catch(() => null)
       ));
+      
       return pool.sort((a, b) => a.time - b.time);
     }
+
     function renderTicker(pool) {
       const mount = document.getElementById('ticker-mount');
       if (!mount) return;
@@ -151,26 +176,70 @@
       mount.innerHTML = content + content;
       mount.style.animationDuration = `${Math.max(pool.slice(0, 15).length * 3, 15)}s`;
     }
+
     function updateCards(pool) {
       document.querySelectorAll('.card-next').forEach(el => {
+        // Obtenemos los tags a buscar. Ej: "WWE,AEW,TNA,NJPW"
         const tags = (el.dataset.tag || '').split(',').map(t => t.trim());
-        if (tags.includes('F1') && cachedF1Event) { const shortName = cachedF1Event.name.length > 28 ? cachedF1Event.name.substring(0, 28) + '…' : cachedF1Event.name; el.textContent = `${shortName} · ${fmtDate(cachedF1Event.time)} ${fmtTime(cachedF1Event.time)}`; return; }
+        
+        // Buscamos el primer evento en el pool que coincida con alguno de los tags
         const ev = pool.find(e => tags.includes(e.tag));
-        if (ev) { const shortName = ev.name.length > 28 ? ev.name.substring(0, 28) + '…' : ev.name; el.textContent = `${shortName} · ${fmtDate(ev.time)} ${fmtTime(ev.time)}`; } else { el.textContent = 'Sin eventos próximos'; }
+        
+        if (ev) { 
+          const shortName = ev.name.length > 28 ? ev.name.substring(0, 28) + '…' : ev.name; 
+          el.textContent = `${shortName} · ${fmtDate(ev.time)} ${fmtTime(ev.time)}`; 
+        } else { 
+          el.textContent = 'Sin eventos próximos'; 
+        }
       });
     }
+
     function updateLastUpdated() { const el = document.getElementById('ticker-updated'); if (el) el.textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-UY', { hour: '2-digit', minute: '2-digit' }); }
-    function refreshDisplay() { const nowTs = Date.now(); const activePool = cachedPool.filter(e => e.time >= nowTs - HORAS_LIMITE_MS); if (cachedF1Event && cachedF1Event.time < nowTs - HORAS_LIMITE_MS) cachedF1Event = null; renderTicker(activePool); updateCards(activePool); }
+    
+    function refreshDisplay() { 
+        const nowTs = Date.now(); 
+        // Filtramos el pool para eliminar eventos pasados
+        const activePool = cachedPool.filter(e => e.time >= nowTs - HORAS_LIMITE_MS); 
+        renderTicker(activePool); 
+        updateCards(activePool); 
+    }
+
     async function syncEvents() {
       let pool = null;
-      try { const raw = localStorage.getItem(CACHE_KEY); if (raw) { const cached = JSON.parse(raw); if (Date.now() - cached.ts < CACHE_TTL && Array.isArray(cached.data) && cached.f1Event) { pool = cached.data; cachedF1Event = cached.f1Event; } } } catch (e) { }
-      if (!pool) { try { cachedF1Event = null; pool = await fetchAllEvents(); try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: pool, f1Event: cachedF1Event })); } catch (e) { } } catch (e) { return; } }
-      cachedPool = pool; refreshDisplay(); updateLastUpdated();
+      try { 
+        const raw = localStorage.getItem(CACHE_KEY); 
+        if (raw) { 
+          const cached = JSON.parse(raw); 
+          if (Date.now() - cached.ts < CACHE_TTL && Array.isArray(cached.data)) { 
+            pool = cached.data; 
+          } 
+        } 
+      } catch (e) { }
+      
+      if (!pool) { 
+        try { 
+          pool = await fetchAllEvents(); 
+          try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: pool })); } catch (e) { } 
+        } catch (e) { return; } 
+      }
+      cachedPool = pool; 
+      refreshDisplay(); 
+      updateLastUpdated();
     }
+
     window.addEventListener('DOMContentLoaded', () => {
-      syncEvents(); setInterval(syncEvents, 300000); setInterval(refreshDisplay, 60000);
+      syncEvents(); 
+      setInterval(syncEvents, 300000); // Refresca API de Google cada 5 mins
+      setInterval(refreshDisplay, 60000); // Refresca la vista (y elimina eventos viejos) cada 1 min
+      
       const pauseBtn = document.getElementById('ticker-pause');
-      if (pauseBtn) { pauseBtn.addEventListener('click', () => { const canvas = document.getElementById('ticker-mount'); const paused = canvas.classList.toggle('paused'); pauseBtn.textContent = paused ? '▶' : '⏸'; }); }
+      if (pauseBtn) { 
+        pauseBtn.addEventListener('click', () => { 
+          const canvas = document.getElementById('ticker-mount'); 
+          const paused = canvas.classList.toggle('paused'); 
+          pauseBtn.textContent = paused ? '▶' : '⏸'; 
+        }); 
+      }
     });
   </script>
 </body>
