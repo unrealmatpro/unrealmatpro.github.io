@@ -78,12 +78,6 @@
       z-index:9999; height:auto; padding:0; gap:0;
     }
 
-    .sr-only{
-      position:absolute !important; width:1px !important; height:1px !important;
-      padding:0 !important; margin:-1px !important; overflow:hidden !important;
-      clip:rect(0, 0, 0, 0) !important; white-space:nowrap !important; border:0 !important;
-    }
-
     /* TOP CONSOLE */
     .top-console{ background:#000; border-bottom:3px solid var(--accent); position:sticky; top:0; z-index:999; }
     .header-main{
@@ -581,19 +575,38 @@ function recargarBlog(btn) {
     const isCurrent = () => fetchId === activeFetchId;
     const ticker = document.getElementById('main-ticker'); ticker.innerHTML = '';
     const loading = document.createElement('div'); loading.style.cssText = 'padding:20px; font-family:Oswald; color: var(--accent);'; loading.textContent = 'SINTONIZANDO EMISIONES...'; ticker.appendChild(loading);
-    const cacheKey = `unreal_cache_v3_${filter}`, cacheTimeKey = `unreal_cache_time_v3_${filter}`, cacheDuration = 300000;
+    const cacheKey = `unreal_cache_v4_${filter}`, cacheTimeKey = `unreal_cache_time_v4_${filter}`, cacheDuration = 300000;
     const cachedData = safeStorage.get(cacheKey), cachedTs = safeStorage.get(cacheTimeKey);
     if (cachedData && cachedTs && (Date.now() - parseInt(cachedTs, 10) < cacheDuration)){ try { const parsed = JSON.parse(cachedData); if (isCurrent()) renderDashboard(parsed, filter); return; } catch(_){ safeStorage.remove(cacheKey); safeStorage.remove(cacheTimeKey); } }
     const timeMin = new Date().toISOString(); const targets = filter === "OMNI" ? Object.keys(BRANDS) : [filter];
+    
     const promises = targets.map(async (brand) => {
       try {
         const calendarId = encodeURIComponent(BRANDS[brand].calendarId);
         const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${encodeURIComponent(API_KEY)}&timeMin=${timeMin}&maxResults=8&singleEvents=true&orderBy=startTime`;
-        const response = await fetch(url, { method: "GET", signal }); if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const resData = await response.json(); if (!resData.items) return [];
-        return resData.items.map(item => ({ summary: item.summary || 'Evento', brandName: brand, start: item.start.dateTime || item.start.date, end: item.end?.dateTime || item.end?.date || null }));
+        const response = await fetch(url, { method: "GET", signal }); 
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const resData = await response.json(); 
+        if (!resData.items) return [];
+        
+        return resData.items.map(item => {
+          const rawStart = item.start.dateTime || item.start.date;
+          const rawEnd = item.end?.dateTime || item.end?.date || null;
+          
+          // --- AJUSTE DE +1 HORA (3600000 ms) ---
+          const startMs = new Date(rawStart).getTime() + 3600000;
+          const endMs = rawEnd ? new Date(rawEnd).getTime() + 3600000 : null;
+          
+          return {
+            summary: item.summary || 'Evento',
+            brandName: brand,
+            start: startMs,
+            end: endMs
+          };
+        });
       } catch(err){ if (err.name === 'AbortError') throw err; return []; }
     });
+    
     try {
       const results = await Promise.allSettled(promises); if (!isCurrent()) return;
       const wasAborted = results.some(r => r.status === 'rejected' && r.reason && r.reason.name === 'AbortError'); if (wasAborted) return;
@@ -638,7 +651,11 @@ function recargarBlog(btn) {
     const card = document.createElement('div'); card.className = `match-card ${detectShow(ev.summary)}${isLiveNow ? ' is-live' : ''}`;
     const info = document.createElement('div'); info.className = 'match-info'; const brandSpan = document.createElement('span'); brandSpan.textContent = ev.brandName || '';
     const liveSpan = document.createElement('span'); liveSpan.className = 'live-indicator-text'; liveSpan.textContent = '• EN VIVO'; const timeSpan = document.createElement('span');
-    try { timeSpan.textContent = new Date(ev.start).toLocaleString('es-UY', { weekday: 'short', hour: '2-digit', minute: '2-digit' }) + ' HS'; } catch(_) { timeSpan.textContent = ''; }
+    
+    try { 
+      timeSpan.textContent = new Date(ev.start).toLocaleString('es-UY', { weekday: 'short', hour: '2-digit', minute: '2-digit' }) + ' HS'; 
+    } catch(_) { timeSpan.textContent = ''; }
+    
     info.appendChild(brandSpan); info.appendChild(liveSpan); info.appendChild(timeSpan); const title = document.createElement('div'); title.className = 'match-title'; title.textContent = ev.summary || 'Evento';
     const actions = document.createElement('div'); actions.className = 'action-row';
     ['a', 'b'].forEach(slot => { const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = `Señal ${slot.toUpperCase()}`; btn.addEventListener('click', () => hookStream(slot, ev.summary, ev.brandName)); actions.appendChild(btn); });
