@@ -128,6 +128,8 @@
   <script>
     let datosOriginales = []; 
     let activeSlotIndex = 0;
+    const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
+    const CAL_ID = "i3vhcidiluqakvb92ue0hl3nmg@group.calendar.google.com";
 
     function recargarBlog(btn) {
         btn.classList.add('spinning');
@@ -203,29 +205,68 @@
 
     async function cargarAgenda() {
         try {
-            const url = `../output/agenda_f1.json?v=${Date.now()}`;
-            const res = await fetch(url);
-            if (!res.ok) throw new Error("Archivo no disponible");
-            
-            const data = await res.json();
-            let listaEventos = data.eventos || [];
-            
+            let eventos = [];
             const ahora = new Date();
-            listaEventos.forEach(e => { e.eventDateObj = parseEventDate(e); });
 
-            listaEventos = listaEventos.filter(e => {
-                if (!e.eventDateObj) return true;
-                const diffHours = (ahora.getTime() - e.eventDateObj.getTime()) / (1000 * 60 * 60);
-                return diffHours <= 2.5;
+            // 1. Cargar JSON
+            try {
+                const res = await fetch(`../output/agenda_f1.json?v=${Date.now()}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    (data.eventos || []).forEach(e => {
+                        e.eventDateObj = parseEventDate(e);
+                        if (e.eventDateObj && (ahora.getTime() - e.eventDateObj.getTime()) / (1000 * 60 * 60) <= 2.5) {
+                            eventos.push(e);
+                        }
+                    });
+                }
+            } catch (err) { console.log('Error JSON:', err); }
+
+            // 2. Cargar Calendario de Google
+            try {
+                const timeMin = new Date(Date.now() - 2.5 * 60 * 60 * 1000).toISOString();
+                const calRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CAL_ID)}/events?key=${API_KEY}&timeMin=${timeMin}&maxResults=15&singleEvents=true&orderBy=startTime`);
+                if (calRes.ok) {
+                    const calData = await calRes.json();
+                    (calData.items || []).forEach(ev => {
+                        const rawDate = ev.start.dateTime || (ev.start.date + 'T00:00:00');
+                        const dateObj = new Date(rawDate);
+                        if ((ahora.getTime() - dateObj.getTime()) / (1000 * 60 * 60) <= 2.5) {
+                            eventos.push({
+                                titulo: ev.summary || 'Sesión F1',
+                                torneo: 'CALENDARIO F1',
+                                eventDateObj: dateObj,
+                                servidores: [], // Sin servidores (se abrirá el aviso de "No publicada")
+                                isCalendar: true
+                            });
+                        }
+                    });
+                }
+            } catch (err) { console.log('Error Calendario:', err); }
+
+            // 3. Fusionar y evitar duplicados (priorizando los que tienen servidores)
+            const uniqueMap = new Map();
+            eventos.forEach(e => {
+                // Limpiamos el título para agrupar variaciones mínimas
+                const key = normalizar(e.titulo).replace(/[^A-Z0-9]/g, '');
+                
+                if (!uniqueMap.has(key)) {
+                    uniqueMap.set(key, e);
+                } else {
+                    const existing = uniqueMap.get(key);
+                    // Si el nuevo tiene servidores y el viejo no, lo reemplazamos
+                    if (existing.servidores.length === 0 && e.servidores.length > 0) {
+                        uniqueMap.set(key, e);
+                    }
+                }
             });
 
-            listaEventos.sort((a, b) => {
-                if (!a.eventDateObj) return 1;
-                if (!b.eventDateObj) return -1;
-                return a.eventDateObj.getTime() - b.eventDateObj.getTime();
-            });
+            let listaFinal = Array.from(uniqueMap.values());
 
-            datosOriginales = listaEventos;
+            // 4. Ordenar cronológicamente
+            listaFinal.sort((a, b) => a.eventDateObj.getTime() - b.eventDateObj.getTime());
+
+            datosOriginales = listaFinal;
             renderSidebarFeed(datosOriginales);
             
         } catch (e) {
@@ -244,7 +285,12 @@
         const numOpciones = e.servidores ? e.servidores.length : 0;
         
         let safeTime = 'Por confirmar';
-        if (e.eventDateObj) safeTime = e.eventDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        if (e.eventDateObj) {
+            // Mostramos Fecha (dd/mm) y Hora (HH:MM)
+            const f = e.eventDateObj.toLocaleDateString([], { day: '2-digit', month: '2-digit' });
+            const h = e.eventDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            safeTime = `${f} · ${h}`;
+        }
 
         const status = getDynamicStatus(e.eventDateObj, e.status);
         let badgeText, badgeStyle;
