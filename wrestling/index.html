@@ -4,7 +4,6 @@
   <meta charset='UTF-8'/>
   <meta content='width=device-width, initial-scale=1.0, viewport-fit=cover' name='viewport'/>
   <meta content='#010101' name='theme-color'/>
-  
   <title>Wrestling Live | UNREALMAT PRO+</title>
   
   <meta content='Ver WWE, AEW y TNA en Vivo Online | UNREALMAT PRO+' property='og:title'/>
@@ -26,15 +25,6 @@
 
   <script src='https://cdn.plyr.io/3.7.8/plyr.polyfilled.js'></script>
   <script src='https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js'></script>
-
-  <script type='application/ld+json'>
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "UNREALMAT PRO+",
-    "url": "https://unrealmatpro.github.io/"
-  }
-  </script>
 
   <style>
     :root{
@@ -292,7 +282,6 @@
     }
   </style>
 </head>
-
 <body>
 
 <a class='skip-link' href='#arena-grid'>Saltar a reproductores</a>
@@ -412,14 +401,8 @@ function recargarBlog(btn) {
   const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
 
   const STREAMS = {
-    DEFAULT: {
-      primary: "https://d302.soft4game.com/o22/stream183/o/stream183/chunks.m3u8",
-      backup:  "https://embed.unrealmat.com/live/stream1"
-    },
-    WWE:  null,
-    AEW:  null,
-    TNA:  null,
-    NJPW: null
+    DEFAULT: { primary: "https://d302.soft4game.com/o22/stream183/o/stream183/chunks.m3u8", backup:  "https://embed.unrealmat.com/live/stream1" },
+    WWE:  null, AEW:  null, TNA:  null, NJPW: null
   };
 
   const CHANNELS_247 = [];
@@ -466,18 +449,14 @@ function recargarBlog(btn) {
     });
   }
 
-  function ensurePlayerB(){
-    if (!corePlayers.b.plyr) bootstrapPlyr('b');
-  }
+  function ensurePlayerB(){ if (!corePlayers.b.plyr) bootstrapPlyr('b'); }
 
   function activateSplit(){
     if (splitActive) return;
-    splitActive = true;
-    ensurePlayerB();
+    splitActive = true; ensurePlayerB();
     document.getElementById('arena-grid').classList.add('split-active');
     document.getElementById('slot-b-box').style.display = 'flex';
-    const btn = document.getElementById('btn-split');
-    if (btn) btn.setAttribute('aria-pressed', 'true');
+    const btn = document.getElementById('btn-split'); if (btn) btn.setAttribute('aria-pressed', 'true');
   }
 
   function deactivateSplit(){
@@ -486,22 +465,17 @@ function recargarBlog(btn) {
     document.getElementById('arena-grid').classList.remove('split-active');
     document.getElementById('slot-b-box').style.display = 'none';
     destroyMediaPipeline('b');
-    const btn = document.getElementById('btn-split');
-    if (btn) btn.setAttribute('aria-pressed', 'false');
+    const btn = document.getElementById('btn-split'); if (btn) btn.setAttribute('aria-pressed', 'false');
   }
 
-  function toggleOmniSplit(){
-    if (splitActive) deactivateSplit(); else activateSplit();
-  }
+  function toggleOmniSplit(){ if (splitActive) deactivateSplit(); else activateSplit(); }
 
   function toggleTheatreMode(){
     const on = document.body.classList.toggle('theatre-mode');
     const btn = document.getElementById('btn-theatre');
     if (!btn) return;
     btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    btn.innerHTML = on
-      ? "<i aria-hidden='true' class='fa-solid fa-compress'></i> <span class='dock-text'>SALIR DE TEATRO</span>"
-      : "<i aria-hidden='true' class='fa-solid fa-expand'></i> <span class='dock-text'>MODO TEATRO</span>";
+    btn.innerHTML = on ? "<i aria-hidden='true' class='fa-solid fa-compress'></i> <span class='dock-text'>SALIR DE TEATRO</span>" : "<i aria-hidden='true' class='fa-solid fa-expand'></i> <span class='dock-text'>MODO TEATRO</span>";
   }
 
   function updateMasterTimer(date, title){
@@ -515,33 +489,19 @@ function recargarBlog(btn) {
 
     function schedule(ms){
       clearTimeout(timerTimeout);
-      timerTimeout = setTimeout(() => {
-        if (document.hidden) { schedule(30000); return; }
-        tick();
-      }, ms);
+      timerTimeout = setTimeout(() => { if (document.hidden) { schedule(30000); return; } tick(); }, ms);
     }
 
     function tick(){
       const diff = target - Date.now();
-      if (diff <= 0){
-        timerEl.style.color = "var(--live-red)";
-        timerEl.innerText = "LIVE NOW";
-        schedule(60000);
-        return;
-      }
+      if (diff <= 0){ timerEl.style.color = "var(--live-red)"; timerEl.innerText = "LIVE NOW"; schedule(60000); return; }
       const hoursTotal = diff / 36e5;
       if (hoursTotal >= 1){
-        const d = Math.floor(diff / 864e5);
-        const h = Math.floor((diff % 864e5) / 36e5);
-        const m = Math.floor((diff % 36e5) / 6e4);
-        timerEl.innerText = `${d}D ${h}H ${m}M`;
-        schedule(60000);
+        const d = Math.floor(diff / 864e5), h = Math.floor((diff % 864e5) / 36e5), m = Math.floor((diff % 36e5) / 6e4);
+        timerEl.innerText = `${d}D ${h}H ${m}M`; schedule(60000);
       } else {
-        const h = Math.floor(diff / 36e5);
-        const m = Math.floor((diff % 36e5) / 6e4);
-        const s = Math.floor((diff % 6e4) / 1e3);
-        timerEl.innerText = `${h}H ${m}M ${s}S`;
-        schedule(1000);
+        const h = Math.floor(diff / 36e5), m = Math.floor((diff % 36e5) / 6e4), s = Math.floor((diff % 6e4) / 1e3);
+        timerEl.innerText = `${h}H ${m}M ${s}S`; schedule(1000);
       }
     }
     tick();
@@ -554,14 +514,11 @@ function recargarBlog(btn) {
 
   function destroyMediaPipeline(slot){
     const cp = corePlayers[slot];
-    clearTimeout(cp.fallbackTimer);
-    cp.streamTriggered = false;
-    cp.networkRetries = 0;
+    clearTimeout(cp.fallbackTimer); cp.streamTriggered = false; cp.networkRetries = 0;
     if (cp.hls){ try { cp.hls.detachMedia(); } catch(_) {} try { cp.hls.destroy(); } catch(_) {} cp.hls = null; }
     const video = document.getElementById(`vid-${slot}`);
     if (video){ try { video.pause(); } catch(_) {} try { video.removeAttribute('src'); video.load(); } catch(_) {} const container = video.closest('.plyr'); if (container) container.classList.remove('active'); }
-    const embedContainer = document.getElementById(`embed-container-${slot}`);
-    if (embedContainer){ embedContainer.innerHTML = ''; embedContainer.classList.remove('active'); }
+    const embedContainer = document.getElementById(`embed-container-${slot}`); if (embedContainer){ embedContainer.innerHTML = ''; embedContainer.classList.remove('active'); }
     const ghost = document.getElementById(`ghost-${slot}`); if (ghost) ghost.style.display = 'block';
     const pulse = document.getElementById(`pulse-${slot}`); if (pulse) pulse.style.display = 'none';
     const lbl = document.getElementById(`label-${slot}`)?.querySelector('.label-text-slot'); if (lbl) lbl.innerText = `CANAL ${slot.toUpperCase()}`;
@@ -569,68 +526,38 @@ function recargarBlog(btn) {
   }
 
   function triggerFallback(slot, streamConfig){
-    const cp = corePlayers[slot];
-    clearTimeout(cp.fallbackTimer);
-    const video = document.getElementById(`vid-${slot}`);
-    const embedContainer = document.getElementById(`embed-container-${slot}`);
+    const cp = corePlayers[slot]; clearTimeout(cp.fallbackTimer);
+    const video = document.getElementById(`vid-${slot}`); const embedContainer = document.getElementById(`embed-container-${slot}`);
     if (!embedContainer) return;
     if (video){ try { video.pause(); } catch(_) {} try { video.removeAttribute('src'); video.load(); } catch(_) {} const container = video.closest('.plyr'); if (container) container.classList.remove('active'); }
     if (cp.hls){ try { cp.hls.detachMedia(); } catch(_) {} try { cp.hls.destroy(); } catch(_) {} cp.hls = null; }
-
-    const backupUrl = streamConfig && streamConfig.backup;
-    if (!backupUrl || backupUrl === "..." ){ showError(slot); return; }
-
-    embedContainer.classList.add('active');
-    embedContainer.innerHTML = '';
+    const backupUrl = streamConfig && streamConfig.backup; if (!backupUrl || backupUrl === "..." ){ showError(slot); return; }
+    embedContainer.classList.add('active'); embedContainer.innerHTML = '';
     const iframe = document.createElement('iframe');
-    iframe.src = backupUrl;
-    iframe.title = `Reproductor de respaldo ${slot.toUpperCase()}`;
-    iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
-    iframe.setAttribute('allowfullscreen', 'true');
-    iframe.setAttribute('scrolling', 'no');
-    iframe.setAttribute('loading', 'lazy');
-    iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
+    iframe.src = backupUrl; iframe.title = `Reproductor de respaldo ${slot.toUpperCase()}`;
+    iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture'); iframe.setAttribute('allowfullscreen', 'true'); iframe.setAttribute('scrolling', 'no'); iframe.setAttribute('loading', 'lazy'); iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade'); iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
     iframe.addEventListener('load', () => { cp.streamTriggered = true; hideLoader(slot); hideError(slot); }, { once: true });
     embedContainer.appendChild(iframe);
     setTimeout(() => { if (!cp.streamTriggered) showError(slot); }, 10000);
   }
 
   function hookStream(slot, title, brand, customUrl){
-    if (!title) title = 'Señal';
-    if (!brand) brand = 'DEFAULT';
+    if (!title) title = 'Señal'; if (!brand) brand = 'DEFAULT';
     if (slot === 'b' && !splitActive) activateSplit();
     destroyMediaPipeline(slot);
-    const cp = corePlayers[slot];
-    cp.currentTitle = title; cp.currentBrand = brand; cp.currentUrl = customUrl || null;
+    const cp = corePlayers[slot]; cp.currentTitle = title; cp.currentBrand = brand; cp.currentUrl = customUrl || null;
     hideError(slot); showLoader(slot);
-    const video = document.getElementById(`vid-${slot}`);
-    const ghost = document.getElementById(`ghost-${slot}`);
-    const labelText = document.getElementById(`label-${slot}`).querySelector('.label-text-slot');
-    const pulse = document.getElementById(`pulse-${slot}`);
-    if (ghost) ghost.style.display = 'none';
-    if (pulse) pulse.style.display = 'inline-block';
-    if (labelText) labelText.innerText = `${slot.toUpperCase()}: ${title.toUpperCase()}`;
+    const video = document.getElementById(`vid-${slot}`); const ghost = document.getElementById(`ghost-${slot}`);
+    const labelText = document.getElementById(`label-${slot}`).querySelector('.label-text-slot'); const pulse = document.getElementById(`pulse-${slot}`);
+    if (ghost) ghost.style.display = 'none'; if (pulse) pulse.style.display = 'inline-block'; if (labelText) labelText.innerText = `${slot.toUpperCase()}: ${title.toUpperCase()}`;
     if (slot === 'b'){ if (cp.plyr) cp.plyr.muted = true; if (labelText) labelText.innerText += " (MUTED)"; }
     const plyrContainer = video.closest('.plyr'); if (plyrContainer) plyrContainer.classList.add('active');
-
-    let streamConfig;
-    if (customUrl){ streamConfig = { primary: customUrl, backup: STREAMS.DEFAULT.backup }; }
-    else { streamConfig = getStreamConfig(brand); }
-
-    if (typeof streamConfig.primary === 'string' && streamConfig.primary.startsWith('http://') && window.location.protocol === 'https:'){
-      console.warn(`[MixedContent] URL http:// bloqueada`); showError(slot); return;
-    }
-
-    cp.fallbackTimer = setTimeout(() => {
-      if (!cp.streamTriggered){ console.warn(`[Pipeline] Fallback en Canal ${slot.toUpperCase()}`); triggerFallback(slot, streamConfig); }
-    }, 5000);
-
+    let streamConfig; if (customUrl){ streamConfig = { primary: customUrl, backup: STREAMS.DEFAULT.backup }; } else { streamConfig = getStreamConfig(brand); }
+    if (typeof streamConfig.primary === 'string' && streamConfig.primary.startsWith('http://') && window.location.protocol === 'https:'){ console.warn(`[MixedContent] URL http:// bloqueada`); showError(slot); return; }
+    cp.fallbackTimer = setTimeout(() => { if (!cp.streamTriggered){ console.warn(`[Pipeline] Fallback en Canal ${slot.toUpperCase()}`); triggerFallback(slot, streamConfig); } }, 5000);
     if (typeof Hls !== 'undefined' && Hls.isSupported()){
-      const hls = new Hls({ enableWorker: true, lowLatencyMode: false, backBufferLength: 60, maxBufferLength: 30 });
-      cp.hls = hls;
-      hls.loadSource(streamConfig.primary);
-      hls.attachMedia(video);
+      const hls = new Hls({ enableWorker: true, lowLatencyMode: false, backBufferLength: 60, maxBufferLength: 30 }); cp.hls = hls;
+      hls.loadSource(streamConfig.primary); hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, () => { cp.streamTriggered = true; clearTimeout(cp.fallbackTimer); hideLoader(slot); video.play().catch(()=>{}); });
       hls.on(Hls.Events.ERROR, (_, data) => {
         if (!data.fatal) return;
@@ -638,209 +565,23 @@ function recargarBlog(btn) {
         else if (data.type === Hls.ErrorTypes.MEDIA_ERROR && cp.networkRetries < 3){ cp.networkRetries++; try { hls.recoverMediaError(); } catch(_) {} }
         else { triggerFallback(slot, streamConfig); }
       });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')){
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = streamConfig.primary;
       video.play().then(() => { cp.streamTriggered = true; clearTimeout(cp.fallbackTimer); hideLoader(slot); }).catch(() => triggerFallback(slot, streamConfig));
     } else { triggerFallback(slot, streamConfig); }
   }
 
-  function reconnectSlot(slot){
-    const cp = corePlayers[slot];
-    if (cp.currentTitle) hookStream(slot, cp.currentTitle, cp.currentBrand, cp.currentUrl);
-  }
+  function reconnectSlot(slot){ const cp = corePlayers[slot]; if (cp.currentTitle) hookStream(slot, cp.currentTitle, cp.currentBrand, cp.currentUrl); }
 
   async function refreshArena(filter){
     currentBrandFilter = filter;
     if (currentFeedMode === '247'){ render247Grid(filter); return; }
-
-    const fetchId = ++activeFetchId;
-    if (currentFetchController) currentFetchController.abort();
-    currentFetchController = new AbortController();
-    const signal = currentFetchController.signal;
+    const fetchId = ++activeFetchId; if (currentFetchController) currentFetchController.abort();
+    currentFetchController = new AbortController(); const signal = currentFetchController.signal;
     const isCurrent = () => fetchId === activeFetchId;
-
-    const ticker = document.getElementById('main-ticker');
-    ticker.innerHTML = '';
-    const loading = document.createElement('div');
-    loading.style.cssText = 'padding:20px; font-family:Oswald; color: var(--accent);';
-    loading.textContent = 'SINTONIZANDO EMISIONES...';
-    ticker.appendChild(loading);
-
-    const cacheKey = `unreal_cache_v3_${filter}`;
-    const cacheTimeKey = `unreal_cache_time_v3_${filter}`;
-    const cacheDuration = 300000;
-
-    const cachedData = safeStorage.get(cacheKey);
-    const cachedTs = safeStorage.get(cacheTimeKey);
-    if (cachedData && cachedTs && (Date.now() - parseInt(cachedTs, 10) < cacheDuration)){
-      try { const parsed = JSON.parse(cachedData); if (isCurrent()) renderDashboard(parsed, filter); return; }
-      catch(_){ safeStorage.remove(cacheKey); safeStorage.remove(cacheTimeKey); }
-    }
-
-    const timeMin = new Date().toISOString();
-    const targets = filter === "OMNI" ? Object.keys(BRANDS) : [filter];
-
-    const promises = targets.map(async (brand) => {
-      try {
-        const calendarId = encodeURIComponent(BRANDS[brand].calendarId);
-        const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${encodeURIComponent(API_KEY)}&timeMin=${timeMin}&maxResults=8&singleEvents=true&orderBy=startTime`;
-        const response = await fetch(url, { method: "GET", signal });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const resData = await response.json();
-        if (!resData.items) return [];
-        return resData.items.map(item => ({
-          summary: item.summary || 'Evento',
-          brandName: brand,
-          start: item.start.dateTime || item.start.date,
-          end:   item.end?.dateTime || item.end?.date || null
-        }));
-      } catch(err){ if (err.name === 'AbortError') throw err; return []; }
-    });
-
-    try {
-      const results = await Promise.allSettled(promises);
-      if (!isCurrent()) return;
-      const wasAborted = results.some(r => r.status === 'rejected' && r.reason && r.reason.name === 'AbortError');
-      if (wasAborted) return;
-      const masterList = results.filter(r => r.status === 'fulfilled').flatMap(r => r.value);
-      if (masterList.length === 0) throw new Error('Sin datos');
-      safeStorage.set(cacheKey, JSON.stringify(masterList));
-      safeStorage.set(cacheTimeKey, Date.now().toString());
-      renderDashboard(masterList, filter);
-    } catch(err){ if (!isCurrent()) return; renderEmergency(ticker); }
-  }
-
-  function renderDashboard(list, filter){
-    const ticker = document.getElementById('main-ticker');
-    if (!list.length){
-      ticker.innerHTML = '';
-      const empty = document.createElement('div');
-      empty.style.cssText = 'padding:20px; font-family:Oswald; color:#555;';
-      empty.textContent = 'NO HAY EMISIONES PROGRAMADAS PRÓXIMAMENTE';
-      ticker.appendChild(empty);
-      return;
-    }
-    const accent = filter === "OMNI" ? "#00ff88" : (BRANDS[filter]?.color ?? "#e21017");
-    document.documentElement.style.setProperty('--accent', accent);
-    list.sort((a, b) => { const da = new Date(a.start).getTime() - new Date(b.start).getTime(); if (da !== 0) return da; return String(a.brandName || '').localeCompare(String(b.brandName || '')); });
-    updateMasterTimer(list[0].start, list[0].summary);
-    ticker.innerHTML = '';
-    list.forEach(ev => {
-      const startTime = new Date(ev.start).getTime();
-      const endTime = ev.end ? new Date(ev.end).getTime() : startTime + 14400000;
-      const isLiveNow = Date.now() >= startTime && Date.now() < endTime;
-      ticker.appendChild(buildCard(ev, isLiveNow));
-    });
-  }
-
-  function render247Grid(filter){
-    const ticker = document.getElementById('main-ticker');
-    ticker.innerHTML = '';
-    const statusEl = document.getElementById('timer-status');
-    const timerEl = document.getElementById('timer');
-    if (statusEl) statusEl.innerText = 'CANALES 24/7 — SIEMPRE EN VIVO';
-    if (timerEl){ timerEl.style.color = '#00ff88'; timerEl.innerText = '∞ ON AIR'; }
-    const canales = CHANNELS_247.filter(c => { if (!c || !c.url) return false; if (filter === 'OMNI') return true; return c.brand === filter; });
-    if (!canales.length){
-      const empty = document.createElement('div');
-      empty.style.cssText = 'padding:20px; font-family:Oswald; color:#555; line-height:1.6;';
-      empty.textContent = (filter === 'OMNI') ? 'AÚN NO HAY CANALES 24/7 CONFIGURADOS. AGREGA TUS STREAMS HTTPS EN CHANNELS_247.' : `NO HAY CANALES 24/7 DE ${filter} CONFIGURADOS.`;
-      ticker.appendChild(empty); return;
-    }
-    canales.forEach(ch => { ticker.appendChild(build247Card(ch)); });
-  }
-
-  function build247Card(ch){
-    const card = document.createElement('div');
-    card.className = `match-card card-247 is-live ${detectShow(ch.name)}`;
-    const info = document.createElement('div'); info.className = 'match-info';
-    const brandSpan = document.createElement('span'); brandSpan.textContent = ch.brand || '';
-    const liveSpan = document.createElement('span'); liveSpan.className = 'live-indicator-text'; liveSpan.style.display = 'inline-block'; liveSpan.textContent = '• 24/7';
-    info.appendChild(brandSpan); info.appendChild(liveSpan);
-    const title = document.createElement('div'); title.className = 'match-title'; title.textContent = ch.name || 'Canal 24/7';
-    const actions = document.createElement('div'); actions.className = 'action-row';
-    ['a', 'b'].forEach(slot => {
-      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = `Señal ${slot.toUpperCase()}`;
-      btn.addEventListener('click', () => hookStream(slot, ch.name, ch.brand, ch.url)); actions.appendChild(btn);
-    });
-    card.appendChild(info); card.appendChild(title); card.appendChild(actions);
-    return card;
-  }
-
-  function buildCard(ev, isLiveNow){
-    const card = document.createElement('div');
-    card.className = `match-card ${detectShow(ev.summary)}${isLiveNow ? ' is-live' : ''}`;
-    const info = document.createElement('div'); info.className = 'match-info';
-    const brandSpan = document.createElement('span'); brandSpan.textContent = ev.brandName || '';
-    const liveSpan = document.createElement('span'); liveSpan.className = 'live-indicator-text'; liveSpan.textContent = '• EN VIVO';
-    const timeSpan = document.createElement('span');
-    try { timeSpan.textContent = new Date(ev.start).toLocaleString('es-UY', { weekday: 'short', hour: '2-digit', minute: '2-digit' }) + ' HS'; } catch(_) { timeSpan.textContent = ''; }
-    info.appendChild(brandSpan); info.appendChild(liveSpan); info.appendChild(timeSpan);
-    const title = document.createElement('div'); title.className = 'match-title'; title.textContent = ev.summary || 'Evento';
-    const actions = document.createElement('div'); actions.className = 'action-row';
-    ['a', 'b'].forEach(slot => {
-      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = `Señal ${slot.toUpperCase()}`;
-      btn.addEventListener('click', () => hookStream(slot, ev.summary, ev.brandName)); actions.appendChild(btn);
-    });
-    card.appendChild(info); card.appendChild(title); card.appendChild(actions);
-    return card;
-  }
-
-  function renderEmergency(ticker){
-    ticker.innerHTML = '';
-    const card = document.createElement('div'); card.className = 'match-card is-live card-raw';
-    const info = document.createElement('div'); info.className = 'match-info';
-    const left = document.createElement('span'); left.textContent = 'CONEXIÓN SATELITAL';
-    const right = document.createElement('span'); right.className = 'live-indicator-text'; right.style.display = 'inline-block'; right.textContent = '• LIVE';
-    info.appendChild(left); info.appendChild(right);
-    const title = document.createElement('div'); title.className = 'match-title'; title.textContent = 'EMISIÓN GLOBAL DE EMERGENCIA ACTIVA';
-    const actions = document.createElement('div'); actions.className = 'action-row';
-    ['a', 'b'].forEach(slot => {
-      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = `Señal ${slot.toUpperCase()}`;
-      btn.addEventListener('click', () => hookStream(slot, 'SHOW EMISIÓN GENERAL', 'DEFAULT')); actions.appendChild(btn);
-    });
-    card.appendChild(info); card.appendChild(title); card.appendChild(actions); ticker.appendChild(card);
-  }
-
-  document.querySelectorAll('.brand-item').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.brand-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      refreshArena(item.dataset.brand);
-    });
-  });
-
-  document.querySelectorAll('.feed-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const mode = tab.dataset.feed;
-      if (mode === currentFeedMode) return;
-      currentFeedMode = mode;
-      document.querySelectorAll('.feed-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
-      tab.classList.add('active'); tab.setAttribute('aria-selected', 'true');
-      const timerEl = document.getElementById('timer');
-      if (timerEl && mode === 'LIVE') timerEl.style.color = '';
-      refreshArena(currentBrandFilter);
-    });
-  });
-
-  const webIdentity = document.getElementById('web-identity');
-  if (webIdentity){
-    webIdentity.addEventListener('click', () => window.location.reload());
-    webIdentity.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); window.location.reload(); } });
-  }
-
-  document.querySelectorAll('.slot-error .btn-assign').forEach(btn => { btn.addEventListener('click', () => reconnectSlot(btn.dataset.slot)); });
-  document.getElementById('btn-split')?.addEventListener('click', toggleOmniSplit);
-  document.getElementById('btn-theatre')?.addEventListener('click', toggleTheatreMode);
-
-  window.addEventListener('load', () => { bootstrapPlyr('a'); refreshArena('OMNI'); });
-  window.addEventListener('beforeunload', () => {
-    clearTimeout(timerTimeout);
-    if (currentFetchController) { try { currentFetchController.abort(); } catch(_) {} }
-    destroyMediaPipeline('a'); destroyMediaPipeline('b');
-  });
-
-})();
-</script>
-</body>
-</html>
+    const ticker = document.getElementById('main-ticker'); ticker.innerHTML = '';
+    const loading = document.createElement('div'); loading.style.cssText = 'padding:20px; font-family:Oswald; color: var(--accent);'; loading.textContent = 'SINTONIZANDO EMISIONES...'; ticker.appendChild(loading);
+    const cacheKey = `unreal_cache_v3_${filter}`, cacheTimeKey = `unreal_cache_time_v3_${filter}`, cacheDuration = 300000;
+    const cachedData = safeStorage.get(cacheKey), cachedTs = safeStorage.get(cacheTimeKey);
+    if (cachedData && cachedTs && (Date.now() - parseInt(cachedTs, 10) < cacheDuration)){ try { const parsed = JSON.parse(cachedData); if (isCurrent()) renderDashboard(parsed, filter); return; } catch(_){ safeStorage.remove(cacheKey); safeStorage.remove(cacheTimeKey); } }
+    const timeMin =
