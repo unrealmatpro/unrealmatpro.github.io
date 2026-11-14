@@ -6,13 +6,6 @@
   <meta content='#010101' name='theme-color'/>
   <title>Wrestling Live | UNREALMAT PRO+</title>
   
-  <meta content='Ver WWE, AEW y TNA en Vivo Online | UNREALMAT PRO+' property='og:title'/>
-  <meta content='Mira WWE Raw, SmackDown, NXT y AEW Dynamite en vivo. Plataforma optimizada para PC, Smart TVs y móviles.' property='og:description'/>
-  <meta content='website' property='og:type'/>
-  <meta content='https://unrealmatpro.github.io/wrestling/' property='og:url'/>
-  <meta content='summary_large_image' name='twitter:card'/>
-  <meta content='ver wwe en vivo, aew online gratis, tna wrestling en directo, wrestling online, wwe raw español' name='keywords'/>
-
   <link crossorigin='anonymous' href='https://fonts.gstatic.com' rel='preconnect'/>
   <link href='https://fonts.googleapis.com' rel='preconnect'/>
   <link href='https://cdn.jsdelivr.net' rel='dns-prefetch'/>
@@ -27,245 +20,95 @@
   <script src='https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js'></script>
 
   <style>
-    :root{
-      --accent:#e21017;
-      --bg:#010101;
-      --panel:#0a0a0a;
-      --wwe-raw:#e21017;
-      --wwe-sd:#0078d4;
-      --wwe-nxt:#FFD700;
-      --aew-dyn:#d4af37;
-      --aew-col:#f12711;
-      --tna:#00BFFF;
-      --njpw:#FF4500;
-      --live-red:#ff0000;
-      --plyr-color-main: var(--accent);
-    }
-
+    :root{ --accent:#e21017; --bg:#010101; --panel:#0a0a0a; --wwe-raw:#e21017; --wwe-sd:#0078d4; --wwe-nxt:#FFD700; --aew-dyn:#d4af37; --aew-col:#f12711; --tna:#00BFFF; --njpw:#FF4500; --live-red:#ff0000; --plyr-color-main: var(--accent); }
     *{ margin:0; padding:0; box-sizing:border-box; }
     html{ height:100%; }
     :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
-
-    body{
-      background:var(--bg);
-      color:#fff;
-      font-family:'Inter',sans-serif;
-      min-height: 100vh;
-      min-height: 100dvh;
-      display:flex;
-      flex-direction:column;
-      overflow-x:hidden;
-      overflow-y:auto;
-    }
-
-    .skip-link{
-      position:absolute; top:-100px; left:0;
-      background:var(--accent); color:#fff;
-      padding:10px 20px; z-index:10000;
-      text-decoration:none; font-weight:900;
-      font-family:'Oswald',sans-serif; font-size:12px;
-    }
+    body{ background:var(--bg); color:#fff; font-family:'Inter',sans-serif; min-height: 100vh; min-height: 100dvh; display:flex; flex-direction:column; overflow-x:hidden; overflow-y:auto; }
+    .skip-link{ position:absolute; top:-100px; left:0; background:var(--accent); color:#fff; padding:10px 20px; z-index:10000; text-decoration:none; font-weight:900; font-family:'Oswald',sans-serif; font-size:12px; }
     .skip-link:focus{ top:0; }
-
     body.theatre-mode{ background:#000; overflow:hidden; }
-    body.theatre-mode .top-console,
-    body.theatre-mode .event-ticker,
-    body.theatre-mode .feed-tabs{ display:none !important; }
-    body.theatre-mode .arena-master{
-      position:fixed; top: env(safe-area-inset-top, 0); left: env(safe-area-inset-left, 0);
-      right: env(safe-area-inset-right, 0); bottom: env(safe-area-inset-bottom, 0);
-      z-index:9999; height:auto; padding:0; gap:0;
-    }
-
-    .top-console{ background:#000; border-bottom:3px solid var(--accent); position:sticky; top:0; z-index:999; }
-    .header-main{
-      min-height:60px; padding:12px 18px; display:flex; align-items:center;
-      justify-content:space-between; gap:12px; flex-wrap:wrap;
-    }
+    body.theatre-mode .top-console, body.theatre-mode .event-ticker, body.theatre-mode .feed-tabs{ display:none !important; }
+    body.theatre-mode .arena-master{ position:fixed; top: env(safe-area-inset-top, 0); left: env(safe-area-inset-left, 0); right: env(safe-area-inset-right, 0); bottom: env(safe-area-inset-bottom, 0); z-index:9999; height:auto; padding:0; gap:0; }
     
+    .top-console{ background:#000; border-bottom:3px solid var(--accent); position:sticky; top:0; z-index:999; }
+    .header-main{ min-height:60px; padding:12px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
     .nav-left { display:flex; align-items:center; gap:10px; }
-    .btn-portal-back, .btn-refresh {
-      background:#fff; color:#000; text-decoration:none; padding:8px 14px;
-      border-radius:6px; font-size:11px; font-weight:900; display:flex;
-      align-items:center; gap:8px; transition:.3s; border:none; cursor:pointer;
-      font-family:'Inter', sans-serif; text-transform:uppercase;
-    }
+    .btn-portal-back, .btn-refresh { background:#fff; color:#000; text-decoration:none; padding:8px 14px; border-radius:6px; font-size:11px; font-weight:900; display:flex; align-items:center; gap:8px; transition:.3s; border:none; cursor:pointer; font-family:'Inter', sans-serif; text-transform:uppercase; }
     .btn-portal-back:hover, .btn-refresh:hover{ background:var(--accent); color:#fff; }
     .btn-refresh i { transition: transform 0.5s ease; }
     .btn-refresh.spinning i { transform: rotate(360deg); }
-
-    .web-identity{
-      font-family:'Oswald',sans-serif; font-size:28px; letter-spacing:2px;
-      cursor:pointer; user-select:none; font-weight:700; margin:0; padding:0; color:#fff;
-    }
+    
+    .web-identity{ font-family:'Oswald',sans-serif; font-size:28px; letter-spacing:2px; cursor:pointer; user-select:none; font-weight:700; margin:0; padding:0; color:#fff; }
     .web-identity span{ color:var(--accent); }
-
     .global-timer{ text-align:right; font-family:'JetBrains Mono', monospace; }
     #timer{ font-size:14px; font-weight:700; }
     .timer-label{ font-size:8px; color:#777; text-transform:uppercase; }
 
-    .brand-nav{
-      display:flex; justify-content:center; align-items:center; gap:22px;
-      background:#050505; border-top:1px solid #111; overflow-x:auto;
-      padding:10px; scrollbar-width: none; -ms-overflow-style: none;
-    }
+    .brand-nav{ display:flex; justify-content:center; align-items:center; gap:22px; background:#050505; border-top:1px solid #111; overflow-x:auto; padding:10px; scrollbar-width: none; -ms-overflow-style: none; }
     .brand-nav::-webkit-scrollbar{ display:none; }
-    .brand-item{
-      font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px;
-      opacity:.45; cursor:pointer; transition:.3s; white-space:nowrap;
-      padding:6px 2px; background:transparent; border:none; color:#fff;
-    }
+    .brand-item{ font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; opacity:.45; cursor:pointer; transition:.3s; white-space:nowrap; padding:6px 2px; background:transparent; border:none; color:#fff; }
     .brand-item.active{ opacity:1; color:var(--accent); border-bottom:2px solid var(--accent); }
-    
-    @keyframes omniGlow {
-      0% { color: #00ff88; } 33% { color: #00bcff; } 66% { color: #f12711; } 100% { color: #00ff88; }
-    }
+    @keyframes omniGlow { 0% { color: #00ff88; } 33% { color: #00bcff; } 66% { color: #f12711; } 100% { color: #00ff88; } }
     .brand-item.special{ animation: omniGlow 6s infinite linear; opacity:1; font-weight:900; }
     .brand-item.special.active{ border-bottom-color: #00ff88; }
 
-    .feed-tabs{
-      display:flex; background:#000; border-bottom:1px solid #161616;
-      justify-content:center; gap:4px; padding:8px 12px; overflow-x:auto; scrollbar-width: none;
-    }
+    .feed-tabs{ display:flex; background:#000; border-bottom:1px solid #161616; justify-content:center; gap:4px; padding:8px 12px; overflow-x:auto; scrollbar-width: none; }
     .feed-tabs::-webkit-scrollbar{ display:none; }
-    .feed-tab{
-      font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px;
-      text-transform:uppercase; background:transparent; border:1px solid #222;
-      color:#888; padding:8px 16px; cursor:pointer; transition:.2s;
-      border-radius:6px; white-space:nowrap; font-weight:700;
-    }
+    .feed-tab{ font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; background:transparent; border:1px solid #222; color:#888; padding:8px 16px; cursor:pointer; transition:.2s; border-radius:6px; white-space:nowrap; font-weight:700; }
     .feed-tab:hover{ border-color:#444; color:#ccc; }
     .feed-tab.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
-    .arena-master{
-      flex:1; display:grid; grid-template-columns:1fr; gap:8px;
-      padding:8px; min-height:55vh; background:#000;
-    }
+    .arena-master{ flex:1; display:grid; grid-template-columns:1fr; gap:8px; padding:8px; min-height:55vh; background:#000; }
     .arena-master.split-active{ grid-template-columns:1fr 1fr; }
-    .player-slot{
-      position:relative; background:#020202; border:1px solid #141414;
-      overflow:hidden; min-height:40vh; display:flex; align-items:center; justify-content:center;
-    }
+    .player-slot{ position:relative; background:#020202; border:1px solid #141414; overflow:hidden; min-height:40vh; display:flex; align-items:center; justify-content:center; }
     .player-slot .plyr, .player-slot .embed-container{ width:100%; height:100%; display:none; }
     .player-slot .plyr.active, .player-slot .embed-container.active{ display:block; }
     .player-slot iframe { width:100%; height:100%; border:none; }
-
-    .slot-ghost{
-      opacity:.08; font-family:'Oswald',sans-serif; font-size: clamp(24px, 6vw, 60px);
-      user-select:none; position:absolute; pointer-events:none; z-index:1;
-    }
-
-    .slot-ui{
-      position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,.85);
-      border-left:4px solid var(--accent); padding:6px 12px; font-size:10px;
-      font-family:'Oswald',sans-serif; text-transform:uppercase; pointer-events:none;
-      display:flex; align-items:center; gap:6px;
-    }
-
-    .badge-live-pulse {
-      width: 8px; height: 8px; background: var(--live-red); border-radius: 50%;
-      display: none; animation: blink 1.5s infinite;
-    }
+    .slot-ghost{ opacity:.08; font-family:'Oswald',sans-serif; font-size: clamp(24px, 6vw, 60px); user-select:none; position:absolute; pointer-events:none; z-index:1; }
+    .slot-ui{ position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,.85); border-left:4px solid var(--accent); padding:6px 12px; font-size:10px; font-family:'Oswald',sans-serif; text-transform:uppercase; pointer-events:none; display:flex; align-items:center; gap:6px; }
+    .badge-live-pulse { width: 8px; height: 8px; background: var(--live-red); border-radius: 50%; display: none; animation: blink 1.5s infinite; }
     @keyframes blink { 0% { opacity:1; } 50% { opacity:0.3; } 100% { opacity:1; } }
-
-    .slot-loader{
-      position:absolute; inset:0; display:none; align-items:center;
-      justify-content:center; background:rgba(0,0,0,.72); z-index:6;
-    }
+    .slot-loader{ position:absolute; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.72); z-index:6; }
     .slot-loader.active{ display:flex; }
-    .spinner{
-      width:42px; height:42px; border:3px solid #222; border-top-color: var(--accent);
-      border-radius:50%; animation: spin 1s linear infinite;
-    }
+    .spinner{ width:42px; height:42px; border:3px solid #222; border-top-color: var(--accent); border-radius:50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .slot-error{
-      position:absolute; inset:0; display:none; flex-direction:column;
-      align-items:center; justify-content:center; background:rgba(0,0,0,.9);
-      z-index:7; text-align:center; padding:20px; gap:12px;
-    }
+    .slot-error{ position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,.9); z-index:7; text-align:center; padding:20px; gap:12px; }
     .slot-error.active{ display:flex; }
     .slot-error p{ color:#aaa; font-family:'Oswald',sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:1px; }
 
     .console-dock { position: fixed; right: 18px; bottom: 18px; z-index: 9999; display: flex; gap: 8px; }
-    .btn-dock-control{
-      border:none; background:rgba(0,0,0,.92); color:#fff; border:1px solid #333;
-      padding:12px 18px; font-family:'Oswald',sans-serif; font-size:11px; cursor:pointer;
-      border-radius:8px; transition:.3s; display:flex; align-items:center; gap:8px;
-    }
+    .btn-dock-control{ border:none; background:rgba(0,0,0,.92); color:#fff; border:1px solid #333; padding:12px 18px; font-family:'Oswald',sans-serif; font-size:11px; cursor:pointer; border-radius:8px; transition:.3s; display:flex; align-items:center; gap:8px; }
     .btn-dock-control:hover{ border-color:var(--accent); color:var(--accent); }
     .btn-dock-control[aria-pressed="true"]{ background: var(--accent); border-color: var(--accent); color:#fff; }
 
-    .event-ticker{
-      width:100%; min-height: 145px; overflow-x:auto; overflow-y:hidden;
-      display:flex; gap:18px; padding:18px; background:#050505;
-      border-top:1px solid #161616; scroll-behavior:smooth; -webkit-overflow-scrolling:touch;
-    }
+    .event-ticker{ width:100%; min-height: 145px; overflow-x:auto; overflow-y:hidden; display:flex; gap:18px; padding:18px; background:#050505; border-top:1px solid #161616; scroll-behavior:smooth; -webkit-overflow-scrolling:touch; }
     .event-ticker::-webkit-scrollbar{ height:6px; }
     .event-ticker::-webkit-scrollbar-thumb{ background:var(--accent); border-radius:50px; }
-
-    .match-card{
-      width:280px; flex-shrink:0; background:#080808; border-left:5px solid var(--accent);
-      padding:14px; transition:.3s; border-radius:10px; position: relative;
-    }
+    .match-card{ width:280px; flex-shrink:0; background:#080808; border-left:5px solid var(--accent); padding:14px; transition:.3s; border-radius:10px; position: relative; }
     .match-card:hover{ background:#111; transform:translateY(-2px); }
     .match-card.is-live { border-left-color: var(--live-red) !important; box-shadow: 0 0 10px rgba(255, 0, 0, 0.2); }
-
-    .card-raw{border-color:var(--wwe-raw);}
-    .card-sd{border-color:var(--wwe-sd);}
-    .card-nxt{border-color:var(--wwe-nxt);}
-    .card-tna{border-color:var(--tna);}
-    .card-njpw{border-color:var(--njpw);}
+    .card-raw{border-color:var(--wwe-raw);} .card-sd{border-color:var(--wwe-sd);} .card-nxt{border-color:var(--wwe-nxt);} .card-tna{border-color:var(--tna);} .card-njpw{border-color:var(--njpw);}
     .card-dyn{ border-left-color:transparent !important; border-image:linear-gradient(to bottom,#d4af37,#fff) 1 !important; }
     .card-col{ border-left-color:transparent !important; border-image:linear-gradient(to bottom,#f12711,#f5af19) 1 !important; }
     .card-247 { border-left-color: #00ff88 !important; background: linear-gradient(135deg, #080808 0%, #0a1a12 100%); }
-
     .match-title{ font-family:'Oswald',sans-serif; font-size:14px; margin-bottom:8px; text-transform:uppercase; color:#fff; }
-    .match-info{
-      font-size:9px; color:#9a9a9a; margin-bottom:12px; text-transform:uppercase;
-      font-weight:900; display:flex; justify-content:space-between; gap:4px;
-    }
+    .match-info{ font-size:9px; color:#9a9a9a; margin-bottom:12px; text-transform:uppercase; font-weight:900; display:flex; justify-content:space-between; gap:4px; }
     .live-indicator-text { color: var(--live-red); font-weight: 900; display: none; }
     .match-card.is-live .live-indicator-text { display: inline-block; }
-
     .action-row{ display:flex; gap:8px; }
-    .btn-assign{
-      flex:1; background:#161616; color:#fff; border:1px solid #333; padding:8px;
-      cursor:pointer; font-size:10px; font-weight:900; transition:.2s;
-      text-transform:uppercase; font-family:inherit;
-    }
+    .btn-assign{ flex:1; background:#161616; color:#fff; border:1px solid #333; padding:8px; cursor:pointer; font-size:10px; font-weight:900; transition:.2s; text-transform:uppercase; font-family:inherit; }
     .btn-assign:hover{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
     @media(max-width:768px){
-      .arena-master{ min-height:45dvh; }
-      .arena-master.split-active{ grid-template-columns:1fr; grid-template-rows:1fr 1fr; }
-      .player-slot{ min-height:30dvh; }
-      .web-identity{ width:100%; text-align:center; font-size:24px; }
-      .header-main{ justify-content:center; }
-      .nav-left { width: 100%; justify-content: center; }
-      .console-dock {
-        position: fixed; left: 0; right: 0; bottom: 0; width: 100%; max-width: none;
-        background: rgba(5, 5, 5, 0.96); border-top: 1px solid #222;
-        padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-        gap: 12px; box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
-      }
+      .arena-master{ min-height:45dvh; } .arena-master.split-active{ grid-template-columns:1fr; grid-template-rows:1fr 1fr; } .player-slot{ min-height:30dvh; }
+      .web-identity{ width:100%; text-align:center; font-size:24px; } .header-main{ justify-content:center; } .nav-left { width: 100%; justify-content: center; }
+      .console-dock { position: fixed; left: 0; right: 0; bottom: 0; width: 100%; max-width: none; background: rgba(5, 5, 5, 0.96); border-top: 1px solid #222; padding: 10px 16px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); gap: 12px; box-shadow: 0 -5px 20px rgba(0,0,0,0.8); }
       .btn-dock-control { flex: 1; justify-content: center; padding: 12px; font-size: 12px; border-radius: 6px; }
-      .event-ticker{ padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px)); }
-      .match-card{ width:245px; }
+      .event-ticker{ padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px)); } .match-card{ width:245px; }
     }
-
-    @media(min-width:769px) and (max-width:1024px){
-      .arena-master.split-active{ grid-template-columns:1fr 1fr; }
-      .web-identity{ font-size:24px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .brand-item.special{ animation: none; color: #00ff88; }
-      .badge-live-pulse{ animation: none; opacity: 1; }
-      .spinner{ animation: none; border-top-color: #555; }
-      .event-ticker{ scroll-behavior: auto; }
-      *{ transition-duration: 0.001ms !important; }
-    }
+    @media(min-width:769px) and (max-width:1024px){ .arena-master.split-active{ grid-template-columns:1fr 1fr; } .web-identity{ font-size:24px; } }
+    @media (prefers-reduced-motion: reduce) { .brand-item.special{ animation: none; color: #00ff88; } .badge-live-pulse{ animation: none; opacity: 1; } .spinner{ animation: none; border-top-color: #555; } .event-ticker{ scroll-behavior: auto; } *{ transition-duration: 0.001ms !important; } }
   </style>
 </head>
 <body>
@@ -275,25 +118,17 @@
 <header class='top-console'>
   <div class='header-main'>
     <div class="nav-left">
-      <a class='btn-portal-back' href='/'>
-        <i aria-hidden='true' class='fa-solid fa-house-chimney'></i> WEB PRINCIPAL
-      </a>
-      <button class='btn-refresh' onclick='recargarBlog(this)'>
-        <i class='fas fa-sync-alt'></i> ACTUALIZAR
-      </button>
+      <a class='btn-portal-back' href='/'><i class='fa-solid fa-house-chimney'></i> WEB PRINCIPAL</a>
+      <button class='btn-refresh' onclick='recargarBlog(this)'><i class='fas fa-sync-alt'></i> ACTUALIZAR</button>
     </div>
-
-    <h1 aria-label='Recargar UNREALMAT PRO+' class='web-identity' id='web-identity' role='button' tabindex='0'>
-      UNREALMAT <span>PRO+</span>
-    </h1>
-
+    <h1 class='web-identity' id='web-identity' role='button' tabindex='0'>UNREALMAT <span>PRO+</span></h1>
     <div class='global-timer'>
-      <div aria-live='polite' class='timer-label' id='timer-status'>CONECTANDO AGENDA...</div>
+      <div class='timer-label' id='timer-status'>CONECTANDO AGENDA...</div>
       <div id='timer' role='timer'>00D 00H 00M</div>
     </div>
   </div>
 
-  <nav aria-label='Filtro de marcas' class='brand-nav' role='navigation'>
+  <nav class='brand-nav'>
     <button class='brand-item active special' data-brand='OMNI' type='button'>TODAS LAS EMPRESAS</button>
     <button class='brand-item' data-brand='WWE' type='button'>WWE</button>
     <button class='brand-item' data-brand='AEW' type='button'>AEW</button>
@@ -301,78 +136,46 @@
     <button class='brand-item' data-brand='NJPW' type='button'>NJPW</button>
   </nav>
 
-  <nav aria-label='Modo de feed' class='feed-tabs' role='tablist'>
-    <button aria-selected='true' class='feed-tab active' data-feed='LIVE' id='tab-live' role='tab' type='button'>
-      <i aria-hidden='true' class='fa-solid fa-tower-broadcast'></i> AGENDA EN VIVO
-    </button>
-    <button aria-selected='false' class='feed-tab' data-feed='247' id='tab-247' role='tab' type='button'>
-      <i aria-hidden='true' class='fa-solid fa-infinity'></i> 24/7 WRESTLING
-    </button>
+  <nav class='feed-tabs'>
+    <!-- PESTAÑA NUEVA DE EN VIVO -->
+    <button class='feed-tab active' data-feed='LIVE' id='tab-live' type='button'><i class='fa-solid fa-tower-broadcast'></i> AGENDA EN VIVO</button>
+    <!-- PESTAÑA NUEVA DE REPETICIONES -->
+    <button class='feed-tab' data-feed='REPLAY' id='tab-replay' type='button'><i class='fa-solid fa-clock-rotate-left'></i> REPETICIONES</button>
+    <button class='feed-tab' data-feed='247' id='tab-247' type='button'><i class='fa-solid fa-infinity'></i> 24/7 WRESTLING</button>
   </nav>
 </header>
 
 <main class='arena-master' id='arena-grid' tabindex='-1'>
-
-  <section aria-label='Reproductor A' class='player-slot' id='slot-a-box'>
-    <div class='slot-ui' id='label-a'>
-      <span aria-hidden='true' class='badge-live-pulse' id='pulse-a'></span>
-      <span class='label-text-slot'>CANAL A</span>
-    </div>
+  <section class='player-slot' id='slot-a-box'>
+    <div class='slot-ui' id='label-a'><span class='badge-live-pulse' id='pulse-a'></span><span class='label-text-slot'>CANAL A</span></div>
     <video autoplay='true' controls='true' id='vid-a' playsinline='true'></video>
     <div class='embed-container' id='embed-container-a'></div>
     <div class='slot-ghost' id='ghost-a'>ARENA A</div>
-    <div aria-hidden='true' class='slot-loader' id='loader-a'>
-      <div class='spinner'></div>
-    </div>
-    <div aria-hidden='true' class='slot-error' id='error-a' role='alert'>
-      <p>No se pudo cargar la señal.</p>
-      <button class='btn-assign' data-slot='a' type='button'>Reintentar</button>
-    </div>
+    <div class='slot-loader' id='loader-a'><div class='spinner'></div></div>
+    <div class='slot-error' id='error-a' role='alert'><p>No se pudo cargar la señal.</p><button class='btn-assign' data-slot='a' type='button'>Reintentar</button></div>
   </section>
 
-  <section aria-label='Reproductor B' class='player-slot' id='slot-b-box' style='display:none;'>
-    <div class='slot-ui' id='label-b'>
-      <span aria-hidden='true' class='badge-live-pulse' id='pulse-b'></span>
-      <span class='label-text-slot'>CANAL B</span>
-    </div>
+  <section class='player-slot' id='slot-b-box' style='display:none;'>
+    <div class='slot-ui' id='label-b'><span class='badge-live-pulse' id='pulse-b'></span><span class='label-text-slot'>CANAL B</span></div>
     <video autoplay='true' controls='true' id='vid-b' playsinline='true'></video>
     <div class='embed-container' id='embed-container-b'></div>
     <div class='slot-ghost' id='ghost-b'>ARENA B</div>
-    <div aria-hidden='true' class='slot-loader' id='loader-b'>
-      <div class='spinner'></div>
-    </div>
-    <div aria-hidden='true' class='slot-error' id='error-b' role='alert'>
-      <p>No se pudo cargar la señal.</p>
-      <button class='btn-assign' data-slot='b' type='button'>Reintentar</button>
-    </div>
+    <div class='slot-loader' id='loader-b'><div class='spinner'></div></div>
+    <div class='slot-error' id='error-b' role='alert'><p>No se pudo cargar la señal.</p><button class='btn-assign' data-slot='b' type='button'>Reintentar</button></div>
   </section>
 
   <div class='console-dock'>
-    <button aria-label='Alternar vista dual' aria-pressed='false' class='btn-dock-control' id='btn-split' type='button'>
-      <i aria-hidden='true' class='fa-solid fa-table-columns'></i> <span class='dock-text'>DUAL VIEW</span>
-    </button>
-    <button aria-label='Alternar modo teatro' aria-pressed='false' class='btn-dock-control' id='btn-theatre' type='button'>
-      <i aria-hidden='true' class='fa-solid fa-expand'></i> <span class='dock-text'>MODO TEATRO</span>
-    </button>
+    <button class='btn-dock-control' id='btn-split' type='button'><i class='fa-solid fa-table-columns'></i> <span class='dock-text'>DUAL VIEW</span></button>
+    <button class='btn-dock-control' id='btn-theatre' type='button'><i class='fa-solid fa-expand'></i> <span class='dock-text'>MODO TEATRO</span></button>
   </div>
-
 </main>
 
-<footer aria-label='Agenda de eventos' class='event-ticker' id='main-ticker'>
-  <div style='padding:20px; color:#555; font-family:Oswald;'>SINCRO DE AGENDAS...</div>
-</footer>
+<footer class='event-ticker' id='main-ticker'><div style='padding:20px; color:#555; font-family:Oswald;'>SINCRO DE AGENDAS...</div></footer>
 
-<noscript>
-  <p style='padding:20px; color:#e21017; font-family:Oswald; text-align:center;'>
-    Este sitio requiere JavaScript para reproducir los streams en vivo.
-  </p>
-</noscript>
+<noscript><p style='padding:20px; color:#e21017; font-family:Oswald; text-align:center;'>Este sitio requiere JavaScript.</p></noscript>
 
 <script>
-function recargarBlog(btn) {
-    btn.classList.add('spinning');
-    setTimeout(() => { window.location.reload(); }, 500);
-}
+function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { window.location.reload(); }, 500); }
 
 (function(){
   'use strict';
@@ -383,127 +186,59 @@ function recargarBlog(btn) {
     TNA:  { color: "#00BFFF", calendarId: "727b20f12dcf43bd661017bafba52fd7a8ad706a2ebe48afa6a5f4b391b71490@group.calendar.google.com" },
     NJPW: { color: "#FF4500", calendarId: "n6l35ni6rcbffi1m4m5g5ocnh4@group.calendar.google.com" }
   };
-
   const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
-
-  const STREAMS = {
-    DEFAULT: { primary: "https://d302.soft4game.com/o22/stream183/o/stream183/chunks.m3u8", backup:  "https://embed.unrealmat.com/live/stream1" },
-    WWE:  null, AEW:  null, TNA:  null, NJPW: null
-  };
-
+  const STREAMS = { DEFAULT: { primary: "https://d302.soft4game.com/o22/stream183/o/stream183/chunks.m3u8", backup:  "https://embed.unrealmat.com/live/stream1" } };
   const CHANNELS_247 = [];
-
   const getStreamConfig = (brand) => STREAMS[brand] || STREAMS.DEFAULT;
 
-  const safeStorage = {
-    get(k){ try { return localStorage.getItem(k); } catch(_) { return null; } },
-    set(k, v){ try { localStorage.setItem(k, v); return true; } catch(_) { return false; } },
-    remove(k){ try { localStorage.removeItem(k); } catch(_) {} }
-  };
-
-  const corePlayers = {
-    a: { plyr:null, hls:null, fallbackTimer:null, networkRetries:0, streamTriggered:false, currentTitle:null, currentBrand:null, currentUrl:null },
-    b: { plyr:null, hls:null, fallbackTimer:null, networkRetries:0, streamTriggered:false, currentTitle:null, currentBrand:null, currentUrl:null }
-  };
+  const safeStorage = { get(k){ try { return localStorage.getItem(k); } catch(_) { return null; } }, set(k, v){ try { localStorage.setItem(k, v); return true; } catch(_) { return false; } }, remove(k){ try { localStorage.removeItem(k); } catch(_) {} } };
+  const corePlayers = { a: { plyr:null, hls:null, fallbackTimer:null, networkRetries:0, streamTriggered:false, currentTitle:null, currentBrand:null, currentUrl:null }, b: { plyr:null, hls:null, fallbackTimer:null, networkRetries:0, streamTriggered:false, currentTitle:null, currentBrand:null, currentUrl:null } };
 
   let timerTimeout = null;
   let splitActive = false;
   let currentFetchController = null;
   let activeFetchId = 0;
-  let currentFeedMode = 'LIVE';
+  let currentFeedMode = 'LIVE'; // 'LIVE' | 'REPLAY' | '247'
   let currentBrandFilter = 'OMNI';
+  let jsonEvents = []; // Guardaremos el JSON aquí
 
-  function detectShow(txt){
-    const u = String(txt || '').toUpperCase();
-    if (/\bRAW\b/.test(u)) return 'card-raw';
-    if (/\bSMACKDOWN\b/.test(u)) return 'card-sd';
-    if (/\bNXT\b/.test(u)) return 'card-nxt';
-    if (/\bDYNAMITE\b/.test(u)) return 'card-dyn';
-    if (/\bCOLLISION\b/.test(u)) return 'card-col';
-    if (/\bTNA\b/.test(u)) return 'card-tna';
-    if (/\bNJPW\b/.test(u)) return 'card-njpw';
-    return '';
-  }
-
-  function bootstrapPlyr(slot){
-    if (typeof Plyr === 'undefined') { console.error('[Plyr] No cargado'); return; }
-    const el = document.getElementById(`vid-${slot}`);
-    if (!el || corePlayers[slot].plyr) return;
-    corePlayers[slot].plyr = new Plyr(el, {
-      controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-      tooltips: { controls: true, seek: true }
-    });
-  }
-
+  function detectShow(txt){ const u = String(txt || '').toUpperCase(); if (/\bRAW\b/.test(u)) return 'card-raw'; if (/\bSMACKDOWN\b/.test(u)) return 'card-sd'; if (/\bNXT\b/.test(u)) return 'card-nxt'; if (/\bDYNAMITE\b/.test(u)) return 'card-dyn'; if (/\bCOLLISION\b/.test(u)) return 'card-col'; if (/\bTNA\b/.test(u)) return 'card-tna'; if (/\bNJPW\b/.test(u)) return 'card-njpw'; return ''; }
+  function bootstrapPlyr(slot){ if (typeof Plyr === 'undefined') return; const el = document.getElementById(`vid-${slot}`); if (!el || corePlayers[slot].plyr) return; corePlayers[slot].plyr = new Plyr(el, { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'] }); }
   function ensurePlayerB(){ if (!corePlayers.b.plyr) bootstrapPlyr('b'); }
-
-  function activateSplit(){
-    if (splitActive) return;
-    splitActive = true; ensurePlayerB();
-    document.getElementById('arena-grid').classList.add('split-active');
-    document.getElementById('slot-b-box').style.display = 'flex';
-    const btn = document.getElementById('btn-split'); if (btn) btn.setAttribute('aria-pressed', 'true');
-  }
-
-  function deactivateSplit(){
-    if (!splitActive) return;
-    splitActive = false;
-    document.getElementById('arena-grid').classList.remove('split-active');
-    document.getElementById('slot-b-box').style.display = 'none';
-    destroyMediaPipeline('b');
-    const btn = document.getElementById('btn-split'); if (btn) btn.setAttribute('aria-pressed', 'false');
-  }
-
+  
+  function activateSplit(){ if (splitActive) return; splitActive = true; ensurePlayerB(); document.getElementById('arena-grid').classList.add('split-active'); document.getElementById('slot-b-box').style.display = 'flex'; document.getElementById('btn-split').setAttribute('aria-pressed', 'true'); }
+  function deactivateSplit(){ if (!splitActive) return; splitActive = false; document.getElementById('arena-grid').classList.remove('split-active'); document.getElementById('slot-b-box').style.display = 'none'; destroyMediaPipeline('b'); document.getElementById('btn-split').setAttribute('aria-pressed', 'false'); }
   function toggleOmniSplit(){ if (splitActive) deactivateSplit(); else activateSplit(); }
-
-  function toggleTheatreMode(){
-    const on = document.body.classList.toggle('theatre-mode');
-    const btn = document.getElementById('btn-theatre');
-    if (!btn) return;
-    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    btn.innerHTML = on ? "<i aria-hidden='true' class='fa-solid fa-compress'></i> <span class='dock-text'>SALIR DE TEATRO</span>" : "<i aria-hidden='true' class='fa-solid fa-expand'></i> <span class='dock-text'>MODO TEATRO</span>";
-  }
+  
+  function toggleTheatreMode(){ const on = document.body.classList.toggle('theatre-mode'); const btn = document.getElementById('btn-theatre'); btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.innerHTML = on ? "<i class='fa-solid fa-compress'></i> <span class='dock-text'>SALIR DE TEATRO</span>" : "<i class='fa-solid fa-expand'></i> <span class='dock-text'>MODO TEATRO</span>"; }
 
   function updateMasterTimer(date, title){
     clearTimeout(timerTimeout);
-    const statusEl = document.getElementById('timer-status');
-    const timerEl  = document.getElementById('timer');
+    const statusEl = document.getElementById('timer-status'); const timerEl  = document.getElementById('timer');
     if (!statusEl || !timerEl) return;
-
-    statusEl.innerText = `SIGUIENTE SHOW: ${String(title || '').toUpperCase()}`;
+    statusEl.innerText = `SIGUIENTE: ${String(title || '').toUpperCase()}`;
     const target = new Date(date).getTime();
-
-    function schedule(ms){
-      clearTimeout(timerTimeout);
-      timerTimeout = setTimeout(() => { if (document.hidden) { schedule(30000); return; } tick(); }, ms);
-    }
-
+    function schedule(ms){ clearTimeout(timerTimeout); timerTimeout = setTimeout(() => { if (document.hidden) { schedule(30000); return; } tick(); }, ms); }
     function tick(){
       const diff = target - Date.now();
       if (diff <= 0){ timerEl.style.color = "var(--live-red)"; timerEl.innerText = "LIVE NOW"; schedule(60000); return; }
       const hoursTotal = diff / 36e5;
-      if (hoursTotal >= 1){
-        const d = Math.floor(diff / 864e5), h = Math.floor((diff % 864e5) / 36e5), m = Math.floor((diff % 36e5) / 6e4);
-        timerEl.innerText = `${d}D ${h}H ${m}M`; schedule(60000);
-      } else {
-        const h = Math.floor(diff / 36e5), m = Math.floor((diff % 36e5) / 6e4), s = Math.floor((diff % 6e4) / 1e3);
-        timerEl.innerText = `${h}H ${m}M ${s}S`; schedule(1000);
-      }
+      if (hoursTotal >= 1){ const d = Math.floor(diff / 864e5), h = Math.floor((diff % 864e5) / 36e5), m = Math.floor((diff % 36e5) / 6e4); timerEl.innerText = `${d}D ${h}H ${m}M`; schedule(60000); }
+      else { const h = Math.floor(diff / 36e5), m = Math.floor((diff % 36e5) / 6e4), s = Math.floor((diff % 6e4) / 1e3); timerEl.innerText = `${h}H ${m}M ${s}S`; schedule(1000); }
     }
     tick();
   }
 
-  function showLoader(slot){ const el = document.getElementById(`loader-${slot}`); if (el){ el.classList.add('active'); el.setAttribute('aria-hidden','false'); } }
-  function hideLoader(slot){ const el = document.getElementById(`loader-${slot}`); if (el){ el.classList.remove('active'); el.setAttribute('aria-hidden','true'); } }
-  function showError(slot){ hideLoader(slot); const el = document.getElementById(`error-${slot}`); if (el){ el.classList.add('active'); el.setAttribute('aria-hidden','false'); } }
-  function hideError(slot){ const el = document.getElementById(`error-${slot}`); if (el){ el.classList.remove('active'); el.setAttribute('aria-hidden','true'); } }
+  function showLoader(slot){ const el = document.getElementById(`loader-${slot}`); if (el){ el.classList.add('active'); } }
+  function hideLoader(slot){ const el = document.getElementById(`loader-${slot}`); if (el){ el.classList.remove('active'); } }
+  function showError(slot){ hideLoader(slot); const el = document.getElementById(`error-${slot}`); if (el){ el.classList.add('active'); } }
+  function hideError(slot){ const el = document.getElementById(`error-${slot}`); if (el){ el.classList.remove('active'); } }
 
   function destroyMediaPipeline(slot){
-    const cp = corePlayers[slot];
-    clearTimeout(cp.fallbackTimer); cp.streamTriggered = false; cp.networkRetries = 0;
-    if (cp.hls){ try { cp.hls.detachMedia(); } catch(_) {} try { cp.hls.destroy(); } catch(_) {} cp.hls = null; }
+    const cp = corePlayers[slot]; clearTimeout(cp.fallbackTimer); cp.streamTriggered = false; cp.networkRetries = 0;
+    if (cp.hls){ try { cp.hls.detachMedia(); cp.hls.destroy(); } catch(_) {} cp.hls = null; }
     const video = document.getElementById(`vid-${slot}`);
-    if (video){ try { video.pause(); } catch(_) {} try { video.removeAttribute('src'); video.load(); } catch(_) {} const container = video.closest('.plyr'); if (container) container.classList.remove('active'); }
+    if (video){ try { video.pause(); video.removeAttribute('src'); video.load(); } catch(_) {} const container = video.closest('.plyr'); if (container) container.classList.remove('active'); }
     const embedContainer = document.getElementById(`embed-container-${slot}`); if (embedContainer){ embedContainer.innerHTML = ''; embedContainer.classList.remove('active'); }
     const ghost = document.getElementById(`ghost-${slot}`); if (ghost) ghost.style.display = 'block';
     const pulse = document.getElementById(`pulse-${slot}`); if (pulse) pulse.style.display = 'none';
@@ -515,16 +250,13 @@ function recargarBlog(btn) {
     const cp = corePlayers[slot]; clearTimeout(cp.fallbackTimer);
     const video = document.getElementById(`vid-${slot}`); const embedContainer = document.getElementById(`embed-container-${slot}`);
     if (!embedContainer) return;
-    if (video){ try { video.pause(); } catch(_) {} try { video.removeAttribute('src'); video.load(); } catch(_) {} const container = video.closest('.plyr'); if (container) container.classList.remove('active'); }
-    if (cp.hls){ try { cp.hls.detachMedia(); } catch(_) {} try { cp.hls.destroy(); } catch(_) {} cp.hls = null; }
+    if (video){ try { video.pause(); video.removeAttribute('src'); video.load(); } catch(_) {} const container = video.closest('.plyr'); if (container) container.classList.remove('active'); }
+    if (cp.hls){ try { cp.hls.detachMedia(); cp.hls.destroy(); } catch(_) {} cp.hls = null; }
     const backupUrl = streamConfig && streamConfig.backup; if (!backupUrl || backupUrl === "..." ){ showError(slot); return; }
     embedContainer.classList.add('active'); embedContainer.innerHTML = '';
-    const iframe = document.createElement('iframe');
-    iframe.src = backupUrl; iframe.title = `Reproductor de respaldo ${slot.toUpperCase()}`;
-    iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture'); iframe.setAttribute('allowfullscreen', 'true'); iframe.setAttribute('scrolling', 'no'); iframe.setAttribute('loading', 'lazy'); iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade'); iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
+    const iframe = document.createElement('iframe'); iframe.src = backupUrl; iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media'); iframe.setAttribute('allowfullscreen', 'true'); iframe.setAttribute('scrolling', 'no');
     iframe.addEventListener('load', () => { cp.streamTriggered = true; hideLoader(slot); hideError(slot); }, { once: true });
-    embedContainer.appendChild(iframe);
-    setTimeout(() => { if (!cp.streamTriggered) showError(slot); }, 10000);
+    embedContainer.appendChild(iframe); setTimeout(() => { if (!cp.streamTriggered) showError(slot); }, 10000);
   }
 
   function hookStream(slot, title, brand, customUrl){
@@ -537,76 +269,94 @@ function recargarBlog(btn) {
     const labelText = document.getElementById(`label-${slot}`).querySelector('.label-text-slot'); const pulse = document.getElementById(`pulse-${slot}`);
     if (ghost) ghost.style.display = 'none'; if (pulse) pulse.style.display = 'inline-block'; if (labelText) labelText.innerText = `${slot.toUpperCase()}: ${title.toUpperCase()}`;
     if (slot === 'b'){ if (cp.plyr) cp.plyr.muted = true; if (labelText) labelText.innerText += " (MUTED)"; }
+    
     const plyrContainer = video.closest('.plyr'); if (plyrContainer) plyrContainer.classList.add('active');
     let streamConfig; if (customUrl){ streamConfig = { primary: customUrl, backup: STREAMS.DEFAULT.backup }; } else { streamConfig = getStreamConfig(brand); }
-    if (typeof streamConfig.primary === 'string' && streamConfig.primary.startsWith('http://') && window.location.protocol === 'https:'){ console.warn(`[MixedContent] URL http:// bloqueada`); showError(slot); return; }
-    cp.fallbackTimer = setTimeout(() => { if (!cp.streamTriggered){ console.warn(`[Pipeline] Fallback en Canal ${slot.toUpperCase()}`); triggerFallback(slot, streamConfig); } }, 5000);
+    
+    // Si es un iframe desde el JSON, usamos el fallback directo
+    if (typeof streamConfig.primary === 'string' && streamConfig.primary.includes('/embed/')) {
+        const embedContainer = document.getElementById(`embed-container-${slot}`);
+        embedContainer.classList.add('active'); embedContainer.innerHTML = '';
+        const iframe = document.createElement('iframe'); iframe.src = streamConfig.primary; iframe.setAttribute('allowfullscreen', 'true'); iframe.setAttribute('scrolling', 'no');
+        embedContainer.appendChild(iframe); hideLoader(slot); return;
+    }
+
+    cp.fallbackTimer = setTimeout(() => { if (!cp.streamTriggered){ triggerFallback(slot, streamConfig); } }, 5000);
     if (typeof Hls !== 'undefined' && Hls.isSupported()){
-      const hls = new Hls({ enableWorker: true, lowLatencyMode: false, backBufferLength: 60, maxBufferLength: 30 }); cp.hls = hls;
+      const hls = new Hls({ enableWorker: true }); cp.hls = hls;
       hls.loadSource(streamConfig.primary); hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, () => { cp.streamTriggered = true; clearTimeout(cp.fallbackTimer); hideLoader(slot); video.play().catch(()=>{}); });
-      hls.on(Hls.Events.ERROR, (_, data) => {
-        if (!data.fatal) return;
-        if (data.type === Hls.ErrorTypes.NETWORK_ERROR && cp.networkRetries < 3){ cp.networkRetries++; try { hls.startLoad(); } catch(_) {} }
-        else if (data.type === Hls.ErrorTypes.MEDIA_ERROR && cp.networkRetries < 3){ cp.networkRetries++; try { hls.recoverMediaError(); } catch(_) {} }
-        else { triggerFallback(slot, streamConfig); }
-      });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = streamConfig.primary;
-      video.play().then(() => { cp.streamTriggered = true; clearTimeout(cp.fallbackTimer); hideLoader(slot); }).catch(() => triggerFallback(slot, streamConfig));
-    } else { triggerFallback(slot, streamConfig); }
+      hls.on(Hls.Events.ERROR, (_, data) => { if (data.fatal) triggerFallback(slot, streamConfig); });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) { video.src = streamConfig.primary; video.play().catch(() => triggerFallback(slot, streamConfig)); }
+    else { triggerFallback(slot, streamConfig); }
   }
 
   function reconnectSlot(slot){ const cp = corePlayers[slot]; if (cp.currentTitle) hookStream(slot, cp.currentTitle, cp.currentBrand, cp.currentUrl); }
 
   async function refreshArena(filter){
     currentBrandFilter = filter;
+    
+    // Si estamos en 24/7
     if (currentFeedMode === '247'){ render247Grid(filter); return; }
+
+    const ticker = document.getElementById('main-ticker'); ticker.innerHTML = '';
+    const loading = document.createElement('div'); loading.style.cssText = 'padding:20px; font-family:Oswald; color: var(--accent);'; loading.textContent = 'SINTONIZANDO EMISIONES...'; ticker.appendChild(loading);
+
+    // 1. OBTENER JSON (si no lo tenemos o si hay que refrescar)
+    if (currentFeedMode === 'REPLAY' || jsonEvents.length === 0) {
+        try {
+            const res = await fetch(`../output/agenda_wrestling.json?v=${Date.now()}`);
+            if (res.ok) { const data = await res.json(); jsonEvents = data.eventos || []; }
+        } catch(e) { console.log("Error JSON Wrest:", e); }
+    }
+
+    // 2. SI ESTAMOS EN REPLAY
+    if (currentFeedMode === 'REPLAY') {
+        let replays = jsonEvents.filter(e => e.tipo === "REPLAY");
+        if (filter !== 'OMNI') replays = replays.filter(e => e.torneo === filter);
+        
+        if (replays.length === 0) {
+            ticker.innerHTML = '<div style="padding:20px; color:#555; font-family:Oswald;">NO HAY REPETICIONES DISPONIBLES</div>';
+            document.getElementById('timer-status').innerText = 'REPLAYS'; document.getElementById('timer').innerText = '--D --H --M';
+            return;
+        }
+        document.getElementById('timer-status').innerText = 'SECCION DE REPETICIONES'; document.getElementById('timer').innerText = '∞ REPLAY';
+        ticker.innerHTML = '';
+        replays.forEach(ev => { ticker.appendChild(buildJsonCard(ev, false)); });
+        return;
+    }
+
+    // 3. SI ESTAMOS EN LIVE (Usar Calendario + JSON)
     const fetchId = ++activeFetchId; if (currentFetchController) currentFetchController.abort();
     currentFetchController = new AbortController(); const signal = currentFetchController.signal;
     const isCurrent = () => fetchId === activeFetchId;
-    const ticker = document.getElementById('main-ticker'); ticker.innerHTML = '';
-    const loading = document.createElement('div'); loading.style.cssText = 'padding:20px; font-family:Oswald; color: var(--accent);'; loading.textContent = 'SINTONIZANDO EMISIONES...'; ticker.appendChild(loading);
-    const cacheKey = `unreal_cache_v5_${filter}`, cacheTimeKey = `unreal_cache_time_v5_${filter}`, cacheDuration = 300000;
+    const cacheKey = `unreal_cache_v7_${filter}`, cacheTimeKey = `unreal_cache_time_v7_${filter}`, cacheDuration = 300000;
     const cachedData = safeStorage.get(cacheKey), cachedTs = safeStorage.get(cacheTimeKey);
-    if (cachedData && cachedTs && (Date.now() - parseInt(cachedTs, 10) < cacheDuration)){ try { const parsed = JSON.parse(cachedData); if (isCurrent()) renderDashboard(parsed, filter); return; } catch(_){ safeStorage.remove(cacheKey); safeStorage.remove(cacheTimeKey); } }
-    const timeMin = new Date().toISOString(); const targets = filter === "OMNI" ? Object.keys(BRANDS) : [filter];
     
+    if (cachedData && cachedTs && (Date.now() - parseInt(cachedTs, 10) < cacheDuration)) { 
+        try { const parsed = JSON.parse(cachedData); if (isCurrent()) renderDashboard(parsed, filter); return; } catch(_){} 
+    }
+
+    const timeMin = new Date().toISOString(); const targets = filter === "OMNI" ? Object.keys(BRANDS) : [filter];
     const promises = targets.map(async (brand) => {
       try {
         const calendarId = encodeURIComponent(BRANDS[brand].calendarId);
         const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${encodeURIComponent(API_KEY)}&timeMin=${timeMin}&maxResults=10&singleEvents=true&orderBy=startTime`;
-        const response = await fetch(url, { method: "GET", signal }); 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const resData = await response.json(); 
-        if (!resData.items) return [];
+        const response = await fetch(url, { method: "GET", signal }); if (!response.ok) throw new Error(`HTTP`);
+        const resData = await response.json(); if (!resData.items) return [];
         
         return resData.items.map(item => {
-          const rawStart = item.start.dateTime || item.start.date;
-          const rawEnd = item.end?.dateTime || item.end?.date || null;
-          
-          // --- AJUSTE DE +1 HORA (3600000 ms) ---
-          const startMs = new Date(rawStart).getTime() + 3600000;
-          const endMs = rawEnd ? new Date(rawEnd).getTime() + 3600000 : null;
-          
-          return {
-            summary: item.summary || 'Evento',
-            brandName: brand,
-            start: startMs,
-            end: endMs
-          };
+          const rawStart = item.start.dateTime || item.start.date; const rawEnd = item.end?.dateTime || item.end?.date || null;
+          return { summary: item.summary || 'Evento', brandName: brand, start: new Date(rawStart).getTime() + 3600000, end: rawEnd ? new Date(rawEnd).getTime() + 3600000 : null };
         });
       } catch(err){ if (err.name === 'AbortError') throw err; return []; }
     });
     
     try {
       const results = await Promise.allSettled(promises); if (!isCurrent()) return;
-      const wasAborted = results.some(r => r.status === 'rejected' && r.reason && r.reason.name === 'AbortError'); if (wasAborted) return;
-      
+      const wasAborted = results.some(r => r.status === 'rejected' && r.reason?.name === 'AbortError'); if (wasAborted) return;
       const masterList = results.filter(r => r.status === 'fulfilled').flatMap(r => r.value);
-      
       if (results.every(r => r.status === 'rejected')) throw new Error('Fallo total');
-      
       safeStorage.set(cacheKey, JSON.stringify(masterList)); safeStorage.set(cacheTimeKey, Date.now().toString());
       renderDashboard(masterList, filter);
     } catch(err){ if (!isCurrent()) return; renderEmergency(ticker); }
@@ -614,88 +364,75 @@ function recargarBlog(btn) {
 
   function renderDashboard(list, filter){
     const ticker = document.getElementById('main-ticker');
-    
     if (!list || list.length === 0) { 
-        ticker.innerHTML = ''; 
-        const empty = document.createElement('div'); 
-        empty.style.cssText = 'padding:20px; font-family:Oswald; color:#555;'; 
-        empty.textContent = 'NO HAY EMISIONES PROGRAMADAS PRÓXIMAMENTE'; 
-        ticker.appendChild(empty); 
-        
-        const statusEl = document.getElementById('timer-status'); 
-        const timerEl = document.getElementById('timer');
-        if (statusEl) statusEl.innerText = 'SIN EVENTOS PENDIENTES';
-        if (timerEl) timerEl.innerText = '--D --H --M';
-        
-        return; 
+        ticker.innerHTML = '<div style="padding:20px; font-family:Oswald; color:#555;">NO HAY EMISIONES PROGRAMADAS PRÓXIMAMENTE</div>'; 
+        document.getElementById('timer-status').innerText = 'SIN EVENTOS PENDIENTES'; document.getElementById('timer').innerText = '--D --H --M'; return; 
     }
-
     const accent = filter === "OMNI" ? "#00ff88" : (BRANDS[filter]?.color ?? "#e21017"); document.documentElement.style.setProperty('--accent', accent);
     
-    // DEDUPLICACIÓN DE EVENTOS (Solo el más próximo por show)
     const uniqueShows = new Map();
     list.forEach(ev => {
         const showName = String(ev.summary).toUpperCase().trim();
-        if (!uniqueShows.has(showName) || new Date(ev.start).getTime() < new Date(uniqueShows.get(showName).start).getTime()) {
-            uniqueShows.set(showName, ev);
-        }
+        if (!uniqueShows.has(showName) || new Date(ev.start).getTime() < new Date(uniqueShows.get(showName).start).getTime()) { uniqueShows.set(showName, ev); }
     });
     
     let finalList = Array.from(uniqueShows.values());
     finalList.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
-    
-    updateMasterTimer(finalList[0].start, finalList[0].summary); 
-    ticker.innerHTML = '';
+    updateMasterTimer(finalList[0].start, finalList[0].summary); ticker.innerHTML = '';
     
     finalList.forEach(ev => {
       const startTime = new Date(ev.start).getTime(); const endTime = ev.end ? new Date(ev.end).getTime() : startTime + 14400000;
-      const isLiveNow = Date.now() >= startTime && Date.now() < endTime; ticker.appendChild(buildCard(ev, isLiveNow));
+      const isLiveNow = Date.now() >= startTime && Date.now() < endTime; 
+      
+      // Buscar si hay servidores en el JSON para este evento
+      let matchedServers = [];
+      if (jsonEvents.length > 0) {
+         const match = jsonEvents.find(je => je.tipo === "EN VIVO" && normalizar(je.titulo).includes(normalizar(ev.summary)) || normalizar(ev.summary).includes(normalizar(je.titulo)));
+         if (match) matchedServers = match.servidores;
+      }
+      
+      ticker.appendChild(buildCard(ev, isLiveNow, matchedServers));
     });
   }
 
-  function render247Grid(filter){
-    const ticker = document.getElementById('main-ticker'); ticker.innerHTML = '';
-    const statusEl = document.getElementById('timer-status'); const timerEl = document.getElementById('timer');
-    if (statusEl) statusEl.innerText = 'CANALES 24/7 — SIEMPRE EN VIVO'; if (timerEl){ timerEl.style.color = '#00ff88'; timerEl.innerText = '∞ ON AIR'; }
-    const canales = CHANNELS_247.filter(c => { if (!c || !c.url) return false; if (filter === 'OMNI') return true; return c.brand === filter; });
-    if (!canales.length){ const empty = document.createElement('div'); empty.style.cssText = 'padding:20px; font-family:Oswald; color:#555; line-height:1.6;'; empty.textContent = (filter === 'OMNI') ? 'AÚN NO HAY CANALES 24/7 CONFIGURADOS.' : `NO HAY CANALES 24/7 DE ${filter} CONFIGURADOS.`; ticker.appendChild(empty); return; }
-    canales.forEach(ch => { ticker.appendChild(build247Card(ch)); });
-  }
-
-  function build247Card(ch){
-    const card = document.createElement('div'); card.className = `match-card card-247 is-live ${detectShow(ch.name)}`;
-    const info = document.createElement('div'); info.className = 'match-info'; const brandSpan = document.createElement('span'); brandSpan.textContent = ch.brand || '';
-    const liveSpan = document.createElement('span'); liveSpan.className = 'live-indicator-text'; liveSpan.style.display = 'inline-block'; liveSpan.textContent = '• 24/7';
-    info.appendChild(brandSpan); info.appendChild(liveSpan); const title = document.createElement('div'); title.className = 'match-title'; title.textContent = ch.name || 'Canal 24/7';
-    const actions = document.createElement('div'); actions.className = 'action-row';
-    ['a', 'b'].forEach(slot => { const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = `Señal ${slot.toUpperCase()}`; btn.addEventListener('click', () => hookStream(slot, ch.name, ch.brand, ch.url)); actions.appendChild(btn); });
-    card.appendChild(info); card.appendChild(title); card.appendChild(actions); return card;
-  }
-
-  function buildCard(ev, isLiveNow){
+  function buildCard(ev, isLiveNow, servidores){
     const card = document.createElement('div'); card.className = `match-card ${detectShow(ev.summary)}${isLiveNow ? ' is-live' : ''}`;
     const info = document.createElement('div'); info.className = 'match-info'; const brandSpan = document.createElement('span'); brandSpan.textContent = ev.brandName || '';
     const liveSpan = document.createElement('span'); liveSpan.className = 'live-indicator-text'; liveSpan.textContent = '• EN VIVO'; const timeSpan = document.createElement('span');
-    
-    try { 
-      timeSpan.textContent = new Date(ev.start).toLocaleString('es-UY', { weekday: 'short', hour: '2-digit', minute: '2-digit' }) + ' HS'; 
-    } catch(_) { timeSpan.textContent = ''; }
-    
+    try { timeSpan.textContent = new Date(ev.start).toLocaleString('es-UY', { weekday: 'short', hour: '2-digit', minute: '2-digit' }) + ' HS'; } catch(_) {}
     info.appendChild(brandSpan); info.appendChild(liveSpan); info.appendChild(timeSpan); const title = document.createElement('div'); title.className = 'match-title'; title.textContent = ev.summary || 'Evento';
+    
     const actions = document.createElement('div'); actions.className = 'action-row';
-    ['a', 'b'].forEach(slot => { const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = `Señal ${slot.toUpperCase()}`; btn.addEventListener('click', () => hookStream(slot, ev.summary, ev.brandName)); actions.appendChild(btn); });
+    
+    if (servidores && servidores.length > 0) {
+        servidores.slice(0, 4).forEach(srv => {
+            const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = srv.nombre;
+            btn.addEventListener('click', () => hookStream('a', `${ev.summary} - ${srv.nombre}`, ev.brandName, srv.url)); actions.appendChild(btn);
+        });
+    } else {
+        const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = `Señal A`; btn.addEventListener('click', () => hookStream('a', ev.summary, ev.brandName)); actions.appendChild(btn);
+        const btnB = document.createElement('button'); btnB.type = 'button'; btnB.className = 'btn-assign'; btnB.textContent = `Señal B`; btnB.addEventListener('click', () => hookStream('b', ev.summary, ev.brandName)); actions.appendChild(btnB);
+    }
+    
     card.appendChild(info); card.appendChild(title); card.appendChild(actions); return card;
   }
 
-  function renderEmergency(ticker){
-    ticker.innerHTML = ''; const card = document.createElement('div'); card.className = 'match-card is-live card-raw';
-    const info = document.createElement('div'); info.className = 'match-info'; const left = document.createElement('span'); left.textContent = 'CONEXIÓN SATELITAL';
-    const right = document.createElement('span'); right.className = 'live-indicator-text'; right.style.display = 'inline-block'; right.textContent = '• LIVE'; info.appendChild(left); info.appendChild(right);
-    const title = document.createElement('div'); title.className = 'match-title'; title.textContent = 'EMISIÓN GLOBAL DE EMERGENCIA ACTIVA';
+  function buildJsonCard(ev, isLiveNow){
+    const card = document.createElement('div'); card.className = `match-card ${detectShow(ev.titulo)}`;
+    const info = document.createElement('div'); info.className = 'match-info'; const brandSpan = document.createElement('span'); brandSpan.textContent = ev.torneo || '';
+    const liveSpan = document.createElement('span'); liveSpan.className = 'live-indicator-text'; liveSpan.textContent = '• REPLAY'; const timeSpan = document.createElement('span'); timeSpan.textContent = 'VOD';
+    info.appendChild(brandSpan); info.appendChild(liveSpan); info.appendChild(timeSpan); const title = document.createElement('div'); title.className = 'match-title'; title.textContent = ev.titulo || 'Repetición';
+    
     const actions = document.createElement('div'); actions.className = 'action-row';
-    ['a', 'b'].forEach(slot => { const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = `Señal ${slot.toUpperCase()}`; btn.addEventListener('click', () => hookStream(slot, 'SHOW EMISIÓN GENERAL', 'DEFAULT')); actions.appendChild(btn); });
-    card.appendChild(info); card.appendChild(title); card.appendChild(actions); ticker.appendChild(card);
+    ev.servidores.slice(0, 3).forEach(srv => {
+        const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = srv.nombre.substring(0, 15);
+        btn.addEventListener('click', () => hookStream('a', `${ev.titulo} - ${srv.nombre}`, ev.torneo, srv.url)); actions.appendChild(btn);
+    });
+    card.appendChild(info); card.appendChild(title); card.appendChild(actions); return card;
   }
+
+  function renderEmergency(ticker){ ticker.innerHTML = '<div class="match-card is-live card-raw"><div class="match-title">SIN CONEXION AL CALENDARIO</div></div>'; }
+  function render247Grid(filter){ ticker.innerHTML = '<div style="padding:20px; color:#555; font-family:Oswald;">SIN CANALES 24/7</div>'; }
 
   document.querySelectorAll('.brand-item').forEach(item => {
     item.addEventListener('click', () => { document.querySelectorAll('.brand-item').forEach(i => i.classList.remove('active')); item.classList.add('active'); refreshArena(item.dataset.brand); });
@@ -705,12 +442,12 @@ function recargarBlog(btn) {
     tab.addEventListener('click', () => {
       const mode = tab.dataset.feed; if (mode === currentFeedMode) return; currentFeedMode = mode;
       document.querySelectorAll('.feed-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); }); tab.classList.add('active'); tab.setAttribute('aria-selected', 'true');
-      const timerEl = document.getElementById('timer'); if (timerEl && mode === 'LIVE') timerEl.style.color = ''; refreshArena(currentBrandFilter);
+      refreshArena(currentBrandFilter);
     });
   });
 
   const webIdentity = document.getElementById('web-identity');
-  if (webIdentity){ webIdentity.addEventListener('click', () => window.location.reload()); webIdentity.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); window.location.reload(); } }); }
+  if (webIdentity){ webIdentity.addEventListener('click', () => window.location.reload()); }
 
   document.querySelectorAll('.slot-error .btn-assign').forEach(btn => { btn.addEventListener('click', () => reconnectSlot(btn.dataset.slot)); });
   document.getElementById('btn-split')?.addEventListener('click', toggleOmniSplit);
