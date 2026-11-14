@@ -190,18 +190,16 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
   const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
   const STREAMS = { DEFAULT: { primary: "https://d302.soft4game.com/o22/stream183/o/stream183/chunks.m3u8", backup:  "https://embed.unrealmat.com/live/stream1" } };
   
-  // LINKS FIJOS EN ESPAÑOL
+  // LINKS FIJOS
   const SPANISH_LINKS = [
-    { "nombre": "ES: VKVideo", "url": "https://live.vkvideo.ru/app/embed/noobcraftero" },
-    { "nombre": "ES: RingMotif", "url": "https://ringmotif.net/e/jmekma4q2tzcn" },
-    { "nombre": "ES: BozzTV", "url": "https://183.bozztv.com/giatv/giatv-BiblieMatches/BiblieMatches/playlist.m3u8" },
-    { "nombre": "ES: HLS Stream", "url": "https://81j8b6.a737cozfwjmm.net:8443/hls/7i3bhp9zq8spc.m3u8?s=597qVniU09e_UstrppKsww&e=1794638911" }
+    { "nombre": "VKVideo (ES)", "url": "https://live.vkvideo.ru/app/embed/noobcraftero" },
+    { "nombre": "RingMotif (ES)", "url": "https://ringmotif.net/e/jmekma4q2tzcn" },
+    { "nombre": "BozzTV (ES)", "url": "https://183.bozztv.com/giatv/giatv-BiblieMatches/BiblieMatches/playlist.m3u8" },
+    { "nombre": "HLS Stream (ES)", "url": "https://81j8b6.a737cozfwjmm.net:8443/hls/7i3bhp9zq8spc.m3u8?s=597qVniU09e_UstrppKsww&e=1794638911" }
   ];
-
-  // LINKS FIJOS EN INGLÉS (Proporcionados por el usuario)
   const ENGLISH_LINKS = [
-    { "nombre": "EN: SawLive HD", "url": "https://sawlivenow.com/embed/108085_HD/" },
-    { "nombre": "EN: VisualNews SD", "url": "https://visualnewshub.com/catchup/catchup.php?cache=15y6sumR85s&minify=gloria&line=108085_SD&meu=84-85" }
+    { "nombre": "SawLive HD (EN)", "url": "https://sawlivenow.com/embed/108085_HD/" },
+    { "nombre": "VisualNews SD (EN)", "url": "https://visualnewshub.com/catchup/catchup.php?cache=15y6sumR85s&minify=gloria&line=108085_SD&meu=84-85" }
   ];
 
   const getStreamConfig = (brand) => STREAMS[brand] || STREAMS.DEFAULT;
@@ -222,8 +220,8 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
   function bootstrapPlyr(slot){ if (typeof Plyr === 'undefined') return; const el = document.getElementById(`vid-${slot}`); if (!el || corePlayers[slot].plyr) return; corePlayers[slot].plyr = new Plyr(el, { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'] }); }
   function ensurePlayerB(){ if (!corePlayers.b.plyr) bootstrapPlyr('b'); }
   
-  function activateSplit(){ if (splitActive) return; splitActive = true; ensurePlayerB(); document.getElementById('arena-grid').classList.add('split-active'); document.getElementById('slot-b-box').style.display = 'flex'; document.getElementById('btn-split').setAttribute('aria-pressed', 'true'); }
-  function deactivateSplit(){ if (!splitActive) return; splitActive = false; document.getElementById('arena-grid').classList.remove('split-active'); document.getElementById('slot-b-box').style.display = 'none'; destroyMediaPipeline('b'); document.getElementById('btn-split').setAttribute('aria-pressed', 'false'); }
+  function activateSplit(){ if (splitActive) return; splitActive = true; ensurePlayerB(); document.getElementById('arena-grid').classList.add('split-active'); document.getElementById('slot-b-box').style.display = 'flex'; document.getElementById('btn-split').style.display = 'none'; } // Ocultamos el botón DUAL manual
+  function deactivateSplit(){ if (!splitActive) return; splitActive = false; document.getElementById('arena-grid').classList.remove('split-active'); document.getElementById('slot-b-box').style.display = 'none'; destroyMediaPipeline('b'); document.getElementById('btn-split').style.display = 'flex'; }
   function toggleOmniSplit(){ if (splitActive) deactivateSplit(); else activateSplit(); }
   
   function toggleTheatreMode(){ const on = document.body.classList.toggle('theatre-mode'); const btn = document.getElementById('btn-theatre'); btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.innerHTML = on ? "<i class='fa-solid fa-compress'></i> <span class='dock-text'>SALIR DE TEATRO</span>" : "<i class='fa-solid fa-expand'></i> <span class='dock-text'>MODO TEATRO</span>"; }
@@ -285,17 +283,18 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     if (ghost) ghost.style.display = 'none'; if (pulse) pulse.style.display = 'inline-block'; if (labelText) labelText.innerText = `${slot.toUpperCase()}: ${title.toUpperCase()}`;
     if (slot === 'b'){ if (cp.plyr) cp.plyr.muted = true; if (labelText) labelText.innerText += " (MUTED)"; }
     
-    const plyrContainer = video.closest('.plyr'); if (plyrContainer) plyrContainer.classList.add('active');
     let streamConfig; if (customUrl){ streamConfig = { primary: customUrl, backup: STREAMS.DEFAULT.backup }; } else { streamConfig = getStreamConfig(brand); }
     
-    // ADAPTACIÓN PARA IFARMES: Detecta /embed/, .php o catchup
+    // Para URLs de Embed/Iframe, NO usamos Plyr (evitamos el botón verde gigante)
     if (typeof streamConfig.primary === 'string' && (streamConfig.primary.includes('/embed/') || streamConfig.primary.includes('.php') || streamConfig.primary.includes('catchup'))) {
         const embedContainer = document.getElementById(`embed-container-${slot}`);
         embedContainer.classList.add('active'); embedContainer.innerHTML = '';
-        const iframe = document.createElement('iframe'); iframe.src = streamConfig.primary; iframe.setAttribute('allowfullscreen', 'true'); iframe.setAttribute('scrolling', 'no');
+        const iframe = document.createElement('iframe'); iframe.src = streamConfig.primary; iframe.setAttribute('allowfullscreen', 'true'); iframe.setAttribute('scrolling', 'no'); iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
         embedContainer.appendChild(iframe); hideLoader(slot); return;
     }
 
+    // Para m3u8, usamos Plyr
+    const plyrContainer = video.closest('.plyr'); if (plyrContainer) plyrContainer.classList.add('active');
     cp.fallbackTimer = setTimeout(() => { if (!cp.streamTriggered){ triggerFallback(slot, streamConfig); } }, 5000);
     if (typeof Hls !== 'undefined' && Hls.isSupported()){
       const hls = new Hls({ enableWorker: true }); cp.hls = hls;
@@ -306,20 +305,14 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     else { triggerFallback(slot, streamConfig); }
   }
 
-  // --- NUEVA LÓGICA DE PANTALLA AUTOMÁTICA ---
+  // LÓGICA DE PANTALLA AUTOMÁTICA
   function playAutomatic(url, title, brand) {
-      const aHasStream = !!corePlayers.a.currentUrl;
-      const bHasStream = !!corePlayers.b.currentUrl;
-      
-      if (!aHasStream) {
-          // Primera vez: Pantalla A completa
+      if (!corePlayers.a.currentUrl) {
           hookStream('a', title, brand, url);
-      } else if (!bHasStream) {
-          // Segunda vez: Se divide y se abre en Pantalla B (Derecha)
+      } else if (!corePlayers.b.currentUrl) {
           activateSplit();
           hookStream('b', title, brand, url);
       } else {
-          // Tercera vez: Reemplaza la pantalla A (Izquierda)
           hookStream('a', title, brand, url);
       }
   }
@@ -404,17 +397,23 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
 
         let allLinks = [];
         if (match) {
+            // Los links de 1max ya vienen con formato "CatchUp 85 SD" etc.
             allLinks = [...match.servidores_live];
         }
         
-        // AGREGAMOS LOS LINKS FIJOS (ESPAÑOL E INGLÉS)
-        allLinks = [...allLinks, ...ENGLISH_LINKS, ...SPANISH_LINKS];
+        // AGREGAMOS LOS LINKS FIJOS
+        let fixedEnLinks = [...ENGLISH_LINKS];
+        let fixedEsLinks = [...SPANISH_LINKS];
 
-        let esLinks = allLinks.filter(l => l.nombre.includes('ES:'));
-        let enLinks = allLinks.filter(l => !l.nombre.includes('ES:'));
-        
-        // Seleccionamos max 2 de cada uno
-        ev.servidores = [...esLinks.slice(0, 2), ...enLinks.slice(0, 2)];
+        // FILTRO PROFESIONAL: Tomar 2 de cada uno
+        // Priorizar los links scrapeados de 1max para inglés si existen, sino usar los fijos
+        let finalEn = allLinks.filter(l => !l.nombre.includes('(ES)')).slice(0, 2);
+        if (finalEn.length < 2) finalEn = [...finalEn, ...fixedEnLinks.slice(0, 2 - finalEn.length)];
+
+        let finalEs = allLinks.filter(l => l.nombre.includes('(ES)')).slice(0, 2);
+        if (finalEs.length < 2) finalEs = [...finalEs, ...fixedEsLinks.slice(0, 2 - finalEs.length)];
+
+        ev.servidores = [...finalEs, ...finalEn];
     });
 
     if (finalList.length === 0) { 
@@ -455,7 +454,6 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     if (ev.servidores && ev.servidores.length > 0) {
         ev.servidores.forEach(srv => {
             const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = srv.nombre;
-            // Usa la función automática en lugar de hookStream directo
             btn.addEventListener('click', () => playAutomatic(srv.url, `${ev.summary} - ${srv.nombre}`, ev.brandName)); 
             actions.appendChild(btn);
         });
