@@ -1,13 +1,97 @@
 {
-  "fecha_actualizacion": "2026-11-14T01:07:19Z",
+  "fecha_actualizacion": "2026-11-14T01:29:25Z",
   "total": 8,
   "eventos": [
     {
       "id": "evt_0",
-      "titulo": "Argentina vs Uruguay",
-      "hora": "23:00",
-      "fecha_completa": "2026-11-13T18:00:00-05:00",
+      "titulo": "Ecuador vs Costa Rica",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-13T19:00:00-05:00",
       "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "EVENTO1",
+          "url": "https://streamxhd.sbs/live1.php?stream=evento1"
+        }
+      ],
+      "torneo": "Amistoso Internacional"
+    },
+    {
+      "id": "evt_1",
+      "titulo": "Colombia vs Chile",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-13T19:00:00-05:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "EVENTO2",
+          "url": "https://streamxhd.sbs/live1.php?stream=evento2"
+        }
+      ],
+      "torneo": "Amistoso Internacional"
+    },
+    {
+      "id": "evt_2",
+      "titulo": "Montserrat vs Nicaragua",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-13T19:00:00-05:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "VIX4",
+          "url": "https://streamxhd.sbs/live1.php?stream=vix4"
+        }
+      ],
+      "torneo": "Liga de Naciones de la CONCACAF"
+    },
+    {
+      "id": "evt_5",
+      "titulo": "Perú vs Bolivia",
+      "hora": "20:00",
+      "fecha_completa": "2026-11-13T20:00:00-05:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "AMERICATV",
+          "url": "https://streamxhd.sbs/live1.php?stream=americatv"
+        }
+      ],
+      "torneo": "Amistoso Internacional"
+    },
+    {
+      "id": "evt_9",
+      "titulo": "Inter Bogotá vs Santa Fe",
+      "hora": "20:30",
+      "fecha_completa": "2026-11-13T20:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "WIN SPORTS +",
+          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
+        }
+      ],
+      "torneo": "Liga Colombia"
+    },
+    {
+      "id": "evt_11",
+      "titulo": "Guatemala vs Canadá",
+      "hora": "21:00",
+      "fecha_completa": "2026-11-13T21:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "VIX5",
+          "url": "https://streamxhd.sbs/live1.php?stream=vix5"
+        }
+      ],
+      "torneo": "Liga de Naciones de la CONCACAF"
+    },
+    {
+      "id": "evt_15",
+      "titulo": "Argentina vs Uruguay",
+      "hora": "18:00",
+      "fecha_completa": "2026-11-13T18:00:00-05:00",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "TYCSPORTS",
@@ -29,99 +113,15 @@
       "torneo": "Amistoso Internacional"
     },
     {
-      "id": "evt_1",
+      "id": "evt_16",
       "titulo": "Saint Martin vs El Salvador",
-      "hora": "23:00",
+      "hora": "18:00",
       "fecha_completa": "2026-11-13T18:00:00-05:00",
-      "status": "EN VIVO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "VIX2",
           "url": "https://streamxhd.sbs/live1.php?stream=vix2"
-        }
-      ],
-      "torneo": "Liga de Naciones de la CONCACAF"
-    },
-    {
-      "id": "evt_2",
-      "titulo": "Ecuador vs Costa Rica",
-      "hora": "00:00",
-      "fecha_completa": "2026-11-13T19:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "EVENTO1",
-          "url": "https://streamxhd.sbs/live1.php?stream=evento1"
-        }
-      ],
-      "torneo": "Amistoso Internacional"
-    },
-    {
-      "id": "evt_3",
-      "titulo": "Colombia vs Chile",
-      "hora": "00:00",
-      "fecha_completa": "2026-11-13T19:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "EVENTO2",
-          "url": "https://streamxhd.sbs/live1.php?stream=evento2"
-        }
-      ],
-      "torneo": "Amistoso Internacional"
-    },
-    {
-      "id": "evt_4",
-      "titulo": "Montserrat vs Nicaragua",
-      "hora": "00:00",
-      "fecha_completa": "2026-11-13T19:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "VIX4",
-          "url": "https://streamxhd.sbs/live1.php?stream=vix4"
-        }
-      ],
-      "torneo": "Liga de Naciones de la CONCACAF"
-    },
-    {
-      "id": "evt_7",
-      "titulo": "Perú vs Bolivia",
-      "hora": "01:00",
-      "fecha_completa": "2026-11-13T20:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "AMERICATV",
-          "url": "https://streamxhd.sbs/live1.php?stream=americatv"
-        }
-      ],
-      "torneo": "Amistoso Internacional"
-    },
-    {
-      "id": "evt_11",
-      "titulo": "Inter Bogotá vs Santa Fe",
-      "hora": "01:30",
-      "fecha_completa": "2026-11-13T20:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "WIN SPORTS +",
-          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
-        }
-      ],
-      "torneo": "Liga Colombia"
-    },
-    {
-      "id": "evt_13",
-      "titulo": "Guatemala vs Canadá",
-      "hora": "02:00",
-      "fecha_completa": "2026-11-13T21:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "VIX5",
-          "url": "https://streamxhd.sbs/live1.php?stream=vix5"
         }
       ],
       "torneo": "Liga de Naciones de la CONCACAF"
