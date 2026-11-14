@@ -67,7 +67,6 @@
     }
     .skip-link:focus{ top:0; }
 
-    /* INTERFAZ MODO TEATRO */
     body.theatre-mode{ background:#000; overflow:hidden; }
     body.theatre-mode .top-console,
     body.theatre-mode .event-ticker,
@@ -78,7 +77,6 @@
       z-index:9999; height:auto; padding:0; gap:0;
     }
 
-    /* TOP CONSOLE */
     .top-console{ background:#000; border-bottom:3px solid var(--accent); position:sticky; top:0; z-index:999; }
     .header-main{
       min-height:60px; padding:12px 18px; display:flex; align-items:center;
@@ -106,7 +104,6 @@
     #timer{ font-size:14px; font-weight:700; }
     .timer-label{ font-size:8px; color:#777; text-transform:uppercase; }
 
-    /* BRAND NAV */
     .brand-nav{
       display:flex; justify-content:center; align-items:center; gap:22px;
       background:#050505; border-top:1px solid #111; overflow-x:auto;
@@ -126,7 +123,6 @@
     .brand-item.special{ animation: omniGlow 6s infinite linear; opacity:1; font-weight:900; }
     .brand-item.special.active{ border-bottom-color: #00ff88; }
 
-    /* FEED TABS */
     .feed-tabs{
       display:flex; background:#000; border-bottom:1px solid #161616;
       justify-content:center; gap:4px; padding:8px 12px; overflow-x:auto; scrollbar-width: none;
@@ -141,7 +137,6 @@
     .feed-tab:hover{ border-color:#444; color:#ccc; }
     .feed-tab.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
-    /* ARENA GRID */
     .arena-master{
       flex:1; display:grid; grid-template-columns:1fr; gap:8px;
       padding:8px; min-height:55vh; background:#000;
@@ -192,7 +187,6 @@
     .slot-error.active{ display:flex; }
     .slot-error p{ color:#aaa; font-family:'Oswald',sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:1px; }
 
-    /* CONSOLE DOCK */
     .console-dock { position: fixed; right: 18px; bottom: 18px; z-index: 9999; display: flex; gap: 8px; }
     .btn-dock-control{
       border:none; background:rgba(0,0,0,.92); color:#fff; border:1px solid #333;
@@ -202,7 +196,6 @@
     .btn-dock-control:hover{ border-color:var(--accent); color:var(--accent); }
     .btn-dock-control[aria-pressed="true"]{ background: var(--accent); border-color: var(--accent); color:#fff; }
 
-    /* TICKER */
     .event-ticker{
       width:100%; min-height: 145px; overflow-x:auto; overflow-y:hidden;
       display:flex; gap:18px; padding:18px; background:#050505;
@@ -243,7 +236,6 @@
     }
     .btn-assign:hover{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
-    /* RESPONSIVE MÓVIL */
     @media(max-width:768px){
       .arena-master{ min-height:45dvh; }
       .arena-master.split-active{ grid-template-columns:1fr; grid-template-rows:1fr 1fr; }
@@ -386,7 +378,7 @@ function recargarBlog(btn) {
   'use strict';
 
   const BRANDS = {
-    WWE:  { color: "#e21017", calendarId: "392ef3c1b22a1e75198fdab2ad79f726bd6bf6452a001d076c152065a084ac5e@group.calendar.google.com" },
+    WWE:  { color: "#e21017", calendarId: "a070eeba37995e97cff5a176f99d4ed9e90b671a0a9e9e22e5eb370312c54e62@group.calendar.google.com" },
     AEW:  { color: "#d4af37", calendarId: "0827b95e8b37fd9559f457c39aa6733daaaa4ffe4833d2a27917ed65eb01d052@group.calendar.google.com" },
     TNA:  { color: "#00BFFF", calendarId: "727b20f12dcf43bd661017bafba52fd7a8ad706a2ebe48afa6a5f4b391b71490@group.calendar.google.com" },
     NJPW: { color: "#FF4500", calendarId: "n6l35ni6rcbffi1m4m5g5ocnh4@group.calendar.google.com" }
@@ -575,7 +567,7 @@ function recargarBlog(btn) {
     const isCurrent = () => fetchId === activeFetchId;
     const ticker = document.getElementById('main-ticker'); ticker.innerHTML = '';
     const loading = document.createElement('div'); loading.style.cssText = 'padding:20px; font-family:Oswald; color: var(--accent);'; loading.textContent = 'SINTONIZANDO EMISIONES...'; ticker.appendChild(loading);
-    const cacheKey = `unreal_cache_v4_${filter}`, cacheTimeKey = `unreal_cache_time_v4_${filter}`, cacheDuration = 300000;
+    const cacheKey = `unreal_cache_v5_${filter}`, cacheTimeKey = `unreal_cache_time_v5_${filter}`, cacheDuration = 300000;
     const cachedData = safeStorage.get(cacheKey), cachedTs = safeStorage.get(cacheTimeKey);
     if (cachedData && cachedTs && (Date.now() - parseInt(cachedTs, 10) < cacheDuration)){ try { const parsed = JSON.parse(cachedData); if (isCurrent()) renderDashboard(parsed, filter); return; } catch(_){ safeStorage.remove(cacheKey); safeStorage.remove(cacheTimeKey); } }
     const timeMin = new Date().toISOString(); const targets = filter === "OMNI" ? Object.keys(BRANDS) : [filter];
@@ -583,7 +575,7 @@ function recargarBlog(btn) {
     const promises = targets.map(async (brand) => {
       try {
         const calendarId = encodeURIComponent(BRANDS[brand].calendarId);
-        const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${encodeURIComponent(API_KEY)}&timeMin=${timeMin}&maxResults=8&singleEvents=true&orderBy=startTime`;
+        const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${encodeURIComponent(API_KEY)}&timeMin=${timeMin}&maxResults=10&singleEvents=true&orderBy=startTime`;
         const response = await fetch(url, { method: "GET", signal }); 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const resData = await response.json(); 
@@ -610,7 +602,11 @@ function recargarBlog(btn) {
     try {
       const results = await Promise.allSettled(promises); if (!isCurrent()) return;
       const wasAborted = results.some(r => r.status === 'rejected' && r.reason && r.reason.name === 'AbortError'); if (wasAborted) return;
-      const masterList = results.filter(r => r.status === 'fulfilled').flatMap(r => r.value); if (masterList.length === 0) throw new Error('Sin datos');
+      
+      const masterList = results.filter(r => r.status === 'fulfilled').flatMap(r => r.value);
+      
+      if (results.every(r => r.status === 'rejected')) throw new Error('Fallo total');
+      
       safeStorage.set(cacheKey, JSON.stringify(masterList)); safeStorage.set(cacheTimeKey, Date.now().toString());
       renderDashboard(masterList, filter);
     } catch(err){ if (!isCurrent()) return; renderEmergency(ticker); }
@@ -618,11 +614,40 @@ function recargarBlog(btn) {
 
   function renderDashboard(list, filter){
     const ticker = document.getElementById('main-ticker');
-    if (!list.length){ ticker.innerHTML = ''; const empty = document.createElement('div'); empty.style.cssText = 'padding:20px; font-family:Oswald; color:#555;'; empty.textContent = 'NO HAY EMISIONES PROGRAMADAS PRÓXIMAMENTE'; ticker.appendChild(empty); return; }
+    
+    if (!list || list.length === 0) { 
+        ticker.innerHTML = ''; 
+        const empty = document.createElement('div'); 
+        empty.style.cssText = 'padding:20px; font-family:Oswald; color:#555;'; 
+        empty.textContent = 'NO HAY EMISIONES PROGRAMADAS PRÓXIMAMENTE'; 
+        ticker.appendChild(empty); 
+        
+        const statusEl = document.getElementById('timer-status'); 
+        const timerEl = document.getElementById('timer');
+        if (statusEl) statusEl.innerText = 'SIN EVENTOS PENDIENTES';
+        if (timerEl) timerEl.innerText = '--D --H --M';
+        
+        return; 
+    }
+
     const accent = filter === "OMNI" ? "#00ff88" : (BRANDS[filter]?.color ?? "#e21017"); document.documentElement.style.setProperty('--accent', accent);
-    list.sort((a, b) => { const da = new Date(a.start).getTime() - new Date(b.start).getTime(); if (da !== 0) return da; return String(a.brandName || '').localeCompare(String(b.brandName || '')); });
-    updateMasterTimer(list[0].start, list[0].summary); ticker.innerHTML = '';
+    
+    // DEDUPLICACIÓN DE EVENTOS (Solo el más próximo por show)
+    const uniqueShows = new Map();
     list.forEach(ev => {
+        const showName = String(ev.summary).toUpperCase().trim();
+        if (!uniqueShows.has(showName) || new Date(ev.start).getTime() < new Date(uniqueShows.get(showName).start).getTime()) {
+            uniqueShows.set(showName, ev);
+        }
+    });
+    
+    let finalList = Array.from(uniqueShows.values());
+    finalList.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    
+    updateMasterTimer(finalList[0].start, finalList[0].summary); 
+    ticker.innerHTML = '';
+    
+    finalList.forEach(ev => {
       const startTime = new Date(ev.start).getTime(); const endTime = ev.end ? new Date(ev.end).getTime() : startTime + 14400000;
       const isLiveNow = Date.now() >= startTime && Date.now() < endTime; ticker.appendChild(buildCard(ev, isLiveNow));
     });
