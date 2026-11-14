@@ -96,8 +96,8 @@
     .match-info{ font-size:9px; color:#9a9a9a; margin-bottom:12px; text-transform:uppercase; font-weight:900; display:flex; justify-content:space-between; gap:4px; }
     .live-indicator-text { color: var(--live-red); font-weight: 900; display: none; }
     .match-card.is-live .live-indicator-text { display: inline-block; }
-    .action-row{ display:flex; gap:8px; }
-    .btn-assign{ flex:1; background:#161616; color:#fff; border:1px solid #333; padding:8px; cursor:pointer; font-size:10px; font-weight:900; transition:.2s; text-transform:uppercase; font-family:inherit; }
+    .action-row{ display:flex; flex-wrap: wrap; gap:6px; }
+    .btn-assign{ flex:1; min-width: 45%; background:#161616; color:#fff; border:1px solid #333; padding:8px; cursor:pointer; font-size:10px; font-weight:900; transition:.2s; text-transform:uppercase; font-family:inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-assign:hover{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
     @media(max-width:768px){
@@ -137,9 +137,7 @@
   </nav>
 
   <nav class='feed-tabs'>
-    <!-- PESTAÑA NUEVA DE EN VIVO -->
     <button class='feed-tab active' data-feed='LIVE' id='tab-live' type='button'><i class='fa-solid fa-tower-broadcast'></i> AGENDA EN VIVO</button>
-    <!-- PESTAÑA NUEVA DE REPETICIONES -->
     <button class='feed-tab' data-feed='REPLAY' id='tab-replay' type='button'><i class='fa-solid fa-clock-rotate-left'></i> REPETICIONES</button>
     <button class='feed-tab' data-feed='247' id='tab-247' type='button'><i class='fa-solid fa-infinity'></i> 24/7 WRESTLING</button>
   </nav>
@@ -198,11 +196,13 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
   let splitActive = false;
   let currentFetchController = null;
   let activeFetchId = 0;
-  let currentFeedMode = 'LIVE'; // 'LIVE' | 'REPLAY' | '247'
+  let currentFeedMode = 'LIVE';
   let currentBrandFilter = 'OMNI';
-  let jsonEvents = []; // Guardaremos el JSON aquí
+  let jsonEvents = [];
 
   function detectShow(txt){ const u = String(txt || '').toUpperCase(); if (/\bRAW\b/.test(u)) return 'card-raw'; if (/\bSMACKDOWN\b/.test(u)) return 'card-sd'; if (/\bNXT\b/.test(u)) return 'card-nxt'; if (/\bDYNAMITE\b/.test(u)) return 'card-dyn'; if (/\bCOLLISION\b/.test(u)) return 'card-col'; if (/\bTNA\b/.test(u)) return 'card-tna'; if (/\bNJPW\b/.test(u)) return 'card-njpw'; return ''; }
+  function normalizar(texto) { return (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase(); }
+
   function bootstrapPlyr(slot){ if (typeof Plyr === 'undefined') return; const el = document.getElementById(`vid-${slot}`); if (!el || corePlayers[slot].plyr) return; corePlayers[slot].plyr = new Plyr(el, { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'] }); }
   function ensurePlayerB(){ if (!corePlayers.b.plyr) bootstrapPlyr('b'); }
   
@@ -273,7 +273,6 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     const plyrContainer = video.closest('.plyr'); if (plyrContainer) plyrContainer.classList.add('active');
     let streamConfig; if (customUrl){ streamConfig = { primary: customUrl, backup: STREAMS.DEFAULT.backup }; } else { streamConfig = getStreamConfig(brand); }
     
-    // Si es un iframe desde el JSON, usamos el fallback directo
     if (typeof streamConfig.primary === 'string' && streamConfig.primary.includes('/embed/')) {
         const embedContainer = document.getElementById(`embed-container-${slot}`);
         embedContainer.classList.add('active'); embedContainer.innerHTML = '';
@@ -295,14 +294,11 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
 
   async function refreshArena(filter){
     currentBrandFilter = filter;
-    
-    // Si estamos en 24/7
     if (currentFeedMode === '247'){ render247Grid(filter); return; }
 
     const ticker = document.getElementById('main-ticker'); ticker.innerHTML = '';
     const loading = document.createElement('div'); loading.style.cssText = 'padding:20px; font-family:Oswald; color: var(--accent);'; loading.textContent = 'SINTONIZANDO EMISIONES...'; ticker.appendChild(loading);
 
-    // 1. OBTENER JSON (si no lo tenemos o si hay que refrescar)
     if (currentFeedMode === 'REPLAY' || jsonEvents.length === 0) {
         try {
             const res = await fetch(`../output/agenda_wrestling.json?v=${Date.now()}`);
@@ -310,7 +306,6 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
         } catch(e) { console.log("Error JSON Wrest:", e); }
     }
 
-    // 2. SI ESTAMOS EN REPLAY
     if (currentFeedMode === 'REPLAY') {
         let replays = jsonEvents.filter(e => e.tipo === "REPLAY");
         if (filter !== 'OMNI') replays = replays.filter(e => e.torneo === filter);
@@ -326,17 +321,10 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
         return;
     }
 
-    // 3. SI ESTAMOS EN LIVE (Usar Calendario + JSON)
     const fetchId = ++activeFetchId; if (currentFetchController) currentFetchController.abort();
     currentFetchController = new AbortController(); const signal = currentFetchController.signal;
     const isCurrent = () => fetchId === activeFetchId;
-    const cacheKey = `unreal_cache_v7_${filter}`, cacheTimeKey = `unreal_cache_time_v7_${filter}`, cacheDuration = 300000;
-    const cachedData = safeStorage.get(cacheKey), cachedTs = safeStorage.get(cacheTimeKey);
     
-    if (cachedData && cachedTs && (Date.now() - parseInt(cachedTs, 10) < cacheDuration)) { 
-        try { const parsed = JSON.parse(cachedData); if (isCurrent()) renderDashboard(parsed, filter); return; } catch(_){} 
-    }
-
     const timeMin = new Date().toISOString(); const targets = filter === "OMNI" ? Object.keys(BRANDS) : [filter];
     const promises = targets.map(async (brand) => {
       try {
@@ -355,43 +343,65 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     try {
       const results = await Promise.allSettled(promises); if (!isCurrent()) return;
       const wasAborted = results.some(r => r.status === 'rejected' && r.reason?.name === 'AbortError'); if (wasAborted) return;
+      
       const masterList = results.filter(r => r.status === 'fulfilled').flatMap(r => r.value);
-      if (results.every(r => r.status === 'rejected')) throw new Error('Fallo total');
-      safeStorage.set(cacheKey, JSON.stringify(masterList)); safeStorage.set(cacheTimeKey, Date.now().toString());
       renderDashboard(masterList, filter);
-    } catch(err){ if (!isCurrent()) return; renderEmergency(ticker); }
+      
+    } catch(err){ 
+        if (!isCurrent()) return; 
+        renderDashboard([], filter); // Si falla todo, pasamos array vacío para que el JSON haga su trabajo
+    }
   }
 
-  function renderDashboard(list, filter){
+  function renderDashboard(calendarList, filter){
     const ticker = document.getElementById('main-ticker');
-    if (!list || list.length === 0) { 
+    
+    // 1. Fusionar eventos del Calendario con los eventos JSON EN VIVO
+    let finalList = calendarList ? [...calendarList] : [];
+    
+    jsonEvents.filter(e => e.tipo === "EN VIVO").forEach(je => {
+        if (filter !== 'OMNI' && je.torneo !== filter) return;
+        const existing = finalList.find(cl => normalizar(cl.summary).includes(normalizar(je.titulo)) || normalizar(je.titulo).includes(normalizar(cl.summary)));
+        if (!existing) {
+            // Si no está en el calendario, lo agregamos como un evento de "ahora mismo"
+            finalList.push({
+                summary: je.titulo,
+                brandName: je.torneo,
+                start: Date.now(),
+                servidores: je.servidores,
+                isLiveNow: true
+            });
+        } else {
+            // Si ya está, le inyectamos los servidores
+            existing.servidores = je.servidores;
+        }
+    });
+
+    if (!finalList || finalList.length === 0) { 
         ticker.innerHTML = '<div style="padding:20px; font-family:Oswald; color:#555;">NO HAY EMISIONES PROGRAMADAS PRÓXIMAMENTE</div>'; 
         document.getElementById('timer-status').innerText = 'SIN EVENTOS PENDIENTES'; document.getElementById('timer').innerText = '--D --H --M'; return; 
     }
+
     const accent = filter === "OMNI" ? "#00ff88" : (BRANDS[filter]?.color ?? "#e21017"); document.documentElement.style.setProperty('--accent', accent);
     
+    // 2. Deduplicar por nombre
     const uniqueShows = new Map();
-    list.forEach(ev => {
+    finalList.forEach(ev => {
         const showName = String(ev.summary).toUpperCase().trim();
-        if (!uniqueShows.has(showName) || new Date(ev.start).getTime() < new Date(uniqueShows.get(showName).start).getTime()) { uniqueShows.set(showName, ev); }
+        if (!uniqueShows.has(showName) || new Date(ev.start).getTime() < new Date(uniqueShows.get(showName).start).getTime()) { 
+            uniqueShows.set(showName, ev); 
+        }
     });
     
-    let finalList = Array.from(uniqueShows.values());
-    finalList.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
-    updateMasterTimer(finalList[0].start, finalList[0].summary); ticker.innerHTML = '';
+    let list = Array.from(uniqueShows.values());
+    list.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
     
-    finalList.forEach(ev => {
+    updateMasterTimer(list[0].start, list[0].summary); ticker.innerHTML = '';
+    
+    list.forEach(ev => {
       const startTime = new Date(ev.start).getTime(); const endTime = ev.end ? new Date(ev.end).getTime() : startTime + 14400000;
-      const isLiveNow = Date.now() >= startTime && Date.now() < endTime; 
-      
-      // Buscar si hay servidores en el JSON para este evento
-      let matchedServers = [];
-      if (jsonEvents.length > 0) {
-         const match = jsonEvents.find(je => je.tipo === "EN VIVO" && normalizar(je.titulo).includes(normalizar(ev.summary)) || normalizar(ev.summary).includes(normalizar(je.titulo)));
-         if (match) matchedServers = match.servidores;
-      }
-      
-      ticker.appendChild(buildCard(ev, isLiveNow, matchedServers));
+      const isLiveNow = ev.isLiveNow || (Date.now() >= startTime && Date.now() < endTime); 
+      ticker.appendChild(buildCard(ev, isLiveNow, ev.servidores));
     });
   }
 
@@ -431,7 +441,6 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     card.appendChild(info); card.appendChild(title); card.appendChild(actions); return card;
   }
 
-  function renderEmergency(ticker){ ticker.innerHTML = '<div class="match-card is-live card-raw"><div class="match-title">SIN CONEXION AL CALENDARIO</div></div>'; }
   function render247Grid(filter){ ticker.innerHTML = '<div style="padding:20px; color:#555; font-family:Oswald;">SIN CANALES 24/7</div>'; }
 
   document.querySelectorAll('.brand-item').forEach(item => {
