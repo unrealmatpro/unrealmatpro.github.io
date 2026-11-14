@@ -20,13 +20,6 @@ sh = logging.StreamHandler()
 sh.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
 LOG.addHandler(sh)
 
-SPANISH_LINKS = [
-    { "nombre": "ES: VKVideo", "url": "https://live.vkvideo.ru/app/embed/noobcraftero", "tipo": "iframe" },
-    { "nombre": "ES: RingMotif", "url": "https://ringmotif.net/e/jmekma4q2tzcn", "tipo": "iframe" },
-    { "nombre": "ES: BozzTV", "url": "https://183.bozztv.com/giatv/giatv-BiblieMatches/BiblieMatches/playlist.m3u8", "tipo": "m3u8" },
-    { "nombre": "ES: HLS Stream 1", "url": "https://81j8b6.a737cozfwjmm.net:8443/hls/7i3bhp9zq8spc.m3u8?s=597qVniU09e_UstrppKsww&e=1794638911", "tipo": "m3u8" }
-]
-
 def normalizar(texto: str) -> str:
     if not texto: return ""
     import unicodedata
@@ -53,10 +46,8 @@ async def scrape_1max():
 
             soup = BeautifulSoup(await page.content(), "lxml")
             
-            # NUEVA LÓGICA: Escaneo secuencial (Títulos y Links en el orden del DOM)
             events = {}
             current_title = None
-            current_brand = None
             
             for tag in soup.find_all(["span", "a"]):
                 if tag.name == "span":
@@ -69,9 +60,8 @@ async def scrape_1max():
                         
                         if marca != "OTHER":
                             current_title = titulo_limpio
-                            current_brand = marca
                             if current_title not in events:
-                                events[current_title] = {"titulo": current_title, "torneo": current_brand, "live": [], "replay": []}
+                                events[current_title] = {"titulo": current_title, "torneo": marca, "live": [], "replay": []}
                         else:
                             current_title = None
                 
@@ -81,32 +71,23 @@ async def scrape_1max():
                     texto = tag.text.strip()
                     tipo = "m3u8" if ".m3u8" in href else "iframe"
                     
-                    # Clasificar link
                     if any(k in texto for k in ["CatchUp", "Stream", "Live", "Direct"]):
                         events[current_title]["live"].append({"nombre": texto, "url": href, "tipo": tipo})
                     elif any(k in texto for k in ["Part", "PvP", "Fullshow", "Download"]):
                         events[current_title]["replay"].append({"nombre": texto, "url": href, "tipo": tipo})
 
-            # Convertir diccionario a lista para el JSON
             lista_final = []
             idx = 0
             for titulo, data in events.items():
-                if data["live"]:
-                    # Agregamos los links fijos en español
-                    for sl in SPANISH_LINKS:
-                        data["live"].append(sl)
-                    lista_final.append({
-                        "id": f"wr_live_{idx}", "titulo": data["titulo"], "torneo": data["torneo"],
-                        "tipo": "EN VIVO", "servidores": data["live"]
-                    })
-                    idx += 1
-                
-                if data["replay"]:
+                if data["live"] or data["replay"]:
                     # Ordenar repeticiones (FHD > HD > PvP > Part)
                     data["replay"].sort(key=lambda x: (0 if "FHD" in x["nombre"].upper() else (1 if "HD" in x["nombre"].upper() else (2 if "PVP" in x["nombre"].upper() else 3))))
                     lista_final.append({
-                        "id": f"wr_replay_{idx}", "titulo": data["titulo"], "torneo": data["torneo"],
-                        "tipo": "REPLAY", "servidores": data["replay"]
+                        "id": f"wr_{idx}", 
+                        "titulo": data["titulo"], 
+                        "torneo": data["torneo"],
+                        "servidores_live": data["live"],
+                        "servidores_replay": data["replay"]
                     })
                     idx += 1
 
@@ -138,13 +119,6 @@ async def main():
 
     eventos = await scrape_1max()
     
-    if not eventos:
-        LOG.warning("No se encontraron eventos en 1max.top. Usando fallback con enlaces en español.")
-        eventos.append({
-            "id": "wr_fallback_live", "titulo": "SEÑALES DE WRESTLING (ESPAÑOL)", "torneo": "WWE",
-            "tipo": "EN VIVO", "servidores": SPANISH_LINKS
-        })
-
     ahora = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     payload = {"fecha_actualizacion": ahora, "total": len(eventos), "eventos": eventos}
     
