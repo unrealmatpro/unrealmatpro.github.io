@@ -1,11 +1,11 @@
 {
-  "fecha_actualizacion": "2026-11-14T01:03:43Z",
+  "fecha_actualizacion": "2026-11-14T01:07:08Z",
   "total": 9,
   "eventos": [
     {
       "id": "evt_5",
       "titulo": "Indiana Pacers vs New York Knicks",
-      "hora": "18:00",
+      "hora": "16:00",
       "fecha_completa": "2026-11-13T19:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -23,7 +23,7 @@
     {
       "id": "evt_6",
       "titulo": "Orlando Magic vs Milwaukee Bucks",
-      "hora": "18:00",
+      "hora": "16:00",
       "fecha_completa": "2026-11-13T19:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -37,7 +37,7 @@
     {
       "id": "evt_8",
       "titulo": "Miami Heat vs Cleveland Cavaliers",
-      "hora": "19:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-13T20:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -51,7 +51,7 @@
     {
       "id": "evt_9",
       "titulo": "Chicago Bulls vs Atlanta Hawks",
-      "hora": "19:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-13T20:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -65,7 +65,7 @@
     {
       "id": "evt_10",
       "titulo": "New Orleans Pelicans vs Memphis Grizzlies",
-      "hora": "19:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-13T20:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -79,7 +79,7 @@
     {
       "id": "evt_12",
       "titulo": "Houston Rockets vs Utah Jazz",
-      "hora": "19:30",
+      "hora": "17:30",
       "fecha_completa": "2026-11-13T20:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -93,7 +93,7 @@
     {
       "id": "evt_14",
       "titulo": "San Antonio Spurs vs Golden State Warriors",
-      "hora": "20:30",
+      "hora": "18:30",
       "fecha_completa": "2026-11-13T21:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -111,7 +111,7 @@
     {
       "id": "evt_15",
       "titulo": "Sacramento Kings vs Portland Trail Blazers",
-      "hora": "21:00",
+      "hora": "19:00",
       "fecha_completa": "2026-11-13T22:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -125,7 +125,7 @@
     {
       "id": "evt_16",
       "titulo": "Los Angeles Clippers vs Oklahoma City Thunder",
-      "hora": "21:30",
+      "hora": "19:30",
       "fecha_completa": "2026-11-13T22:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
