@@ -69,19 +69,19 @@
   </section>
 
   <main class='grid-v4' id='grid'>
-    <a class='card-v4' target="_blank" href='/futbol/'>
+    <a class='card-v4' href='/futbol/'>
       <div class='card-media-v4'><img alt='Fútbol Mundial' src='https://external-preview.redd.it/cristiano-ronaldo-im-the-most-complete-footballer-ever-i-v0-AQQhDce_VkxjDq7BO21dIMqsoD4YuHdqn6U13UWzhtI.jpg?auto=webp&s=1dd86ddee6d2b2f6979509cc28418655dce2e88d'/></div>
       <div class='card-info-v4'><h3>FÚTBOL</h3><small class='card-next' data-tag='FUTBOL_BLOG'>Cargando&#8230;</small></div>
     </a>
-    <a class='card-v4' target="_blank" href='/nba/'>
+    <a class='card-v4' href='/nba/'>
       <div class='card-media-v4'><img alt='NBA Basketball' src='https://elgurudelbasket.com/wp-content/uploads/2019/09/top100_feature.jpg'/></div>
       <div class='card-info-v4'><h3>NBA</h3><small class='card-next' data-tag='NBA'>Cargando&#8230;</small></div>
     </a>
-    <a class='card-v4' target="_blank" href='/F1/'>
+    <a class='card-v4' href='/F1/'>
       <div class='card-media-v4'><img alt='Formula 1' src='https://a.espncdn.com/photo/2020/0629/r713850_1296x729_16-9.jpg'/></div>
       <div class='card-info-v4'><h3>Formula 1</h3><small class='card-next' data-tag='F1'>Cargando&#8230;</small></div>
     </a>
-    <a class='card-v4' target="_blank" href='/wrestling/'>
+    <a class='card-v4' href='/wrestling/'>
       <div class='card-media-v4'><img alt='Wrestling News' src='https://i.ytimg.com/vi/C4NFvTvi1MY/hq720.jpg'/></div>
       <div class='card-info-v4'><h3>WRESTLING</h3><small class='card-next' data-tag='WWE,AEW,TNA,NJPW'>Cargando&#8230;</small></div>
     </a>
@@ -131,7 +131,6 @@
         { url: './output/agenda_f1.json', tag: 'F1' }
       ];
       
-      // 1. Leer JSONs locales
       await Promise.all(jsonSources.map(async src => {
           try {
             const res = await fetch(`${src.url}?v=${Date.now()}`);
@@ -147,7 +146,6 @@
           } catch (err) {}
       }));
 
-      // 2. Leer Calendarios de Google (F1 y Wrestling)
       await Promise.all(APP_CONFIG.calendars.map(cal =>
           fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(cal.id)}/events?key=${APP_CONFIG.apiKey}&timeMin=${timeMin}&maxResults=5&singleEvents=true&orderBy=startTime`)
             .then(r => r.ok ? r.json() : null)
@@ -155,9 +153,9 @@
               if (data && data.items) { 
                 data.items.forEach(ev => { 
                   const raw = ev.start.dateTime || (ev.start.date + 'T00:00:00'); 
-                  const evTs = new Date(raw).getTime(); 
+                  // Ajuste de +1 hora para wrestling
+                  const evTs = new Date(raw).getTime() + (cal.label !== 'F1' ? 3600000 : 0); 
                   if (evTs >= nowTs - HORAS_LIMITE_MS) { 
-                    // Etiquetamos con el nombre del calendario (WWE, F1, etc.)
                     pool.push({ name: ev.summary || 'Sin título', tag: cal.label, torneo: cal.label, time: evTs }); 
                   } 
                 }); 
@@ -179,10 +177,7 @@
 
     function updateCards(pool) {
       document.querySelectorAll('.card-next').forEach(el => {
-        // Obtenemos los tags a buscar. Ej: "WWE,AEW,TNA,NJPW"
         const tags = (el.dataset.tag || '').split(',').map(t => t.trim());
-        
-        // Buscamos el primer evento en el pool que coincida con alguno de los tags
         const ev = pool.find(e => tags.includes(e.tag));
         
         if (ev) { 
@@ -198,7 +193,6 @@
     
     function refreshDisplay() { 
         const nowTs = Date.now(); 
-        // Filtramos el pool para eliminar eventos pasados
         const activePool = cachedPool.filter(e => e.time >= nowTs - HORAS_LIMITE_MS); 
         renderTicker(activePool); 
         updateCards(activePool); 
@@ -229,8 +223,8 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       syncEvents(); 
-      setInterval(syncEvents, 300000); // Refresca API de Google cada 5 mins
-      setInterval(refreshDisplay, 60000); // Refresca la vista (y elimina eventos viejos) cada 1 min
+      setInterval(syncEvents, 300000); 
+      setInterval(refreshDisplay, 60000); 
       
       const pauseBtn = document.getElementById('ticker-pause');
       if (pauseBtn) { 
