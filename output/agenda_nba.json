@@ -1,11 +1,11 @@
 {
-  "fecha_actualizacion": "2026-11-14T01:07:19Z",
+  "fecha_actualizacion": "2026-11-14T01:29:25Z",
   "total": 9,
   "eventos": [
     {
-      "id": "evt_5",
+      "id": "evt_3",
       "titulo": "Indiana Pacers vs New York Knicks",
-      "hora": "00:00",
+      "hora": "19:00",
       "fecha_completa": "2026-11-13T19:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -21,9 +21,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_6",
+      "id": "evt_4",
       "titulo": "Orlando Magic vs Milwaukee Bucks",
-      "hora": "00:00",
+      "hora": "19:00",
       "fecha_completa": "2026-11-13T19:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -35,9 +35,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_8",
+      "id": "evt_6",
       "titulo": "Miami Heat vs Cleveland Cavaliers",
-      "hora": "01:00",
+      "hora": "20:00",
       "fecha_completa": "2026-11-13T20:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -49,9 +49,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_9",
+      "id": "evt_7",
       "titulo": "Chicago Bulls vs Atlanta Hawks",
-      "hora": "01:00",
+      "hora": "20:00",
       "fecha_completa": "2026-11-13T20:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -63,9 +63,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_10",
+      "id": "evt_8",
       "titulo": "New Orleans Pelicans vs Memphis Grizzlies",
-      "hora": "01:00",
+      "hora": "20:00",
       "fecha_completa": "2026-11-13T20:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -77,9 +77,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_12",
+      "id": "evt_10",
       "titulo": "Houston Rockets vs Utah Jazz",
-      "hora": "01:30",
+      "hora": "20:30",
       "fecha_completa": "2026-11-13T20:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -91,9 +91,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_14",
+      "id": "evt_12",
       "titulo": "San Antonio Spurs vs Golden State Warriors",
-      "hora": "02:30",
+      "hora": "21:30",
       "fecha_completa": "2026-11-13T21:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -109,9 +109,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_15",
+      "id": "evt_13",
       "titulo": "Sacramento Kings vs Portland Trail Blazers",
-      "hora": "03:00",
+      "hora": "22:00",
       "fecha_completa": "2026-11-13T22:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -123,9 +123,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_16",
+      "id": "evt_14",
       "titulo": "Los Angeles Clippers vs Oklahoma City Thunder",
-      "hora": "03:30",
+      "hora": "22:30",
       "fecha_completa": "2026-11-13T22:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
