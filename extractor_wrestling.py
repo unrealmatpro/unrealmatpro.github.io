@@ -8,12 +8,11 @@ import requests
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
-# ─── CONFIGURACIÓN ───
 BASE_URL = "https://1max.top/"
 LOCAL_OUT = Path(__file__).parent / "output_local_wrestling"
 LOCAL_OUT.mkdir(exist_ok=True)
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-TIMEOUT_MS = 30000
+TIMEOUT_MS = 45000 # Aumentado a 45s por si la web tarda
 
 LOG = logging.getLogger("wrestling")
 LOG.setLevel(logging.INFO)
@@ -21,8 +20,7 @@ sh = logging.StreamHandler()
 sh.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
 LOG.addHandler(sh)
 
-# Enlaces fijos en español (proporcionados por el usuario)
-# Puedes agregar más aquí en el futuro y se asignarán al evento que coincida
+# Enlaces fijos en español (se usarán si el scraping de 1max falla o se complementará)
 SPANISH_LINKS = [
     { "nombre": "ES: VKVideo", "url": "https://live.vkvideo.ru/app/embed/noobcraftero", "tipo": "iframe" },
     { "nombre": "ES: RingMotif", "url": "https://ringmotif.net/e/jmekma4q2tzcn", "tipo": "iframe" },
@@ -48,36 +46,47 @@ async def scrape_1max():
     eventos = []
     
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True, args=["--no-sandbox"])
+        browser = await p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-blink-features=AutomationControlled"])
         try:
             context = await browser.new_context(user_agent=UA)
             page = await context.new_page()
             await page.goto(BASE_URL, wait_until="domcontentloaded", timeout=TIMEOUT_MS)
-            await page.wait_for_timeout(5000)
+            await page.wait_for_timeout(8000) # Damos 8 segundos para que cargue todo
 
             soup = BeautifulSoup(await page.content(), "lxml")
             
-            # Buscamos los títulos con el estilo que nos pasaste
+            # Buscamos los títulos con el estilo que nos pasaste, o cualquier etiqueta que diga "Live"
             titulos = soup.find_all("span", style=re.compile(r"font-size:\s*25px"))
             
+            # Si no encuentra ninguno con el estilo, busca en los H1, H2 o textos destacados
+            if not titulos:
+                titulos = soup.find_all(lambda tag: tag.name in ["h1", "h2", "h3", "span", "div"] and tag.text and ("LIVE" in tag.text.upper() or "AEW" in tag.text.upper() or "WWE" in tag.text.upper()) and len(tag.text) < 60)
+
+            LOG.info(f"Posibles títulos encontrados: {len(titulos)}")
+
             for idx, t_tag in enumerate(titulos):
                 raw_title = t_tag.text.strip()
                 if not raw_title: continue
 
-                # Limpiar título (quitar "Adfree", "Live", "Source 1", etc.)
+                # Limpiar título
                 titulo_limpio = re.sub(r"^(Adfree|Live|Watch)\s+", "", raw_title, flags=re.IGNORECASE)
                 titulo_limpio = re.sub(r"\s+(Live|Source\s+\d+)$", "", titulo_limpio, flags=re.IGNORECASE).strip()
                 
                 marca = clasificar_marca(titulo_limpio)
-                if marca == "OTHER": continue # Omitimos si no es de las 4 marcas
+                if marca == "OTHER": continue
 
                 servidores_live = []
                 servidores_replay = []
 
-                # Buscar todos los enlaces (a) hasta el próximo título
-                next_node = t_tag.parent.find_next_sibling()
-                while next_node and not (next_node.name == "span" and next_node.get("style") and "25px" in next_node.get("style")):
-                    # Si es un enlace directo o un contenedor de enlaces
+                next_node = t_tag.parent.find_next_sibling() if t_tag.parent else t_tag.find_next_sibling()
+                
+                # Iteramos sobre los siguientes elementos
+                count = 0
+                while next_node and count < 10: # Límite de 10 elementos para no leer toda la página
+                    count += 1
+                    if next_node.name == "span" and next_node.get("style") and "25px" in next_node.get("style"):
+                        break # Es el siguiente título, nos detenemos
+
                     links = next_node.find_all("a") if next_node.name != "a" else [next_node]
                     for a in links:
                         href = a.get("href")
@@ -86,7 +95,6 @@ async def scrape_1max():
                         texto_link = a.text.strip()
                         tipo_link = "m3u8" if ".m3u8" in href else "iframe"
                         
-                        # Clasificación según el texto
                         if any(k in texto_link for k in ["CatchUp", "Stream", "Live", "Direct"]):
                             servidores_live.append({"nombre": texto_link, "url": href, "tipo": tipo_link})
                         elif any(k in texto_link for k in ["Part", "PvP", "Fullshow", "Download"]):
@@ -94,40 +102,20 @@ async def scrape_1max():
                     
                     next_node = next_node.find_next_sibling()
 
-                # Ordenar repeticiones (Prioridad: FHD > HD > PvP > Part)
-                def score_replay(s):
-                    n = s["nombre"].upper()
-                    if "FHD" in n and "FULLSHOW" in n: return 1
-                    if "HD" in n and "FULLSHOW" in n: return 2
-                    if "PVP" in n: return 3
-                    if "PART" in n: return 4
-                    return 5
-                servidores_replay.sort(key=score_replay)
-
-                # Si hay links en vivo, agregamos el evento
+                # Agregar links de español a los eventos en vivo
                 if servidores_live:
-                    # Agregamos los links fijos de español a TODOS los eventos en vivo por ahora
-                    # En un futuro se podría hacer un match inteligente
-                    if marca in ["WWE", "AEW", "TNA", "NJPW"]:
-                         for sl in SPANISH_LINKS:
-                             servidores_live.append(sl)
-
+                    for sl in SPANISH_LINKS:
+                        servidores_live.append(sl)
+                        
                     eventos.append({
-                        "id": f"wr_live_{idx}",
-                        "titulo": titulo_limpio,
-                        "torneo": marca,
-                        "tipo": "EN VIVO",
-                        "servidores": servidores_live
+                        "id": f"wr_live_{idx}", "titulo": titulo_limpio, "torneo": marca,
+                        "tipo": "EN VIVO", "servidores": servidores_live
                     })
                 
-                # Si hay repeticiones, agregamos un evento de tipo REPLAY
                 if servidores_replay:
                     eventos.append({
-                        "id": f"wr_replay_{idx}",
-                        "titulo": titulo_limpio,
-                        "torneo": marca,
-                        "tipo": "REPLAY",
-                        "servidores": servidores_replay
+                        "id": f"wr_replay_{idx}", "titulo": titulo_limpio, "torneo": marca,
+                        "tipo": "REPLAY", "servidores": servidores_replay
                     })
                     
             await context.close()
@@ -157,9 +145,17 @@ async def main():
 
     eventos = await scrape_1max()
     
+    # FALLBACK: Si no se encontraron eventos (por bloqueo o cambios), inyectamos un evento genérico
+    # para que el blog no se vea vacío y los usuarios puedan usar los links en español.
     if not eventos:
-        LOG.warning("No se encontraron eventos de wrestling.")
-        return 1
+        LOG.warning("No se encontraron eventos en 1max.top. Usando fallback con enlaces en español.")
+        eventos.append({
+            "id": "wr_fallback_live",
+            "titulo": "SEÑALES DE WRESTLING (ESPAÑOL)",
+            "torneo": "WWE",
+            "tipo": "EN VIVO",
+            "servidores": SPANISH_LINKS
+        })
 
     ahora = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     payload = {"fecha_actualizacion": ahora, "total": len(eventos), "eventos": eventos}
