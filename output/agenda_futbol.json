@@ -1,11 +1,11 @@
 {
-  "fecha_actualizacion": "2026-11-14T01:07:08Z",
+  "fecha_actualizacion": "2026-11-14T01:07:19Z",
   "total": 8,
   "eventos": [
     {
       "id": "evt_0",
       "titulo": "Argentina vs Uruguay",
-      "hora": "15:00",
+      "hora": "23:00",
       "fecha_completa": "2026-11-13T18:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -31,7 +31,7 @@
     {
       "id": "evt_1",
       "titulo": "Saint Martin vs El Salvador",
-      "hora": "15:00",
+      "hora": "23:00",
       "fecha_completa": "2026-11-13T18:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -45,7 +45,7 @@
     {
       "id": "evt_2",
       "titulo": "Ecuador vs Costa Rica",
-      "hora": "16:00",
+      "hora": "00:00",
       "fecha_completa": "2026-11-13T19:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -59,7 +59,7 @@
     {
       "id": "evt_3",
       "titulo": "Colombia vs Chile",
-      "hora": "16:00",
+      "hora": "00:00",
       "fecha_completa": "2026-11-13T19:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -73,7 +73,7 @@
     {
       "id": "evt_4",
       "titulo": "Montserrat vs Nicaragua",
-      "hora": "16:00",
+      "hora": "00:00",
       "fecha_completa": "2026-11-13T19:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -87,7 +87,7 @@
     {
       "id": "evt_7",
       "titulo": "Perú vs Bolivia",
-      "hora": "17:00",
+      "hora": "01:00",
       "fecha_completa": "2026-11-13T20:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -101,7 +101,7 @@
     {
       "id": "evt_11",
       "titulo": "Inter Bogotá vs Santa Fe",
-      "hora": "17:30",
+      "hora": "01:30",
       "fecha_completa": "2026-11-13T20:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -115,7 +115,7 @@
     {
       "id": "evt_13",
       "titulo": "Guatemala vs Canadá",
-      "hora": "18:00",
+      "hora": "02:00",
       "fecha_completa": "2026-11-13T21:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
