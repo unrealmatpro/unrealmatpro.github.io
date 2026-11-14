@@ -1,113 +1,11 @@
 {
-  "fecha_actualizacion": "2026-11-14T03:07:03Z",
+  "fecha_actualizacion": "2026-11-14T09:42:04Z",
   "total": 14,
   "eventos": [
     {
-      "id": "evt_1",
-      "titulo": "Miami Heat vs Cleveland Cavaliers",
-      "hora": "18:00",
-      "fecha_completa": "2026-11-13T20:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "NBA LEAGUE PASS 3",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba3"
-        }
-      ],
-      "torneo": "NBA"
-    },
-    {
-      "id": "evt_2",
-      "titulo": "Chicago Bulls vs Atlanta Hawks",
-      "hora": "18:00",
-      "fecha_completa": "2026-11-13T20:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "NBA LEAGUE PASS 4",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba4"
-        }
-      ],
-      "torneo": "NBA"
-    },
-    {
-      "id": "evt_3",
-      "titulo": "New Orleans Pelicans vs Memphis Grizzlies",
-      "hora": "18:00",
-      "fecha_completa": "2026-11-13T20:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "NBA LEAGUE PASS 5",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba5"
-        }
-      ],
-      "torneo": "NBA"
-    },
-    {
-      "id": "evt_5",
-      "titulo": "Houston Rockets vs Utah Jazz",
-      "hora": "18:30",
-      "fecha_completa": "2026-11-13T20:30:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "NBA LEAGUE PASS 6",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba6"
-        }
-      ],
-      "torneo": "NBA"
-    },
-    {
-      "id": "evt_7",
-      "titulo": "San Antonio Spurs vs Golden State Warriors",
-      "hora": "19:30",
-      "fecha_completa": "2026-11-13T21:30:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "PRIME VIDEO 2",
-          "url": "https://streamxhd.sbs/live1.php?stream=amazon2"
-        },
-        {
-          "nombre": "NBA LEAGUE PASS 7",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba7"
-        }
-      ],
-      "torneo": "NBA"
-    },
-    {
-      "id": "evt_8",
-      "titulo": "Sacramento Kings vs Portland Trail Blazers",
-      "hora": "20:00",
-      "fecha_completa": "2026-11-13T22:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "NBA LEAGUE PASS 8",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba8"
-        }
-      ],
-      "torneo": "NBA"
-    },
-    {
-      "id": "evt_9",
-      "titulo": "Los Angeles Clippers vs Oklahoma City Thunder",
-      "hora": "20:30",
-      "fecha_completa": "2026-11-13T22:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "NBA LEAGUE PASS 9",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba9"
-        }
-      ],
-      "torneo": "NBA"
-    },
-    {
-      "id": "evt_42",
+      "id": "evt_32",
       "titulo": "New Orleans Pelicans vs Denver Nuggets",
-      "hora": "17:00",
+      "hora": "16:00",
       "fecha_completa": "2026-11-14T19:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -119,9 +17,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_43",
+      "id": "evt_33",
       "titulo": "Cleveland Cavaliers vs Dallas Mavericks",
-      "hora": "17:30",
+      "hora": "16:30",
       "fecha_completa": "2026-11-14T19:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -133,9 +31,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_45",
+      "id": "evt_35",
       "titulo": "Miami Heat vs Detroit Pistons",
-      "hora": "18:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-14T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -151,9 +49,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_46",
+      "id": "evt_36",
       "titulo": "Minnesota Timberwolves vs Chicago Bulls",
-      "hora": "18:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-14T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -165,9 +63,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_47",
+      "id": "evt_37",
       "titulo": "Memphis Grizzlies vs Brooklyn Nets",
-      "hora": "18:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-14T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -179,9 +77,9 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_53",
+      "id": "evt_43",
       "titulo": "Indiana Pacers vs New York Knicks",
-      "hora": "17:00",
+      "hora": "16:00",
       "fecha_completa": "2026-11-13T19:00:00-05:00",
       "status": "FINALIZADO",
       "servidores": [
@@ -197,15 +95,117 @@
       "torneo": "NBA"
     },
     {
-      "id": "evt_54",
+      "id": "evt_44",
       "titulo": "Orlando Magic vs Milwaukee Bucks",
-      "hora": "17:00",
+      "hora": "16:00",
       "fecha_completa": "2026-11-13T19:00:00-05:00",
       "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "NBA LEAGUE PASS 2",
           "url": "https://streamxhd.sbs/live1.php?stream=nba2"
+        }
+      ],
+      "torneo": "NBA"
+    },
+    {
+      "id": "evt_46",
+      "titulo": "Miami Heat vs Cleveland Cavaliers",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-13T20:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "NBA LEAGUE PASS 3",
+          "url": "https://streamxhd.sbs/live1.php?stream=nba3"
+        }
+      ],
+      "torneo": "NBA"
+    },
+    {
+      "id": "evt_47",
+      "titulo": "Chicago Bulls vs Atlanta Hawks",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-13T20:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "NBA LEAGUE PASS 4",
+          "url": "https://streamxhd.sbs/live1.php?stream=nba4"
+        }
+      ],
+      "torneo": "NBA"
+    },
+    {
+      "id": "evt_48",
+      "titulo": "New Orleans Pelicans vs Memphis Grizzlies",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-13T20:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "NBA LEAGUE PASS 5",
+          "url": "https://streamxhd.sbs/live1.php?stream=nba5"
+        }
+      ],
+      "torneo": "NBA"
+    },
+    {
+      "id": "evt_50",
+      "titulo": "Houston Rockets vs Utah Jazz",
+      "hora": "17:30",
+      "fecha_completa": "2026-11-13T20:30:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "NBA LEAGUE PASS 6",
+          "url": "https://streamxhd.sbs/live1.php?stream=nba6"
+        }
+      ],
+      "torneo": "NBA"
+    },
+    {
+      "id": "evt_52",
+      "titulo": "San Antonio Spurs vs Golden State Warriors",
+      "hora": "18:30",
+      "fecha_completa": "2026-11-13T21:30:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "PRIME VIDEO 2",
+          "url": "https://streamxhd.sbs/live1.php?stream=amazon2"
+        },
+        {
+          "nombre": "NBA LEAGUE PASS 7",
+          "url": "https://streamxhd.sbs/live1.php?stream=nba7"
+        }
+      ],
+      "torneo": "NBA"
+    },
+    {
+      "id": "evt_53",
+      "titulo": "Sacramento Kings vs Portland Trail Blazers",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-13T22:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "NBA LEAGUE PASS 8",
+          "url": "https://streamxhd.sbs/live1.php?stream=nba8"
+        }
+      ],
+      "torneo": "NBA"
+    },
+    {
+      "id": "evt_54",
+      "titulo": "Los Angeles Clippers vs Oklahoma City Thunder",
+      "hora": "19:30",
+      "fecha_completa": "2026-11-13T22:30:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "NBA LEAGUE PASS 9",
+          "url": "https://streamxhd.sbs/live1.php?stream=nba9"
         }
       ],
       "torneo": "NBA"
