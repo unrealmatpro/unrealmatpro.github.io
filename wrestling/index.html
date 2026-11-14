@@ -190,12 +190,18 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
   const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
   const STREAMS = { DEFAULT: { primary: "https://d302.soft4game.com/o22/stream183/o/stream183/chunks.m3u8", backup:  "https://embed.unrealmat.com/live/stream1" } };
   
-  // Links en Español fijos
+  // LINKS FIJOS EN ESPAÑOL
   const SPANISH_LINKS = [
     { "nombre": "ES: VKVideo", "url": "https://live.vkvideo.ru/app/embed/noobcraftero" },
     { "nombre": "ES: RingMotif", "url": "https://ringmotif.net/e/jmekma4q2tzcn" },
     { "nombre": "ES: BozzTV", "url": "https://183.bozztv.com/giatv/giatv-BiblieMatches/BiblieMatches/playlist.m3u8" },
     { "nombre": "ES: HLS Stream", "url": "https://81j8b6.a737cozfwjmm.net:8443/hls/7i3bhp9zq8spc.m3u8?s=597qVniU09e_UstrppKsww&e=1794638911" }
+  ];
+
+  // LINKS FIJOS EN INGLÉS (Proporcionados por el usuario)
+  const ENGLISH_LINKS = [
+    { "nombre": "EN: SawLive HD", "url": "https://sawlivenow.com/embed/108085_HD/" },
+    { "nombre": "EN: VisualNews SD", "url": "https://visualnewshub.com/catchup/catchup.php?cache=15y6sumR85s&minify=gloria&line=108085_SD&meu=84-85" }
   ];
 
   const getStreamConfig = (brand) => STREAMS[brand] || STREAMS.DEFAULT;
@@ -208,7 +214,7 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
   let activeFetchId = 0;
   let currentFeedMode = 'LIVE';
   let currentBrandFilter = 'OMNI';
-  let jsonEvents = []; // Guardaremos el JSON aquí
+  let jsonEvents = []; 
 
   function detectShow(txt){ const u = String(txt || '').toUpperCase(); if (/\bRAW\b/.test(u)) return 'card-raw'; if (/\bSMACKDOWN\b/.test(u)) return 'card-sd'; if (/\bNXT\b/.test(u)) return 'card-nxt'; if (/\bDYNAMITE\b/.test(u)) return 'card-dyn'; if (/\bCOLLISION\b/.test(u)) return 'card-col'; if (/\bTNA\b/.test(u)) return 'card-tna'; if (/\bNJPW\b/.test(u)) return 'card-njpw'; return ''; }
   function normalizar(texto) { return (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase(); }
@@ -271,7 +277,6 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
 
   function hookStream(slot, title, brand, customUrl){
     if (!title) title = 'Señal'; if (!brand) brand = 'DEFAULT';
-    if (slot === 'b' && !splitActive) activateSplit();
     destroyMediaPipeline(slot);
     const cp = corePlayers[slot]; cp.currentTitle = title; cp.currentBrand = brand; cp.currentUrl = customUrl || null;
     hideError(slot); showLoader(slot);
@@ -283,7 +288,8 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     const plyrContainer = video.closest('.plyr'); if (plyrContainer) plyrContainer.classList.add('active');
     let streamConfig; if (customUrl){ streamConfig = { primary: customUrl, backup: STREAMS.DEFAULT.backup }; } else { streamConfig = getStreamConfig(brand); }
     
-    if (typeof streamConfig.primary === 'string' && streamConfig.primary.includes('/embed/')) {
+    // ADAPTACIÓN PARA IFARMES: Detecta /embed/, .php o catchup
+    if (typeof streamConfig.primary === 'string' && (streamConfig.primary.includes('/embed/') || streamConfig.primary.includes('.php') || streamConfig.primary.includes('catchup'))) {
         const embedContainer = document.getElementById(`embed-container-${slot}`);
         embedContainer.classList.add('active'); embedContainer.innerHTML = '';
         const iframe = document.createElement('iframe'); iframe.src = streamConfig.primary; iframe.setAttribute('allowfullscreen', 'true'); iframe.setAttribute('scrolling', 'no');
@@ -300,6 +306,24 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     else { triggerFallback(slot, streamConfig); }
   }
 
+  // --- NUEVA LÓGICA DE PANTALLA AUTOMÁTICA ---
+  function playAutomatic(url, title, brand) {
+      const aHasStream = !!corePlayers.a.currentUrl;
+      const bHasStream = !!corePlayers.b.currentUrl;
+      
+      if (!aHasStream) {
+          // Primera vez: Pantalla A completa
+          hookStream('a', title, brand, url);
+      } else if (!bHasStream) {
+          // Segunda vez: Se divide y se abre en Pantalla B (Derecha)
+          activateSplit();
+          hookStream('b', title, brand, url);
+      } else {
+          // Tercera vez: Reemplaza la pantalla A (Izquierda)
+          hookStream('a', title, brand, url);
+      }
+  }
+
   function reconnectSlot(slot){ const cp = corePlayers[slot]; if (cp.currentTitle) hookStream(slot, cp.currentTitle, cp.currentBrand, cp.currentUrl); }
 
   async function refreshArena(filter){
@@ -309,13 +333,11 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     const ticker = document.getElementById('main-ticker'); ticker.innerHTML = '';
     const loading = document.createElement('div'); loading.style.cssText = 'padding:20px; font-family:Oswald; color: var(--accent);'; loading.textContent = 'SINTONIZANDO EMISIONES...'; ticker.appendChild(loading);
 
-    // 1. Siempre obtenemos el JSON primero (para tener Live y Replay a mano)
     try {
         const res = await fetch(`../output/agenda_wrestling.json?v=${Date.now()}`);
         if (res.ok) { const data = await res.json(); jsonEvents = data.eventos || []; }
     } catch(e) { console.log("Error JSON Wrest:", e); }
 
-    // 2. Si estamos en REPLAY
     if (currentFeedMode === 'REPLAY') {
         let replays = jsonEvents.filter(e => e.servidores_replay && e.servidores_replay.length > 0);
         if (filter !== 'OMNI') replays = replays.filter(e => e.torneo === filter);
@@ -331,12 +353,10 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
         return;
     }
 
-    // 3. Si estamos en LIVE (Consultar Google Calendar y filtrar por 2.5h)
     const fetchId = ++activeFetchId; if (currentFetchController) currentFetchController.abort();
     currentFetchController = new AbortController(); const signal = currentFetchController.signal;
     const isCurrent = () => fetchId === activeFetchId;
     
-    // TRUCO: Traemos eventos desde 6 horas atrás, para que aparezca el show que empezó hace 1 hora
     const timeMin = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(); 
     const targets = filter === "OMNI" ? Object.keys(BRANDS) : [filter];
     
@@ -371,15 +391,12 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     const ticker = document.getElementById('main-ticker');
     const now = Date.now();
     
-    // 1. Filtrar calendario: Solo eventos que empezaron hace MENOS de 2.5 horas
     let finalList = (calendarList || []).filter(ev => {
         const diffHours = (now - ev.start) / (1000 * 60 * 60);
-        return diffHours < 2.5; // El evento sigue "vivo" o es futuro
+        return diffHours < 2.5; 
     });
     
-    // 2. Inyectar servidores a los eventos del calendario
     finalList.forEach(ev => {
-        // Buscar si hay match en el JSON
         const match = jsonEvents.find(je => {
             const n1 = normalizar(ev.summary); const n2 = normalizar(je.titulo);
             return n1.includes(n2) || n2.includes(n1);
@@ -390,13 +407,13 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
             allLinks = [...match.servidores_live];
         }
         
-        // Siempre agregamos los links en español (por si el scraper falló o no los tenia)
-        allLinks = [...allLinks, ...SPANISH_LINKS];
+        // AGREGAMOS LOS LINKS FIJOS (ESPAÑOL E INGLÉS)
+        allLinks = [...allLinks, ...ENGLISH_LINKS, ...SPANISH_LINKS];
 
-        // MAGIA: Seleccionar max 2 Español y max 2 Inglés
         let esLinks = allLinks.filter(l => l.nombre.includes('ES:'));
         let enLinks = allLinks.filter(l => !l.nombre.includes('ES:'));
         
+        // Seleccionamos max 2 de cada uno
         ev.servidores = [...esLinks.slice(0, 2), ...enLinks.slice(0, 2)];
     });
 
@@ -407,7 +424,6 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
 
     const accent = filter === "OMNI" ? "#00ff88" : (BRANDS[filter]?.color ?? "#e21017"); document.documentElement.style.setProperty('--accent', accent);
     
-    // 3. Deduplicar por nombre y ordenar
     const uniqueShows = new Map();
     finalList.forEach(ev => {
         const showName = String(ev.summary).toUpperCase().trim();
@@ -439,7 +455,9 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     if (ev.servidores && ev.servidores.length > 0) {
         ev.servidores.forEach(srv => {
             const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = srv.nombre;
-            btn.addEventListener('click', () => hookStream('a', `${ev.summary} - ${srv.nombre}`, ev.brandName, srv.url)); actions.appendChild(btn);
+            // Usa la función automática en lugar de hookStream directo
+            btn.addEventListener('click', () => playAutomatic(srv.url, `${ev.summary} - ${srv.nombre}`, ev.brandName)); 
+            actions.appendChild(btn);
         });
     }
     
@@ -453,9 +471,10 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     info.appendChild(brandSpan); info.appendChild(liveSpan); info.appendChild(timeSpan); const title = document.createElement('div'); title.className = 'match-title'; title.textContent = ev.titulo || 'Repetición';
     
     const actions = document.createElement('div'); actions.className = 'action-row';
-    ev.servidores_replay.slice(0, 4).forEach(srv => { // Mostramos hasta 4 (FHD, HD, PvP, Parts)
+    ev.servidores_replay.slice(0, 4).forEach(srv => { 
         const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = srv.nombre.substring(0, 20);
-        btn.addEventListener('click', () => hookStream('a', `${ev.titulo} - ${srv.nombre}`, ev.torneo, srv.url)); actions.appendChild(btn);
+        btn.addEventListener('click', () => playAutomatic(srv.url, `${ev.titulo} - ${srv.nombre}`, ev.torneo)); 
+        actions.appendChild(btn);
     });
     card.appendChild(info); card.appendChild(title); card.appendChild(actions); return card;
   }
