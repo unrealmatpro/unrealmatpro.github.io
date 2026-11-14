@@ -102,6 +102,8 @@
     .action-row{ display:flex; flex-wrap: wrap; gap:6px; margin-top: auto; }
     .btn-assign{ flex:1; min-width: 45%; background:#161616; color:#fff; border:1px solid #333; padding:8px; cursor:pointer; font-size:10px; font-weight:900; transition:.2s; text-transform:uppercase; font-family:inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-assign:hover{ background:var(--accent); border-color:var(--accent); color:#fff; }
+    
+    .msg-pronto { display:block; width: 100%; text-align: center; font-family:'Oswald',sans-serif; font-size: 11px; color: #666; padding: 10px 0; letter-spacing: 1px; border: 1px dashed #222; border-radius: 4px; margin-top: auto; }
 
     @media(max-width:768px){
       .arena-master{ min-height:45dvh; } .arena-master.split-active{ grid-template-columns:1fr; grid-template-rows:1fr 1fr; } .player-slot{ min-height:30dvh; }
@@ -190,16 +192,16 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
   const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
   const STREAMS = { DEFAULT: { primary: "https://d302.soft4game.com/o22/stream183/o/stream183/chunks.m3u8", backup:  "https://embed.unrealmat.com/live/stream1" } };
   
-  // LINKS FIJOS
+  // ENLACES FIJOS EN INGLÉS (EXACTOS)
+  const ENGLISH_LINKS = [
+    { "nombre": "SawLive HD", "url": "https://sawlivenow.com/embed/108085_HD/" },
+    { "nombre": "VisualNews SD", "url": "https://visualnewshub.com/catchup/catchup.php?cache=15y6sumR85s&minify=gloria&line=108085_SD&meu=84-85" }
+  ];
+
+  // ENLACES FIJOS EN ESPAÑOL
   const SPANISH_LINKS = [
     { "nombre": "VKVideo (ES)", "url": "https://live.vkvideo.ru/app/embed/noobcraftero" },
-    { "nombre": "RingMotif (ES)", "url": "https://ringmotif.net/e/jmekma4q2tzcn" },
-    { "nombre": "BozzTV (ES)", "url": "https://183.bozztv.com/giatv/giatv-BiblieMatches/BiblieMatches/playlist.m3u8" },
-    { "nombre": "HLS Stream (ES)", "url": "https://81j8b6.a737cozfwjmm.net:8443/hls/7i3bhp9zq8spc.m3u8?s=597qVniU09e_UstrppKsww&e=1794638911" }
-  ];
-  const ENGLISH_LINKS = [
-    { "nombre": "SawLive HD (EN)", "url": "https://sawlivenow.com/embed/108085_HD/" },
-    { "nombre": "VisualNews SD (EN)", "url": "https://visualnewshub.com/catchup/catchup.php?cache=15y6sumR85s&minify=gloria&line=108085_SD&meu=84-85" }
+    { "nombre": "RingMotif (ES)", "url": "https://ringmotif.net/e/jmekma4q2tzcn" }
   ];
 
   const getStreamConfig = (brand) => STREAMS[brand] || STREAMS.DEFAULT;
@@ -220,7 +222,7 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
   function bootstrapPlyr(slot){ if (typeof Plyr === 'undefined') return; const el = document.getElementById(`vid-${slot}`); if (!el || corePlayers[slot].plyr) return; corePlayers[slot].plyr = new Plyr(el, { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'] }); }
   function ensurePlayerB(){ if (!corePlayers.b.plyr) bootstrapPlyr('b'); }
   
-  function activateSplit(){ if (splitActive) return; splitActive = true; ensurePlayerB(); document.getElementById('arena-grid').classList.add('split-active'); document.getElementById('slot-b-box').style.display = 'flex'; document.getElementById('btn-split').style.display = 'none'; } // Ocultamos el botón DUAL manual
+  function activateSplit(){ if (splitActive) return; splitActive = true; ensurePlayerB(); document.getElementById('arena-grid').classList.add('split-active'); document.getElementById('slot-b-box').style.display = 'flex'; document.getElementById('btn-split').style.display = 'none'; }
   function deactivateSplit(){ if (!splitActive) return; splitActive = false; document.getElementById('arena-grid').classList.remove('split-active'); document.getElementById('slot-b-box').style.display = 'none'; destroyMediaPipeline('b'); document.getElementById('btn-split').style.display = 'flex'; }
   function toggleOmniSplit(){ if (splitActive) deactivateSplit(); else activateSplit(); }
   
@@ -285,12 +287,18 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     
     let streamConfig; if (customUrl){ streamConfig = { primary: customUrl, backup: STREAMS.DEFAULT.backup }; } else { streamConfig = getStreamConfig(brand); }
     
-    // Para URLs de Embed/Iframe, NO usamos Plyr (evitamos el botón verde gigante)
+    // DETECCIÓN MEJORADA DE IFRAME: /embed/, .php, catchup, etc.
     if (typeof streamConfig.primary === 'string' && (streamConfig.primary.includes('/embed/') || streamConfig.primary.includes('.php') || streamConfig.primary.includes('catchup'))) {
         const embedContainer = document.getElementById(`embed-container-${slot}`);
         embedContainer.classList.add('active'); embedContainer.innerHTML = '';
-        const iframe = document.createElement('iframe'); iframe.src = streamConfig.primary; iframe.setAttribute('allowfullscreen', 'true'); iframe.setAttribute('scrolling', 'no'); iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
-        embedContainer.appendChild(iframe); hideLoader(slot); return;
+        const iframe = document.createElement('iframe'); 
+        iframe.src = streamConfig.primary; 
+        iframe.setAttribute('allowfullscreen', 'true'); 
+        iframe.setAttribute('scrolling', 'no');
+        iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade'); // IMPORTANTE para evitar bloqueos
+        embedContainer.appendChild(iframe); 
+        hideLoader(slot); 
+        return;
     }
 
     // Para m3u8, usamos Plyr
@@ -305,7 +313,6 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     else { triggerFallback(slot, streamConfig); }
   }
 
-  // LÓGICA DE PANTALLA AUTOMÁTICA
   function playAutomatic(url, title, brand) {
       if (!corePlayers.a.currentUrl) {
           hookStream('a', title, brand, url);
@@ -396,22 +403,14 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
         });
 
         let allLinks = [];
-        if (match) {
-            // Los links de 1max ya vienen con formato "CatchUp 85 SD" etc.
-            allLinks = [...match.servidores_live];
-        }
+        if (match) allLinks = [...match.servidores_live];
         
-        // AGREGAMOS LOS LINKS FIJOS
-        let fixedEnLinks = [...ENGLISH_LINKS];
-        let fixedEsLinks = [...SPANISH_LINKS];
+        // FILTRO DE 2 ESPAÑOL Y 2 INGLÉS
+        let finalEn = allLinks.filter(l => !l.nombre.includes('(ES)') && !l.nombre.includes('ES:')).slice(0, 2);
+        if (finalEn.length < 2) finalEn = [...finalEn, ...ENGLISH_LINKS.slice(0, 2 - finalEn.length)];
 
-        // FILTRO PROFESIONAL: Tomar 2 de cada uno
-        // Priorizar los links scrapeados de 1max para inglés si existen, sino usar los fijos
-        let finalEn = allLinks.filter(l => !l.nombre.includes('(ES)')).slice(0, 2);
-        if (finalEn.length < 2) finalEn = [...finalEn, ...fixedEnLinks.slice(0, 2 - finalEn.length)];
-
-        let finalEs = allLinks.filter(l => l.nombre.includes('(ES)')).slice(0, 2);
-        if (finalEs.length < 2) finalEs = [...finalEs, ...fixedEsLinks.slice(0, 2 - finalEs.length)];
+        let finalEs = allLinks.filter(l => l.nombre.includes('(ES)') || l.nombre.includes('ES:')).slice(0, 2);
+        if (finalEs.length < 2) finalEs = [...finalEs, ...SPANISH_LINKS.slice(0, 2 - finalEs.length)];
 
         ev.servidores = [...finalEs, ...finalEn];
     });
@@ -437,12 +436,15 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     updateMasterTimer(list[0].start, list[0].summary); ticker.innerHTML = '';
     
     list.forEach(ev => {
+      // LÓGICA CLAVE: Si el evento inicia en el futuro (más de 1 hora), no muestra botones.
       const isLiveNow = now >= ev.start && now < (ev.end || ev.start + 14400000); 
-      ticker.appendChild(buildLiveCard(ev, isLiveNow));
+      const isUpcoming = (ev.start - now) > (60 * 60 * 1000); // Falta más de 1 hora
+      
+      ticker.appendChild(buildLiveCard(ev, isLiveNow, isUpcoming));
     });
   }
 
-  function buildLiveCard(ev, isLiveNow){
+  function buildLiveCard(ev, isLiveNow, isUpcoming){
     const card = document.createElement('div'); card.className = `match-card ${detectShow(ev.summary)}${isLiveNow ? ' is-live' : ''}`;
     const info = document.createElement('div'); info.className = 'match-info'; const brandSpan = document.createElement('span'); brandSpan.textContent = ev.brandName || '';
     const liveSpan = document.createElement('span'); liveSpan.className = 'live-indicator-text'; liveSpan.textContent = '• EN VIVO'; const timeSpan = document.createElement('span');
@@ -451,12 +453,20 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     
     const actions = document.createElement('div'); actions.className = 'action-row';
     
-    if (ev.servidores && ev.servidores.length > 0) {
-        ev.servidores.forEach(srv => {
-            const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = srv.nombre;
-            btn.addEventListener('click', () => playAutomatic(srv.url, `${ev.summary} - ${srv.nombre}`, ev.brandName)); 
-            actions.appendChild(btn);
-        });
+    if (isLiveNow) {
+        if (ev.servidores && ev.servidores.length > 0) {
+            ev.servidores.forEach(srv => {
+                const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = srv.nombre;
+                btn.addEventListener('click', () => playAutomatic(srv.url, `${ev.summary} - ${srv.nombre}`, ev.brandName)); 
+                actions.appendChild(btn);
+            });
+        }
+    } else {
+        // Si es futuro, mostramos mensaje
+        const msg = document.createElement('div');
+        msg.className = 'msg-pronto';
+        msg.innerHTML = '<i class="fas fa-clock"></i> SEÑALES DISPONIBLES PRONTO';
+        actions.appendChild(msg);
     }
     
     card.appendChild(info); card.appendChild(title); card.appendChild(actions); return card;
