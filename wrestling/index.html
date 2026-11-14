@@ -85,18 +85,21 @@
     .event-ticker{ width:100%; min-height: 145px; overflow-x:auto; overflow-y:hidden; display:flex; gap:18px; padding:18px; background:#050505; border-top:1px solid #161616; scroll-behavior:smooth; -webkit-overflow-scrolling:touch; }
     .event-ticker::-webkit-scrollbar{ height:6px; }
     .event-ticker::-webkit-scrollbar-thumb{ background:var(--accent); border-radius:50px; }
-    .match-card{ width:280px; flex-shrink:0; background:#080808; border-left:5px solid var(--accent); padding:14px; transition:.3s; border-radius:10px; position: relative; }
+    
+    .match-card{ width:280px; flex-shrink:0; background:#080808; border-left:5px solid var(--accent); padding:14px; transition:.3s; border-radius:10px; position: relative; display:flex; flex-direction:column; }
     .match-card:hover{ background:#111; transform:translateY(-2px); }
     .match-card.is-live { border-left-color: var(--live-red) !important; box-shadow: 0 0 10px rgba(255, 0, 0, 0.2); }
     .card-raw{border-color:var(--wwe-raw);} .card-sd{border-color:var(--wwe-sd);} .card-nxt{border-color:var(--wwe-nxt);} .card-tna{border-color:var(--tna);} .card-njpw{border-color:var(--njpw);}
     .card-dyn{ border-left-color:transparent !important; border-image:linear-gradient(to bottom,#d4af37,#fff) 1 !important; }
     .card-col{ border-left-color:transparent !important; border-image:linear-gradient(to bottom,#f12711,#f5af19) 1 !important; }
     .card-247 { border-left-color: #00ff88 !important; background: linear-gradient(135deg, #080808 0%, #0a1a12 100%); }
+    
     .match-title{ font-family:'Oswald',sans-serif; font-size:14px; margin-bottom:8px; text-transform:uppercase; color:#fff; }
     .match-info{ font-size:9px; color:#9a9a9a; margin-bottom:12px; text-transform:uppercase; font-weight:900; display:flex; justify-content:space-between; gap:4px; }
     .live-indicator-text { color: var(--live-red); font-weight: 900; display: none; }
     .match-card.is-live .live-indicator-text { display: inline-block; }
-    .action-row{ display:flex; flex-wrap: wrap; gap:6px; }
+    
+    .action-row{ display:flex; flex-wrap: wrap; gap:6px; margin-top: auto; }
     .btn-assign{ flex:1; min-width: 45%; background:#161616; color:#fff; border:1px solid #333; padding:8px; cursor:pointer; font-size:10px; font-weight:900; transition:.2s; text-transform:uppercase; font-family:inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-assign:hover{ background:var(--accent); border-color:var(--accent); color:#fff; }
 
@@ -186,9 +189,16 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
   };
   const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
   const STREAMS = { DEFAULT: { primary: "https://d302.soft4game.com/o22/stream183/o/stream183/chunks.m3u8", backup:  "https://embed.unrealmat.com/live/stream1" } };
-  const CHANNELS_247 = [];
-  const getStreamConfig = (brand) => STREAMS[brand] || STREAMS.DEFAULT;
+  
+  // Links en Español fijos
+  const SPANISH_LINKS = [
+    { "nombre": "ES: VKVideo", "url": "https://live.vkvideo.ru/app/embed/noobcraftero" },
+    { "nombre": "ES: RingMotif", "url": "https://ringmotif.net/e/jmekma4q2tzcn" },
+    { "nombre": "ES: BozzTV", "url": "https://183.bozztv.com/giatv/giatv-BiblieMatches/BiblieMatches/playlist.m3u8" },
+    { "nombre": "ES: HLS Stream", "url": "https://81j8b6.a737cozfwjmm.net:8443/hls/7i3bhp9zq8spc.m3u8?s=597qVniU09e_UstrppKsww&e=1794638911" }
+  ];
 
+  const getStreamConfig = (brand) => STREAMS[brand] || STREAMS.DEFAULT;
   const safeStorage = { get(k){ try { return localStorage.getItem(k); } catch(_) { return null; } }, set(k, v){ try { localStorage.setItem(k, v); return true; } catch(_) { return false; } }, remove(k){ try { localStorage.removeItem(k); } catch(_) {} } };
   const corePlayers = { a: { plyr:null, hls:null, fallbackTimer:null, networkRetries:0, streamTriggered:false, currentTitle:null, currentBrand:null, currentUrl:null }, b: { plyr:null, hls:null, fallbackTimer:null, networkRetries:0, streamTriggered:false, currentTitle:null, currentBrand:null, currentUrl:null } };
 
@@ -198,11 +208,11 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
   let activeFetchId = 0;
   let currentFeedMode = 'LIVE';
   let currentBrandFilter = 'OMNI';
-  let jsonEvents = [];
+  let jsonEvents = []; // Guardaremos el JSON aquí
 
   function detectShow(txt){ const u = String(txt || '').toUpperCase(); if (/\bRAW\b/.test(u)) return 'card-raw'; if (/\bSMACKDOWN\b/.test(u)) return 'card-sd'; if (/\bNXT\b/.test(u)) return 'card-nxt'; if (/\bDYNAMITE\b/.test(u)) return 'card-dyn'; if (/\bCOLLISION\b/.test(u)) return 'card-col'; if (/\bTNA\b/.test(u)) return 'card-tna'; if (/\bNJPW\b/.test(u)) return 'card-njpw'; return ''; }
   function normalizar(texto) { return (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase(); }
-
+  
   function bootstrapPlyr(slot){ if (typeof Plyr === 'undefined') return; const el = document.getElementById(`vid-${slot}`); if (!el || corePlayers[slot].plyr) return; corePlayers[slot].plyr = new Plyr(el, { controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'] }); }
   function ensurePlayerB(){ if (!corePlayers.b.plyr) bootstrapPlyr('b'); }
   
@@ -299,15 +309,15 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     const ticker = document.getElementById('main-ticker'); ticker.innerHTML = '';
     const loading = document.createElement('div'); loading.style.cssText = 'padding:20px; font-family:Oswald; color: var(--accent);'; loading.textContent = 'SINTONIZANDO EMISIONES...'; ticker.appendChild(loading);
 
-    if (currentFeedMode === 'REPLAY' || jsonEvents.length === 0) {
-        try {
-            const res = await fetch(`../output/agenda_wrestling.json?v=${Date.now()}`);
-            if (res.ok) { const data = await res.json(); jsonEvents = data.eventos || []; }
-        } catch(e) { console.log("Error JSON Wrest:", e); }
-    }
+    // 1. Siempre obtenemos el JSON primero (para tener Live y Replay a mano)
+    try {
+        const res = await fetch(`../output/agenda_wrestling.json?v=${Date.now()}`);
+        if (res.ok) { const data = await res.json(); jsonEvents = data.eventos || []; }
+    } catch(e) { console.log("Error JSON Wrest:", e); }
 
+    // 2. Si estamos en REPLAY
     if (currentFeedMode === 'REPLAY') {
-        let replays = jsonEvents.filter(e => e.tipo === "REPLAY");
+        let replays = jsonEvents.filter(e => e.servidores_replay && e.servidores_replay.length > 0);
         if (filter !== 'OMNI') replays = replays.filter(e => e.torneo === filter);
         
         if (replays.length === 0) {
@@ -317,15 +327,19 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
         }
         document.getElementById('timer-status').innerText = 'SECCION DE REPETICIONES'; document.getElementById('timer').innerText = '∞ REPLAY';
         ticker.innerHTML = '';
-        replays.forEach(ev => { ticker.appendChild(buildJsonCard(ev, false)); });
+        replays.forEach(ev => { ticker.appendChild(buildReplayCard(ev)); });
         return;
     }
 
+    // 3. Si estamos en LIVE (Consultar Google Calendar y filtrar por 2.5h)
     const fetchId = ++activeFetchId; if (currentFetchController) currentFetchController.abort();
     currentFetchController = new AbortController(); const signal = currentFetchController.signal;
     const isCurrent = () => fetchId === activeFetchId;
     
-    const timeMin = new Date().toISOString(); const targets = filter === "OMNI" ? Object.keys(BRANDS) : [filter];
+    // TRUCO: Traemos eventos desde 6 horas atrás, para que aparezca el show que empezó hace 1 hora
+    const timeMin = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(); 
+    const targets = filter === "OMNI" ? Object.keys(BRANDS) : [filter];
+    
     const promises = targets.map(async (brand) => {
       try {
         const calendarId = encodeURIComponent(BRANDS[brand].calendarId);
@@ -349,63 +363,71 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
       
     } catch(err){ 
         if (!isCurrent()) return; 
-        renderDashboard([], filter); // Si falla todo, pasamos array vacío para que el JSON haga su trabajo
+        renderDashboard([], filter); 
     }
   }
 
   function renderDashboard(calendarList, filter){
     const ticker = document.getElementById('main-ticker');
+    const now = Date.now();
     
-    // 1. Fusionar eventos del Calendario con los eventos JSON EN VIVO
-    let finalList = calendarList ? [...calendarList] : [];
+    // 1. Filtrar calendario: Solo eventos que empezaron hace MENOS de 2.5 horas
+    let finalList = (calendarList || []).filter(ev => {
+        const diffHours = (now - ev.start) / (1000 * 60 * 60);
+        return diffHours < 2.5; // El evento sigue "vivo" o es futuro
+    });
     
-    jsonEvents.filter(e => e.tipo === "EN VIVO").forEach(je => {
-        if (filter !== 'OMNI' && je.torneo !== filter) return;
-        const existing = finalList.find(cl => normalizar(cl.summary).includes(normalizar(je.titulo)) || normalizar(je.titulo).includes(normalizar(cl.summary)));
-        if (!existing) {
-            // Si no está en el calendario, lo agregamos como un evento de "ahora mismo"
-            finalList.push({
-                summary: je.titulo,
-                brandName: je.torneo,
-                start: Date.now(),
-                servidores: je.servidores,
-                isLiveNow: true
-            });
-        } else {
-            // Si ya está, le inyectamos los servidores
-            existing.servidores = je.servidores;
+    // 2. Inyectar servidores a los eventos del calendario
+    finalList.forEach(ev => {
+        // Buscar si hay match en el JSON
+        const match = jsonEvents.find(je => {
+            const n1 = normalizar(ev.summary); const n2 = normalizar(je.titulo);
+            return n1.includes(n2) || n2.includes(n1);
+        });
+
+        let allLinks = [];
+        if (match) {
+            allLinks = [...match.servidores_live];
         }
+        
+        // Siempre agregamos los links en español (por si el scraper falló o no los tenia)
+        allLinks = [...allLinks, ...SPANISH_LINKS];
+
+        // MAGIA: Seleccionar max 2 Español y max 2 Inglés
+        let esLinks = allLinks.filter(l => l.nombre.includes('ES:'));
+        let enLinks = allLinks.filter(l => !l.nombre.includes('ES:'));
+        
+        ev.servidores = [...esLinks.slice(0, 2), ...enLinks.slice(0, 2)];
     });
 
-    if (!finalList || finalList.length === 0) { 
-        ticker.innerHTML = '<div style="padding:20px; font-family:Oswald; color:#555;">NO HAY EMISIONES PROGRAMADAS PRÓXIMAMENTE</div>'; 
+    if (finalList.length === 0) { 
+        ticker.innerHTML = '<div style="padding:20px; font-family:Oswald; color:#555;">NO HAY EMISIONES EN VIVO O PRÓXIMAS</div>'; 
         document.getElementById('timer-status').innerText = 'SIN EVENTOS PENDIENTES'; document.getElementById('timer').innerText = '--D --H --M'; return; 
     }
 
     const accent = filter === "OMNI" ? "#00ff88" : (BRANDS[filter]?.color ?? "#e21017"); document.documentElement.style.setProperty('--accent', accent);
     
-    // 2. Deduplicar por nombre
+    // 3. Deduplicar por nombre y ordenar
     const uniqueShows = new Map();
     finalList.forEach(ev => {
         const showName = String(ev.summary).toUpperCase().trim();
-        if (!uniqueShows.has(showName) || new Date(ev.start).getTime() < new Date(uniqueShows.get(showName).start).getTime()) { 
+        if (!uniqueShows.has(showName) || ev.start < uniqueShows.get(showName).start) { 
             uniqueShows.set(showName, ev); 
         }
     });
     
     let list = Array.from(uniqueShows.values());
-    list.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    list.sort((a, b) => a.start - b.start);
     
     updateMasterTimer(list[0].start, list[0].summary); ticker.innerHTML = '';
     
     list.forEach(ev => {
-      const startTime = new Date(ev.start).getTime(); const endTime = ev.end ? new Date(ev.end).getTime() : startTime + 14400000;
-      const isLiveNow = ev.isLiveNow || (Date.now() >= startTime && Date.now() < endTime); 
-      ticker.appendChild(buildCard(ev, isLiveNow, ev.servidores));
+      const isLiveNow = now >= ev.start && now < (ev.end || ev.start + 14400000); 
+      ticker.appendChild(buildLiveCard(ev, isLiveNow));
     });
   }
 
-  function buildCard(ev, isLiveNow, servidores){
+  function buildLiveCard(ev, isLiveNow){
     const card = document.createElement('div'); card.className = `match-card ${detectShow(ev.summary)}${isLiveNow ? ' is-live' : ''}`;
     const info = document.createElement('div'); info.className = 'match-info'; const brandSpan = document.createElement('span'); brandSpan.textContent = ev.brandName || '';
     const liveSpan = document.createElement('span'); liveSpan.className = 'live-indicator-text'; liveSpan.textContent = '• EN VIVO'; const timeSpan = document.createElement('span');
@@ -414,28 +436,25 @@ function recargarBlog(btn) { btn.classList.add('spinning'); setTimeout(() => { w
     
     const actions = document.createElement('div'); actions.className = 'action-row';
     
-    if (servidores && servidores.length > 0) {
-        servidores.slice(0, 4).forEach(srv => {
+    if (ev.servidores && ev.servidores.length > 0) {
+        ev.servidores.forEach(srv => {
             const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = srv.nombre;
             btn.addEventListener('click', () => hookStream('a', `${ev.summary} - ${srv.nombre}`, ev.brandName, srv.url)); actions.appendChild(btn);
         });
-    } else {
-        const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = `Señal A`; btn.addEventListener('click', () => hookStream('a', ev.summary, ev.brandName)); actions.appendChild(btn);
-        const btnB = document.createElement('button'); btnB.type = 'button'; btnB.className = 'btn-assign'; btnB.textContent = `Señal B`; btnB.addEventListener('click', () => hookStream('b', ev.summary, ev.brandName)); actions.appendChild(btnB);
     }
     
     card.appendChild(info); card.appendChild(title); card.appendChild(actions); return card;
   }
 
-  function buildJsonCard(ev, isLiveNow){
+  function buildReplayCard(ev){
     const card = document.createElement('div'); card.className = `match-card ${detectShow(ev.titulo)}`;
     const info = document.createElement('div'); info.className = 'match-info'; const brandSpan = document.createElement('span'); brandSpan.textContent = ev.torneo || '';
     const liveSpan = document.createElement('span'); liveSpan.className = 'live-indicator-text'; liveSpan.textContent = '• REPLAY'; const timeSpan = document.createElement('span'); timeSpan.textContent = 'VOD';
     info.appendChild(brandSpan); info.appendChild(liveSpan); info.appendChild(timeSpan); const title = document.createElement('div'); title.className = 'match-title'; title.textContent = ev.titulo || 'Repetición';
     
     const actions = document.createElement('div'); actions.className = 'action-row';
-    ev.servidores.slice(0, 3).forEach(srv => {
-        const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = srv.nombre.substring(0, 15);
+    ev.servidores_replay.slice(0, 4).forEach(srv => { // Mostramos hasta 4 (FHD, HD, PvP, Parts)
+        const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn-assign'; btn.textContent = srv.nombre.substring(0, 20);
         btn.addEventListener('click', () => hookStream('a', `${ev.titulo} - ${srv.nombre}`, ev.torneo, srv.url)); actions.appendChild(btn);
     });
     card.appendChild(info); card.appendChild(title); card.appendChild(actions); return card;
