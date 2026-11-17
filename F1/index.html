@@ -391,7 +391,54 @@
       document.getElementById('exit-cinema-btn').style.display='none';
     }
 
-    document.addEventListener('DOMContentLoaded', ()=>{ buildStadiumGrid(1, null); cargarAgenda(); });
+    document.addEventListener('DOMContentLoaded', ()=>{
+  buildStadiumGrid(1, null);
+  cargarAgenda();
+
+  // ===== DEEP-LINK DESDE EL HUB =====
+  (function handleDeepLink(){
+    const params = new URLSearchParams(location.search);
+    const auto = params.get('auto');
+    const eventName = params.get('event');
+    if(!auto && !eventName) return;
+
+    let intentos = 0;
+    const tryLoad = setInterval(()=>{
+      intentos++;
+      const slot0 = document.getElementById('stadium-core-0');
+      const agendaLista = datosOriginales && datosOriginales.length >= 0 && slot0;
+
+      if(agendaLista){
+        clearInterval(tryLoad);
+
+        if(auto){
+          const url = decodeURIComponent(auto);
+          slotData[0] = { url };
+          renderStream(0, url, false);
+          applyMuteStates();
+          console.log('[DeepLink] Stream cargado en slot 0:', url);
+          return;
+        }
+
+        if(eventName){
+          const objetivo = normalizar(eventName);
+          const idx = datosOriginales.findIndex(e => normalizar(e.titulo).includes(objetivo));
+          if(idx !== -1){
+            prepararPartido(idx);
+            console.log('[DeepLink] Evento encontrado:', datosOriginales[idx].titulo);
+          } else {
+            console.warn('[DeepLink] Evento no encontrado en agenda:', eventName);
+          }
+        }
+      }
+
+      if(intentos > 75){
+        clearInterval(tryLoad);
+        console.warn('[DeepLink] Timeout esperando agenda. Abortando.');
+      }
+    }, 200);
+  })();
+});
   </script>
 </body>
 </html>
