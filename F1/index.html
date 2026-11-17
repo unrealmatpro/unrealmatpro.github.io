@@ -203,14 +203,37 @@
       applyMuteStates();
     }
 
+    /* =========================================================
+       CAMBIO CLAVE: focusSlot NO recarga el slot que pierde audio.
+       Solo recarga el slot que GANA audio (para quitarle el mute).
+       Al slot que pierde audio se le envía postMessage('mute') sin recargar.
+       ========================================================= */
     function focusSlot(i){
       if(i===activeSlotIndex) return;
       const prev = activeSlotIndex;
       activeSlotIndex = i;
       targetSlotIndex = i;
-      if(slotData[prev] && slotData[prev].url) renderStream(prev, slotData[prev].url, true);
-      if(slotData[i] && slotData[i].url)     renderStream(i,    slotData[i].url,    false);
+
+      // 1) Silenciar el slot anterior SIN recargar (postMessage best-effort)
+      muteIframeWithoutReload(prev);
+
+      // 2) Recargar SOLO el slot que gana audio, sin mute
+      if(slotData[i] && slotData[i].url) renderStream(i, slotData[i].url, false);
+
       applyMuteStates();
+    }
+
+    // Intenta silenciar el iframe del slot sin recargarlo
+    function muteIframeWithoutReload(slotIdx){
+      const core = document.getElementById('stadium-core-'+slotIdx);
+      if(!core) return;
+      const iframe = core.querySelector('iframe');
+      if(!iframe) return;
+      try{
+        iframe.contentWindow.postMessage({ type:'mute', muted:true }, '*');
+        iframe.contentWindow.postMessage('mute', '*');
+        iframe.contentWindow.postMessage({ event:'command', func:'mute', args:[] }, '*');
+      }catch(e){ /* cross-origin: no pasa nada, el navegador silenciará al perder foco */ }
     }
 
     function applyMuteStates(){
