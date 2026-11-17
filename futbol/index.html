@@ -432,10 +432,59 @@
     }
 
     document.addEventListener('DOMContentLoaded', ()=>{
-      buildStadiumGrid(1, document.getElementById('btn-g1'));
-      iniciarReloj();
-      cargarAgenda();
-    });
+  buildStadiumGrid(1, document.getElementById('btn-g1'));
+  iniciarReloj();
+  cargarAgenda();
+
+  // ===== DEEP-LINK DESDE EL HUB =====
+  // Acepta ?auto=<streamUrl>&event=<nombre>&t=<timestamp>
+  (function handleDeepLink(){
+    const params = new URLSearchParams(location.search);
+    const auto = params.get('auto');
+    const eventName = params.get('event');
+    if(!auto && !eventName) return; // nada que hacer
+
+    // Esperar a que cargarAgenda() termine y los slots existan
+    let intentos = 0;
+    const tryLoad = setInterval(()=>{
+      intentos++;
+      const slot0 = document.getElementById('stadium-core-0');
+      const agendaLista = datosOriginales && datosOriginales.length >= 0 && slot0;
+
+      if(agendaLista){
+        clearInterval(tryLoad);
+
+        // Caso 1: URL directa de stream (?auto=)
+        if(auto){
+          const url = decodeURIComponent(auto);
+          slotData[0] = { url };
+          renderStream(0, url, false);
+          applyMuteStates();
+          console.log('[DeepLink] Stream cargado en slot 0:', url);
+          return;
+        }
+
+        // Caso 2: solo nombre de evento (?event=) → buscar en la agenda
+        if(eventName){
+          const objetivo = normalizar(eventName);
+          const idx = datosOriginales.findIndex(e => normalizar(e.titulo).includes(objetivo));
+          if(idx !== -1){
+            prepararPartido(idx);
+            console.log('[DeepLink] Evento encontrado:', datosOriginales[idx].titulo);
+          } else {
+            console.warn('[DeepLink] Evento no encontrado en agenda:', eventName);
+          }
+        }
+      }
+
+      // Timeout de seguridad: 15s (75 intentos × 200ms)
+      if(intentos > 75){
+        clearInterval(tryLoad);
+        console.warn('[DeepLink] Timeout esperando agenda. Abortando.');
+      }
+    }, 200);
+  })();
+});
   </script>
 </body>
 </html>
