@@ -159,7 +159,7 @@
       if(!date) return orig||"PRÓXIMO";
       const diff=(new Date().getTime()-date.getTime())/(1000*60*60);
       if(diff<0) return "PRÓXIMO";
-      if(diff<=2.5) return "EN VIVO";
+      if(diff<=2.2) return "EN VIVO";
       return "FINALIZADO";
     }
 
@@ -292,7 +292,7 @@
             const data = await res.json();
             (data.eventos||[]).forEach(e=>{
               e.eventDateObj = parseEventDate(e);
-              if(e.eventDateObj && (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60) <= 2.5) eventos.push(e);
+              if(e.eventDateObj && (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60) <= 2.2) eventos.push(e);
             });
           }
         }catch(err){ console.log('Error JSON:', err); }
