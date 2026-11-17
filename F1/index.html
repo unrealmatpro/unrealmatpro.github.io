@@ -30,11 +30,15 @@
     @keyframes f1Ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
     .stadium-main { flex: 1; display: grid; grid-template-columns: 1fr 420px; overflow: hidden; height: calc(100vh - 67px); }
     .stadium-player-zone { display: flex; flex-direction: column; background: #000; height: 100%; width: 100%; min-height: 0; }
-    .video-wrapper { width: 100%; aspect-ratio: 16/9; max-height: calc(100vh - 200px); position: relative; flex-shrink: 0; }
+    .video-wrapper { width: 100%; flex: 1; min-height: 0; position: relative; }
     #stadium-grid-mesh { width: 100%; height: 100%; display: grid; gap: 10px; }
     .stadium-monitor { background: #000; overflow: hidden; position: relative; border: 2px solid rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; }
-    .stadium-monitor.focus-pitch { border-color: var(--f1-red); }
-    .monitor-tag { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.85); padding: 5px 12px; border-radius: 4px; font-size: 10px; font-weight: 700; color: #fff; border-left: 3px solid var(--f1-red); z-index: 10; pointer-events: none; }
+    .stadium-monitor.focus-pitch { border-color: var(--f1-red); box-shadow: inset 0 0 20px rgba(225,6,0,0.15); }
+    .monitor-tag { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.85); padding: 5px 12px; border-radius: 4px; font-size: 10px; font-weight: 700; color: #fff; border-left: 3px solid var(--f1-red); z-index: 10; cursor: pointer; }
+    .stadium-core { width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #555; }
+    .mute-badge { position: absolute; top: 42px; right: 8px; background: rgba(225,6,0,0.92); color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 50; display: none; align-items: center; gap: 5px; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); }
+    .mute-badge.visible { display: flex; }
+    .mute-badge:hover { background: rgba(255,50,0,0.98); }
     #alternative-servers-panel { display: none; padding: 15px; background: #111; border-bottom: 2px solid rgba(255,255,255,0.05); flex-shrink: 0; max-height: 120px; overflow-y: auto; }
     .alt-servers-title { color: var(--f1-red); font-size: 12px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
     .alt-servers-list { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -71,7 +75,7 @@
       .stadium-controls { width: 100%; justify-content: space-between; }
       .grid-btn { flex: 1; justify-content: center; padding: 0 5px; }
       .stadium-main { grid-template-columns: 1fr; height: auto; overflow: visible; }
-      .video-wrapper { aspect-ratio: 16/9; max-height: none; }
+      .video-wrapper { aspect-ratio: 16/9; flex: none; height: auto; min-height: auto; }
       .stadium-sidebar { border-left: none; border-top: 2px solid var(--f1-red); height: auto; overflow: visible; }
       .tab-content { overflow-y: visible; height: auto; max-height: none; }
     }
@@ -126,284 +130,245 @@
   </div>
 
   <script>
-    let datosOriginales = []; 
+    let datosOriginales = [];
+    let slotData = [];
     let activeSlotIndex = 0;
+    let targetSlotIndex = 0;
     const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
     const CAL_ID = "i3vhcidiluqakvb92ue0hl3nmg@group.calendar.google.com";
 
-    function recargarBlog(btn) {
-        btn.classList.add('spinning');
-        setTimeout(() => { location.reload(); }, 500);
-    }
+    function recargarBlog(btn){ btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
+    function escapeHTML(str){ if(!str) return ''; return str.replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
+    function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
 
-    function escapeHTML(str) {
-        if(!str) return '';
-        return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
-    }
-    function normalizar(texto) { return (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase(); }
-
-    function parseEventDate(e) {
-        if (e.fecha_completa) {
-            let d = new Date(e.fecha_completa);
-            if (!isNaN(d.getTime())) return d;
-            if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)) {
-                let d2 = new Date(e.fecha_completa.replace(" ", "T") + ":00-05:00");
-                if (!isNaN(d2.getTime())) return d2;
-            }
+    function parseEventDate(e){
+      if(e.fecha_completa){
+        let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d;
+        if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){
+          let d2=new Date(e.fecha_completa.replace(" ","T")+":00-05:00"); if(!isNaN(d2.getTime())) return d2;
         }
-        if (e.hora && e.hora !== "00:00") {
-            const now = new Date();
-            const utcDate = new Date(now.getTime() - (5 * 60 * 60 * 1000));
-            const isoStr = `${utcDate.getUTCFullYear()}-${String(utcDate.getUTCMonth()+1).padStart(2,'0')}-${String(utcDate.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`;
-            let d3 = new Date(isoStr);
-            if (!isNaN(d3.getTime())) return d3;
-        }
-        return null;
-    }
-
-    function getDynamicStatus(eventDate, originalStatus) {
-        if (!eventDate) return originalStatus || "PRÓXIMO";
-        const now = new Date();
-        const diffMs = now.getTime() - eventDate.getTime();
-        const diffHours = diffMs / (1000 * 60 * 60);
-        if (diffMs < 0) return "PRÓXIMO";
-        if (diffHours >= 0 && diffHours <= 2.5) return "EN VIVO";
-        return "FINALIZADO";
-    }
-
-    function buildStadiumGrid(slots, button) {
-      const mesh = document.getElementById('stadium-grid-mesh');
-      document.querySelectorAll('.stadium-controls .grid-btn').forEach(btn => { if(!btn.classList.contains('cinema-btn')) btn.classList.remove('active-grid'); });
-      if (button) button.classList.add('active-grid');
-      mesh.innerHTML = '';
-      if (slots === 1) { mesh.style.gridTemplateColumns = '1fr'; mesh.style.gridTemplateRows = '1fr'; }
-      if (slots === 2) { mesh.style.gridTemplateColumns = '1fr 1fr'; mesh.style.gridTemplateRows = '1fr'; }
-      if (slots === 4) { mesh.style.gridTemplateColumns = '1fr 1fr'; mesh.style.gridTemplateRows = '1fr 1fr'; }
-      for (let i = 0; i < slots; i++) {
-        const div = document.createElement('div');
-        div.className = 'stadium-monitor' + (i === 0 ? ' focus-pitch' : '');
-        div.id = 'stadium-slot-' + i;
-        div.onclick = function() { changeFocusSlot(i); };
-        div.innerHTML = `
-          <div class="monitor-tag"><i class="fas fa-play-circle"></i> TV 0${i+1}</div>
-          <div id="stadium-core-${i}" style="width:100%; height:100%; background:#000; display:flex; align-items:center; justify-content:center; flex-direction:column; color:#555;">
-             <i class="fas fa-tv" style="font-size:40px; margin-bottom:10px;"></i>
-             <span style="font-size:12px; font-weight:600; text-align:center; padding:0 10px;">Selecciona una sesión</span>
-          </div>
-        `;
-        mesh.appendChild(div);
       }
-      activeSlotIndex = 0;
+      if(e.hora && e.hora!=="00:00"){
+        const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000));
+        const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`;
+        let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3;
+      }
+      return null;
+    }
+    function getDynamicStatus(date, orig){
+      if(!date) return orig||"PRÓXIMO";
+      const diff=(new Date().getTime()-date.getTime())/(1000*60*60);
+      if(diff<0) return "PRÓXIMO";
+      if(diff<=2.5) return "EN VIVO";
+      return "FINALIZADO";
     }
 
-    function changeFocusSlot(id) {
-      activeSlotIndex = id;
-      document.querySelectorAll('.stadium-monitor').forEach(m => m.classList.remove('focus-pitch'));
-      const el = document.getElementById('stadium-slot-' + id);
-      if (el) el.classList.add('focus-pitch');
+    function getSlotCount(){ return document.querySelectorAll('.stadium-monitor').length; }
+    function findFirstEmptySlot(){ for(let i=0;i<getSlotCount();i++){ if(!slotData[i]||!slotData[i].url) return i; } return -1; }
+
+    function createSlotElement(i){
+      const div = document.createElement('div');
+      div.className = 'stadium-monitor' + (i===0?' focus-pitch':'');
+      div.id = 'stadium-slot-'+i;
+      div.onclick = () => focusSlot(i);
+      div.innerHTML = `
+        <div class="monitor-tag" onclick="event.stopPropagation(); focusSlot(${i})"><i class="fas fa-play-circle"></i> TV 0${i+1}</div>
+        <div id="stadium-core-${i}" class="stadium-core">
+          <i class="fas fa-tv" style="font-size:40px; margin-bottom:10px;"></i>
+          <span style="font-size:12px; font-weight:600; text-align:center; padding:0 10px;">Selecciona una sesión</span>
+        </div>
+        <div class="mute-badge" id="mute-badge-${i}" onclick="event.stopPropagation(); focusSlot(${i})"><i class="fas fa-volume-mute"></i> Activar audio</div>`;
+      return div;
     }
 
-    async function cargarAgenda() {
-        try {
-            let eventos = [];
-            const ahora = new Date();
+    function buildStadiumGrid(slots, button){
+      const mesh = document.getElementById('stadium-grid-mesh');
+      document.querySelectorAll('.stadium-controls .grid-btn').forEach(b=>{ if(!b.classList.contains('cinema-btn')) b.classList.remove('active-grid'); });
+      if(button) button.classList.add('active-grid');
 
-            // 1. Cargar JSON
-            try {
-                const res = await fetch(`../output/agenda_f1.json?v=${Date.now()}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    (data.eventos || []).forEach(e => {
-                        e.eventDateObj = parseEventDate(e);
-                        if (e.eventDateObj && (ahora.getTime() - e.eventDateObj.getTime()) / (1000 * 60 * 60) <= 2.5) {
-                            eventos.push(e);
-                        }
-                    });
-                }
-            } catch (err) { console.log('Error JSON:', err); }
+      if(slots===1){ mesh.style.gridTemplateColumns='1fr'; mesh.style.gridTemplateRows='1fr'; }
+      if(slots===2){ mesh.style.gridTemplateColumns='1fr 1fr'; mesh.style.gridTemplateRows='1fr'; }
+      if(slots===4){ mesh.style.gridTemplateColumns='1fr 1fr'; mesh.style.gridTemplateRows='1fr 1fr'; }
 
-            // 2. Cargar Calendario de Google
-            try {
-                const timeMin = new Date(Date.now() - 2.5 * 60 * 60 * 1000).toISOString();
-                const calRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CAL_ID)}/events?key=${API_KEY}&timeMin=${timeMin}&maxResults=15&singleEvents=true&orderBy=startTime`);
-                if (calRes.ok) {
-                    const calData = await calRes.json();
-                    (calData.items || []).forEach(ev => {
-                        const rawDate = ev.start.dateTime || (ev.start.date + 'T00:00:00');
-                        const dateObj = new Date(rawDate);
-                        if ((ahora.getTime() - dateObj.getTime()) / (1000 * 60 * 60) <= 2.5) {
-                            eventos.push({
-                                titulo: ev.summary || 'Sesión F1',
-                                torneo: 'CALENDARIO F1',
-                                eventDateObj: dateObj,
-                                servidores: [], // Sin servidores (se abrirá el aviso de "No publicada")
-                                isCalendar: true
-                            });
-                        }
-                    });
-                }
-            } catch (err) { console.log('Error Calendario:', err); }
-
-            // 3. Fusionar y evitar duplicados (priorizando los que tienen servidores)
-            const uniqueMap = new Map();
-            eventos.forEach(e => {
-                // Limpiamos el título para agrupar variaciones mínimas
-                const key = normalizar(e.titulo).replace(/[^A-Z0-9]/g, '');
-                
-                if (!uniqueMap.has(key)) {
-                    uniqueMap.set(key, e);
-                } else {
-                    const existing = uniqueMap.get(key);
-                    // Si el nuevo tiene servidores y el viejo no, lo reemplazamos
-                    if (existing.servidores.length === 0 && e.servidores.length > 0) {
-                        uniqueMap.set(key, e);
-                    }
-                }
-            });
-
-            let listaFinal = Array.from(uniqueMap.values());
-
-            // 4. Ordenar cronológicamente
-            listaFinal.sort((a, b) => a.eventDateObj.getTime() - b.eventDateObj.getTime());
-
-            datosOriginales = listaFinal;
-            renderSidebarFeed(datosOriginales);
-            
-        } catch (e) {
-            console.error(e);
-            document.getElementById('stadium-feed-target').innerHTML = '<div style="padding:20px; opacity:0.5; text-align:center; color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> No se pudo cargar la agenda.</div>';
-        }
+      const current = mesh.children.length;
+      if(slots > current){
+        for(let i=current; i<slots; i++) mesh.appendChild(createSlotElement(i));
+      } else if(slots < current){
+        for(let i=current-1; i>=slots; i--){ mesh.removeChild(mesh.children[i]); slotData[i]=null; }
+        if(activeSlotIndex >= slots) activeSlotIndex = 0;
+        if(targetSlotIndex >= slots) targetSlotIndex = 0;
+      }
+      const firstEmpty = findFirstEmptySlot();
+      if(firstEmpty !== -1) targetSlotIndex = firstEmpty;
+      applyMuteStates();
     }
 
-    function renderSidebarFeed(events) {
-      const box = document.getElementById('stadium-feed-target');
-      if (!events || events.length === 0) {
-        box.innerHTML = '<div style="padding:20px; opacity:0.5; text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px; margin-bottom:10px;"></i><br>No hay sesiones disponibles.</div>';
+    function focusSlot(i){
+      if(i===activeSlotIndex) return;
+      const prev = activeSlotIndex;
+      activeSlotIndex = i;
+      targetSlotIndex = i;
+      if(slotData[prev] && slotData[prev].url) renderStream(prev, slotData[prev].url, true);
+      if(slotData[i] && slotData[i].url)     renderStream(i,    slotData[i].url,    false);
+      applyMuteStates();
+    }
+
+    function applyMuteStates(){
+      for(let i=0;i<getSlotCount();i++){
+        const m = document.getElementById('stadium-slot-'+i);
+        if(m) m.classList.toggle('focus-pitch', i===activeSlotIndex);
+        const badge = document.getElementById('mute-badge-'+i);
+        const hasContent = slotData[i] && slotData[i].url;
+        if(badge) badge.classList.toggle('visible', !!hasContent && i!==activeSlotIndex);
+      }
+    }
+
+    function loadInTarget(url){
+      if(!url) return;
+      const isMuted = (targetSlotIndex !== activeSlotIndex);
+      slotData[targetSlotIndex] = { url };
+      renderStream(targetSlotIndex, url, isMuted);
+      applyMuteStates();
+      const nextEmpty = findFirstEmptySlot();
+      if(nextEmpty !== -1) targetSlotIndex = nextEmpty;
+    }
+
+    function renderStream(slotIdx, url, muted){
+      const core = document.getElementById('stadium-core-'+slotIdx);
+      if(!core) return;
+      if(!url || (!url.startsWith('https://streamxhd') && !url.startsWith('http://streamxhd'))){
+        core.innerHTML = '<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>';
         return;
       }
-      box.innerHTML = events.map((e, index) => {
-        const numOpciones = e.servidores ? e.servidores.length : 0;
-        
-        let safeTime = 'Por confirmar';
-        if (e.eventDateObj) {
-            // Mostramos Fecha (dd/mm) y Hora (HH:MM)
-            const f = e.eventDateObj.toLocaleDateString([], { day: '2-digit', month: '2-digit' });
-            const h = e.eventDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            safeTime = `${f} · ${h}`;
-        }
+      let finalUrl = url;
+      if(muted){ const sep = url.includes('?') ? '&' : '?'; finalUrl = url + sep + 'mute=1'; }
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      core.innerHTML = '';
+      const f = document.createElement('iframe');
+      f.src = finalUrl;
+      f.style.cssText = 'width:100%;height:100%;border:none;';
+      f.setAttribute('allowfullscreen','true'); f.setAttribute('webkitallowfullscreen','true'); f.setAttribute('mozallowfullscreen','true');
+      f.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture; user-activation';
+      f.setAttribute('referrerpolicy','no-referrer-when-downgrade');
+      core.appendChild(f);
+      if(isMobile){
+        const ov = document.createElement('div');
+        ov.style.cssText = 'position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#ffcc00;padding:8px 15px;border-radius:6px;font-size:10px;font-weight:bold;text-align:center;width:90%;max-width:400px;z-index:99999;border:1px solid #ffcc00;pointer-events:none;';
+        ov.innerHTML = '⚠️ Si el video no carga, activa el <b>bloqueador de ventanas emergentes</b>.';
+        core.appendChild(ov);
+      }
+    }
 
+    async function cargarAgenda(){
+      try{
+        let eventos = [];
+        const ahora = new Date();
+        try{
+          const res = await fetch(`../output/agenda_f1.json?v=${Date.now()}`);
+          if(res.ok){
+            const data = await res.json();
+            (data.eventos||[]).forEach(e=>{
+              e.eventDateObj = parseEventDate(e);
+              if(e.eventDateObj && (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60) <= 2.5) eventos.push(e);
+            });
+          }
+        }catch(err){ console.log('Error JSON:', err); }
+        try{
+          const tMin = new Date(Date.now()-2.5*60*60*1000).toISOString();
+          const calRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CAL_ID)}/events?key=${API_KEY}&timeMin=${tMin}&maxResults=15&singleEvents=true&orderBy=startTime`);
+          if(calRes.ok){
+            const calData = await calRes.json();
+            (calData.items||[]).forEach(ev=>{
+              const raw = ev.start.dateTime || (ev.start.date + 'T00:00:00');
+              const d = new Date(raw);
+              if((ahora.getTime()-d.getTime())/(1000*60*60) <= 2.5){
+                eventos.push({ titulo: ev.summary||'Sesión F1', torneo:'CALENDARIO F1', eventDateObj:d, servidores:[], isCalendar:true });
+              }
+            });
+          }
+        }catch(err){ console.log('Error Cal:', err); }
+
+        const map = new Map();
+        eventos.forEach(e=>{
+          const k = normalizar(e.titulo).replace(/[^A-Z0-9]/g,'');
+          if(!map.has(k)) map.set(k,e);
+          else { const ex=map.get(k); if(ex.servidores.length===0 && e.servidores.length>0) map.set(k,e); }
+        });
+        let lista = Array.from(map.values());
+        lista.sort((a,b)=>a.eventDateObj.getTime()-b.eventDateObj.getTime());
+        datosOriginales = lista;
+        renderSidebarFeed(datosOriginales);
+      }catch(e){
+        console.error(e);
+        document.getElementById('stadium-feed-target').innerHTML = '<div style="padding:20px;opacity:.5;text-align:center;color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> No se pudo cargar la agenda.</div>';
+      }
+    }
+
+    function renderSidebarFeed(events){
+      const box = document.getElementById('stadium-feed-target');
+      if(!events||events.length===0){ box.innerHTML='<div style="padding:20px;opacity:.5;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No hay sesiones disponibles.</div>'; return; }
+      box.innerHTML = events.map((e,idx)=>{
+        const num = e.servidores ? e.servidores.length : 0;
+        let safeTime='Por confirmar';
+        if(e.eventDateObj){ const f=e.eventDateObj.toLocaleDateString([],{day:'2-digit',month:'2-digit'}); const h=e.eventDateObj.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); safeTime=`${f} · ${h}`; }
         const status = getDynamicStatus(e.eventDateObj, e.status);
-        let badgeText, badgeStyle;
-
-        if (status === "FINALIZADO") {
-            badgeText = 'FINALIZADO';
-            badgeStyle = 'background:rgba(139, 163, 181, 0.2); color:#8ba3b5; border:1px solid rgba(139, 163, 181, 0.4);';
-        } else if (status === "EN VIVO") {
-            badgeText = 'EN VIVO';
-            badgeStyle = 'background:rgba(225,6,0,0.2); color:#e10600; border:1px solid #e10600;';
-        } else {
-            badgeText = 'PRÓXIMO';
-            badgeStyle = 'background:rgba(56, 189, 248, 0.2); color:#38bdf8; border:1px solid #38bdf8;';
-        }
-
-        const cardOpacity = (status === "FINALIZADO") ? "opacity: 0.65;" : "";
-
-        return `
-          <div class="stadium-card" onclick="prepararPartido(${index})" style="${cardOpacity}">
-            <div class="card-top">
-              <span class="card-league">${escapeHTML(e.torneo || "F1")}</span>
-              <span class="card-live" style="${badgeStyle}">${badgeText}</span>
-            </div>
-            <div class="card-title">${escapeHTML(e.titulo)}</div>
-            <div class="card-bottom">
-              <span><i class="fas fa-clock"></i> ${safeTime}</span>
-              <span><i class="fas fa-satellite-dish"></i> ${numOpciones > 0 ? numOpciones + ' Canales' : 'Sin señal aún'}</span>
-            </div>
-          </div>
-        `;
+        let bt, bs;
+        if(status==='FINALIZADO'){ bt='FINALIZADO'; bs='background:rgba(139,163,181,0.2);color:#8ba3b5;border:1px solid rgba(139,163,181,0.4);'; }
+        else if(status==='EN VIVO'){ bt='EN VIVO'; bs='background:rgba(225,6,0,0.2);color:#e10600;border:1px solid #e10600;'; }
+        else { bt='PRÓXIMO'; bs='background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid #38bdf8;'; }
+        const op = status==='FINALIZADO'?'opacity:.65;':'';
+        return `<div class="stadium-card" onclick="prepararPartido(${idx})" style="${op}">
+          <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||'F1')}</span><span class="card-live" style="${bs}">${bt}</span></div>
+          <div class="card-title">${escapeHTML(e.titulo)}</div>
+          <div class="card-bottom"><span><i class="fas fa-clock"></i> ${safeTime}</span><span><i class="fas fa-satellite-dish"></i> ${num>0?num+' Canales':'Sin señal aún'}</span></div>
+        </div>`;
       }).join('');
     }
 
-    function filtrarBusqueda() {
-        const input = normalizar(document.getElementById('search-input').value);
-        if (!input) { renderSidebarFeed(datosOriginales); return; }
-        const filtrados = datosOriginales.filter(e => normalizar(e.titulo).includes(input) || normalizar(e.torneo || "F1").includes(input));
-        renderSidebarFeed(filtrados);
+    function filtrarBusqueda(){
+      const inp = normalizar(document.getElementById('search-input').value);
+      if(!inp){ renderSidebarFeed(datosOriginales); return; }
+      renderSidebarFeed(datosOriginales.filter(e => normalizar(e.titulo).includes(inp) || normalizar(e.torneo||'F1').includes(inp)));
     }
 
-    function prepararPartido(index) {
-        const partido = datosOriginales[index];
-        if(!partido) return;
-        
-        if (!partido.servidores || partido.servidores.length === 0) {
-            const target = document.getElementById('stadium-core-' + activeSlotIndex);
-            target.innerHTML = '<div style="color:#fff; padding:20px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;"><i class="fas fa-hourglass-half" style="font-size:40px; color:var(--f1-red); margin-bottom:15px;"></i><h3 style="margin-bottom:10px;">Señal aún no publicada</h3><p style="font-size:12px; color:#999; max-width:300px;">La sesión está agendada, pero los canales aún no están disponibles.</p></div>';
-            document.getElementById('alternative-servers-panel').style.display = 'none';
-            return;
-        }
-
-        const panelAlt = document.getElementById('alternative-servers-panel');
-        const listaAlt = document.getElementById('alt-servers-list');
-        listaAlt.innerHTML = partido.servidores.map((srv, i) => {
-            const safeUrl = escapeHTML(srv.url);
-            const safeName = escapeHTML(srv.nombre || 'Opción '+(i+1));
-            return `<button class="alt-btn" onclick="reproducirEnTV('${safeUrl}')"><i class="fas fa-play"></i> ${safeName}</button>`;
-        }).join('');
-        panelAlt.style.display = 'block';
-        reproducirEnTV(partido.servidores[0].url);
-        if (window.innerWidth <= 900) window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function reproducirEnTV(streamUrl) {
-      const target = document.getElementById('stadium-core-' + activeSlotIndex);
-      if (!target) return;
-      if (!streamUrl || (!streamUrl.startsWith('https://streamxhd') && !streamUrl.startsWith('http://streamxhd'))) {
-          target.innerHTML = '<div style="color:#ff3b30; padding:20px; text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px; margin-bottom:10px;"></i><br>URL bloqueada.</div>';
-          return;
+    function prepararPartido(index){
+      const partido = datosOriginales[index];
+      if(!partido) return;
+      if(!partido.servidores || partido.servidores.length===0){
+        const t = document.getElementById('stadium-core-'+targetSlotIndex);
+        if(t) t.innerHTML = '<div style="color:#fff;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;"><i class="fas fa-hourglass-half" style="font-size:40px;color:var(--f1-red);margin-bottom:15px;"></i><h3 style="margin-bottom:10px;">Señal aún no publicada</h3><p style="font-size:12px;color:#999;max-width:300px;">La sesión está agendada, pero los canales aún no están disponibles.</p></div>';
+        document.getElementById('alternative-servers-panel').style.display = 'none';
+        return;
       }
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      target.innerHTML = '';
-      const secureFrame = document.createElement('iframe');
-      secureFrame.src = streamUrl;
-      secureFrame.style.width = '100%'; secureFrame.style.height = '100%'; secureFrame.style.border = 'none';
-      secureFrame.setAttribute('allowfullscreen', 'true'); secureFrame.setAttribute('webkitallowfullscreen', 'true'); secureFrame.setAttribute('mozallowfullscreen', 'true');
-      secureFrame.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture; user-activation';
-      secureFrame.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
-      target.appendChild(secureFrame);
-
-      if (isMobile) {
-          const mobileOverlay = document.createElement('div');
-          mobileOverlay.style.cssText = 'position:absolute; bottom:10px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.85); color:#ffcc00; padding:8px 15px; border-radius:6px; font-size:10px; font-weight:bold; text-align:center; width:90%; max-width:400px; z-index:99999; border:1px solid #ffcc00; pointer-events:none;';
-          mobileOverlay.innerHTML = `⚠️ Si el video no carga, activa el <b>bloqueador de ventanas emergentes</b> en tu navegador.`;
-          const linkOverlay = document.createElement('div');
-          linkOverlay.style.cssText = 'position:absolute; top:10px; right:10px; z-index:99999;';
-          linkOverlay.innerHTML = `<a href="${streamUrl}" target="_blank" rel="noopener noreferrer" style="background:rgba(255,59,48,0.9); color:white; text-decoration:none; padding:8px 12px; border-radius:6px; font-size:11px; font-weight:bold; display:flex; align-items:center; gap:6px; box-shadow:0 2px 10px rgba(0,0,0,0.5);"><i class="fas fa-external-link-alt"></i> Abrir</a>`;
-          target.appendChild(mobileOverlay);
-          target.appendChild(linkOverlay);
-      }
+      const panel = document.getElementById('alternative-servers-panel');
+      const list = document.getElementById('alt-servers-list');
+      list.innerHTML = partido.servidores.map((s,i)=>{
+        const u = escapeHTML(s.url), n = escapeHTML(s.nombre || 'Opción '+(i+1));
+        return `<button class="alt-btn" onclick="loadInTarget('${u}')"><i class="fas fa-play"></i> ${n}</button>`;
+      }).join('');
+      panel.style.display = 'block';
+      loadInTarget(partido.servidores[0].url);
+      if(window.innerWidth<=900) window.scrollTo({ top:0, behavior:'smooth' });
     }
 
-    function enableCinemaMode() {
-      document.querySelector('header').style.display = 'none';
-      document.getElementById('app-sidebar-stadium').style.display = 'none';
-      const mainView = document.getElementById('app-body-stadium');
-      mainView.style.gridTemplateColumns = '1fr'; mainView.style.height = '100vh';
-      document.getElementById('exit-cinema-btn').style.display = 'block';
+    function enableCinemaMode(){
+      document.querySelector('header').style.display='none';
+      document.getElementById('app-sidebar-stadium').style.display='none';
+      document.getElementById('alternative-servers-panel').style.display='none';
+      const m = document.getElementById('app-body-stadium');
+      m.style.gridTemplateColumns='1fr'; m.style.height='100vh';
+      document.getElementById('exit-cinema-btn').style.display='block';
+    }
+    function disableCinemaMode(){
+      document.querySelector('header').style.display='flex';
+      document.getElementById('app-sidebar-stadium').style.display='flex';
+      const m = document.getElementById('app-body-stadium');
+      m.style.gridTemplateColumns = window.innerWidth<=900?'1fr':'1fr 420px';
+      m.style.height = window.innerWidth<=900?'auto':'calc(100vh - 67px)';
+      document.getElementById('exit-cinema-btn').style.display='none';
     }
 
-    function disableCinemaMode() {
-      document.querySelector('header').style.display = 'flex';
-      document.getElementById('app-sidebar-stadium').style.display = 'flex';
-      const mainView = document.getElementById('app-body-stadium');
-      mainView.style.gridTemplateColumns = window.innerWidth <= 900 ? '1fr' : '1fr 420px';
-      mainView.style.height = window.innerWidth <= 900 ? 'auto' : 'calc(100vh - 67px)';
-      document.getElementById('exit-cinema-btn').style.display = 'none';
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      buildStadiumGrid(1, null);
-      cargarAgenda();
-    });
+    document.addEventListener('DOMContentLoaded', ()=>{ buildStadiumGrid(1, null); cargarAgenda(); });
   </script>
 </body>
 </html>
