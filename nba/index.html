@@ -190,9 +190,21 @@
       const prev = activeSlotIndex;
       activeSlotIndex = i;
       targetSlotIndex = i;
-      if(slotData[prev] && slotData[prev].url) renderStream(prev, slotData[prev].url, true);
-      if(slotData[i] && slotData[i].url)     renderStream(i,    slotData[i].url,    false);
+      muteIframeWithoutReload(prev);
+      if(slotData[i] && slotData[i].url) renderStream(i, slotData[i].url, false);
       applyMuteStates();
+    }
+
+    function muteIframeWithoutReload(slotIdx){
+      const core = document.getElementById('stadium-core-'+slotIdx);
+      if(!core) return;
+      const iframe = core.querySelector('iframe');
+      if(!iframe) return;
+      try{
+        iframe.contentWindow.postMessage({ type:'mute', muted:true }, '*');
+        iframe.contentWindow.postMessage('mute', '*');
+        iframe.contentWindow.postMessage({ event:'command', func:'mute', args:[] }, '*');
+      }catch(e){}
     }
 
     function applyMuteStates(){
