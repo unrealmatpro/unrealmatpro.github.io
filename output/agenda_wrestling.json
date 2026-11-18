@@ -1,45 +1,45 @@
 {
-  "fecha_actualizacion": "2026-11-17T22:50:19Z",
+  "fecha_actualizacion": "2026-11-18T10:57:31Z",
   "total": 2,
   "eventos": [
     {
       "id": "wr_0",
-      "titulo": "NxT",
-      "torneo": "WWE",
+      "titulo": "AEW Fite Adfree Live Stream S2",
+      "torneo": "AEW",
       "servidores_live": [
         {
-          "nombre": "CatchUp 85 SD",
-          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR85s&minify=gloria&line=108085_SD&meu=84-85",
+          "nombre": "CatchUp 87 SD",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR87s&minify=gloria&line=108087_SD&meu=86-87",
           "tipo": "iframe"
         },
         {
-          "nombre": "CatchUp 85 LQ",
-          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR85L&minify=gloria&line=108085_LQ&meu=84-85",
+          "nombre": "CatchUp 87 LQ",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR87L&minify=gloria&line=108087_LQ&meu=86-87",
           "tipo": "iframe"
         },
         {
-          "nombre": "CatchUp 85 HD",
-          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR85h&minify=gloria&line=108085_HD&meu=84-85",
+          "nombre": "CatchUp 87 HD",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR87h&minify=gloria&line=108087_HD&meu=86-87",
           "tipo": "iframe"
         },
         {
           "nombre": "CatchUp 83 FHD",
-          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR87h&minify=gloria&line=83_FHD&meu=84-85",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR87h&minify=gloria&line=83_FHD&meu=86-87",
           "tipo": "iframe"
         },
         {
-          "nombre": "Stream 85 SD",
-          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch85_SD&meu=84-85",
+          "nombre": "Stream 87 SD",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch87_SD&meu=86-87",
           "tipo": "iframe"
         },
         {
-          "nombre": "Stream 85 LQ",
-          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch85_LQ&meu=84-85",
+          "nombre": "Stream 87 LQ",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch87_LQ&meu=86-87",
           "tipo": "iframe"
         },
         {
-          "nombre": "Stream 85 FHD",
-          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch85_HD&meu=84-85",
+          "nombre": "Stream 87 HD",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch87_HD&meu=86-87",
           "tipo": "iframe"
         }
       ],
@@ -47,42 +47,42 @@
     },
     {
       "id": "wr_1",
-      "titulo": "WWE NxT Live",
-      "torneo": "WWE",
+      "titulo": "AEW Live Stream",
+      "torneo": "AEW",
       "servidores_live": [
         {
-          "nombre": "CatchUp 84 SD",
-          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR84s&minify=gloria&line=108084_SD&meu=84-85",
+          "nombre": "CatchUp 86 SD",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR86s&minify=gloria&line=108086_SD&meu=86-87",
           "tipo": "iframe"
         },
         {
-          "nombre": "CatchUp 84 LQ",
-          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR84L&minify=gloria&line=108084_LQ&meu=84-85",
+          "nombre": "CatchUp 86 LQ",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR86L&minify=gloria&line=108086_LQ&meu=86-87",
           "tipo": "iframe"
         },
         {
-          "nombre": "CatchUp 84 HD",
-          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR84h&minify=gloria&line=108084_HD&meu=84-85",
+          "nombre": "CatchUp 86 HD",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR86h&minify=gloria&line=108086_HD&meu=86-87",
           "tipo": "iframe"
         },
         {
-          "nombre": "Stream 84 SD",
-          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch84_SD&meu=84-85",
+          "nombre": "Stream 86 SD",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch86_SD&meu=86-87",
           "tipo": "iframe"
         },
         {
-          "nombre": "Stream 84 LQ",
-          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch84_LQ&meu=84-85",
+          "nombre": "Stream 86 LQ",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch86_LQ&meu=86-87",
           "tipo": "iframe"
         },
         {
-          "nombre": "Stream 84 HD",
-          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch84_HD&meu=84-85",
+          "nombre": "Stream 86 HD",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch86_HD&meu=86-87",
           "tipo": "iframe"
         },
         {
           "nombre": "Stream 83 FHD",
-          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch83_HD&meu=84-85",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch83_HD&meu=86-87",
           "tipo": "iframe"
         }
       ],
