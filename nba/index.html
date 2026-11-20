@@ -114,10 +114,20 @@
   </div>
 
   <script>
+    const WORKER_BASE = 'https://secure.vpnweb.workers.dev';
+    const USE_WORKER = true;
+
     let datosOriginales = [];
     let slotData = [];
     let activeSlotIndex = 0;
     let targetSlotIndex = 0;
+
+    function wrapWithWorker(url){
+      if(!url) return '';
+      if(!USE_WORKER) return url;
+      if(url.startsWith(WORKER_BASE)) return url;
+      return `${WORKER_BASE}/?url=${encodeURIComponent(url)}`;
+    }
 
     function recargarBlog(btn){ btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
     function escapeHTML(str){ if(!str) return ''; return str.replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
@@ -230,12 +240,12 @@
     function renderStream(slotIdx, url, muted){
       const core = document.getElementById('stadium-core-'+slotIdx);
       if(!core) return;
-      if(!url || (!url.startsWith('https://streamxhd') && !url.startsWith('http://streamxhd'))){
-        core.innerHTML = '<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>';
+      if(!url){
+        core.innerHTML = '<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL no disponible.</div>';
         return;
       }
-      let finalUrl = url;
-      if(muted){ const sep = url.includes('?') ? '&' : '?'; finalUrl = url + sep + 'mute=1'; }
+      let finalUrl = wrapWithWorker(url);
+      if(muted){ const sep = finalUrl.includes('?') ? '&' : '?'; finalUrl = finalUrl + sep + 'mute=1'; }
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       core.innerHTML = '';
       const f = document.createElement('iframe');
@@ -345,53 +355,47 @@
     }
 
     document.addEventListener('DOMContentLoaded', ()=>{
-  buildStadiumGrid(1, null);
-  cargarAgenda();
+      buildStadiumGrid(1, null);
+      cargarAgenda();
 
-  // ===== DEEP-LINK DESDE EL HUB =====
-  (function handleDeepLink(){
-    const params = new URLSearchParams(location.search);
-    const auto = params.get('auto');
-    const eventName = params.get('event');
-    if(!auto && !eventName) return;
+      (function handleDeepLink(){
+        const params = new URLSearchParams(location.search);
+        const auto = params.get('auto');
+        const eventName = params.get('event');
+        if(!auto && !eventName) return;
 
-    let intentos = 0;
-    const tryLoad = setInterval(()=>{
-      intentos++;
-      const slot0 = document.getElementById('stadium-core-0');
-      const agendaLista = datosOriginales && datosOriginales.length >= 0 && slot0;
+        let intentos = 0;
+        const tryLoad = setInterval(()=>{
+          intentos++;
+          const slot0 = document.getElementById('stadium-core-0');
+          const agendaLista = datosOriginales && datosOriginales.length >= 0 && slot0;
 
-      if(agendaLista){
-        clearInterval(tryLoad);
+          if(agendaLista){
+            clearInterval(tryLoad);
 
-        if(auto){
-          const url = decodeURIComponent(auto);
-          slotData[0] = { url };
-          renderStream(0, url, false);
-          applyMuteStates();
-          console.log('[DeepLink] Stream cargado en slot 0:', url);
-          return;
-        }
+            if(auto){
+              const url = decodeURIComponent(auto);
+              slotData[0] = { url };
+              renderStream(0, url, false);
+              applyMuteStates();
+              return;
+            }
 
-        if(eventName){
-          const objetivo = normalizar(eventName);
-          const idx = datosOriginales.findIndex(e => normalizar(e.titulo).includes(objetivo));
-          if(idx !== -1){
-            prepararPartido(idx);
-            console.log('[DeepLink] Evento encontrado:', datosOriginales[idx].titulo);
-          } else {
-            console.warn('[DeepLink] Evento no encontrado en agenda:', eventName);
+            if(eventName){
+              const objetivo = normalizar(eventName);
+              const idx = datosOriginales.findIndex(e => normalizar(e.titulo).includes(objetivo));
+              if(idx !== -1){
+                prepararPartido(idx);
+              }
+            }
           }
-        }
-      }
 
-      if(intentos > 75){
-        clearInterval(tryLoad);
-        console.warn('[DeepLink] Timeout esperando agenda. Abortando.');
-      }
-    }, 200);
-  })();
-});
+          if(intentos > 75){
+            clearInterval(tryLoad);
+          }
+        }, 200);
+      })();
+    });
   </script>
 </body>
 </html>
