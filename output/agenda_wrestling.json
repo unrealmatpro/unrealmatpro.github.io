@@ -1,5 +1,92 @@
 {
-  "fecha_actualizacion": "2026-11-20T10:48:59Z",
-  "total": 0,
-  "eventos": []
+  "fecha_actualizacion": "2026-11-20T22:06:44Z",
+  "total": 2,
+  "eventos": [
+    {
+      "id": "wr_0",
+      "titulo": "WWE Smackdown",
+      "torneo": "WWE",
+      "servidores_live": [
+        {
+          "nombre": "CatchUp 85 SD",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR85s&minify=gloria&line=108085_SD&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "CatchUp 85 LQ",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR85L&minify=gloria&line=108085_LQ&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "CatchUp 85 HD",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR85h&minify=gloria&line=108085_HD&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "CatchUp 83 FHD",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR87h&minify=gloria&line=83_FHD&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "Stream 85 SD",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch85_SD&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "Stream 85 LQ",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch85_LQ&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "Stream 85 FHD",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch85_HD&meu=84-85",
+          "tipo": "iframe"
+        }
+      ],
+      "servidores_replay": []
+    },
+    {
+      "id": "wr_1",
+      "titulo": "WWE Smackdown Live",
+      "torneo": "WWE",
+      "servidores_live": [
+        {
+          "nombre": "CatchUp 84 SD",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR84s&minify=gloria&line=108084_SD&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "CatchUp 84 LQ",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR84L&minify=gloria&line=108084_LQ&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "CatchUp 84 HD",
+          "url": "https://visualnewshub.com/Latest_Posts.php?cache=15y6sumR84h&minify=gloria&line=108084_HD&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "Stream 84 SD",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch84_SD&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "Stream 84 LQ",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch84_LQ&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "Stream 84 HD",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch84_HD&meu=84-85",
+          "tipo": "iframe"
+        },
+        {
+          "nombre": "Stream 83 FHD",
+          "url": "https://dailypudding.com/Latest_Posts.php?cache=15y6sumR&minify=sr&live=ch83_HD&meu=84-85",
+          "tipo": "iframe"
+        }
+      ],
+      "servidores_replay": []
+    }
+  ]
 }
