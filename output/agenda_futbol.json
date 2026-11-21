@@ -1,11 +1,11 @@
 {
-  "fecha_actualizacion": "2026-11-21T20:44:43Z",
+  "fecha_actualizacion": "2026-11-21T20:44:55Z",
   "total": 34,
   "eventos": [
     {
       "id": "evt_1",
       "titulo": "Jiří Procházka vs Navajo Stirling",
-      "hora": "18:00",
+      "hora": "12:00",
       "fecha_completa": "2026-11-21T13:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -27,7 +27,7 @@
     {
       "id": "evt_2",
       "titulo": "Técnico Universitario vs Deportivo Cuenca",
-      "hora": "19:00",
+      "hora": "13:00",
       "fecha_completa": "2026-11-21T14:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -41,7 +41,7 @@
     {
       "id": "evt_3",
       "titulo": "New England vs Philadelphia Union",
-      "hora": "19:00",
+      "hora": "13:00",
       "fecha_completa": "2026-11-21T14:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -55,7 +55,7 @@
     {
       "id": "evt_4",
       "titulo": "St. Pauli vs VfL Bochum",
-      "hora": "19:30",
+      "hora": "13:30",
       "fecha_completa": "2026-11-21T14:30:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -69,7 +69,7 @@
     {
       "id": "evt_5",
       "titulo": "Palmeiras vs Flamengo",
-      "hora": "19:30",
+      "hora": "13:30",
       "fecha_completa": "2026-11-21T14:30:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -91,7 +91,7 @@
     {
       "id": "evt_6",
       "titulo": "Alexander Zverev vs Rival por confirmar",
-      "hora": "19:30",
+      "hora": "13:30",
       "fecha_completa": "2026-11-21T14:30:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -105,7 +105,7 @@
     {
       "id": "evt_7",
       "titulo": "Lens vs Toulouse",
-      "hora": "19:45",
+      "hora": "13:45",
       "fecha_completa": "2026-11-21T14:45:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -119,7 +119,7 @@
     {
       "id": "evt_8",
       "titulo": "Lille vs Olympique Lyonnais",
-      "hora": "19:45",
+      "hora": "13:45",
       "fecha_completa": "2026-11-21T14:45:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -133,7 +133,7 @@
     {
       "id": "evt_9",
       "titulo": "Monaco vs Auxerre",
-      "hora": "19:45",
+      "hora": "13:45",
       "fecha_completa": "2026-11-21T14:45:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -147,7 +147,7 @@
     {
       "id": "evt_10",
       "titulo": "Strasbourg vs Brest",
-      "hora": "19:45",
+      "hora": "13:45",
       "fecha_completa": "2026-11-21T14:45:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -161,7 +161,7 @@
     {
       "id": "evt_11",
       "titulo": "Napoli vs Torino",
-      "hora": "19:45",
+      "hora": "13:45",
       "fecha_completa": "2026-11-21T14:45:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -179,7 +179,7 @@
     {
       "id": "evt_12",
       "titulo": "Tenerife vs Mallorca",
-      "hora": "20:00",
+      "hora": "14:00",
       "fecha_completa": "2026-11-21T15:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -193,7 +193,7 @@
     {
       "id": "evt_13",
       "titulo": "Real Madrid vs Celta de Vigo",
-      "hora": "20:00",
+      "hora": "14:00",
       "fecha_completa": "2026-11-21T15:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -219,7 +219,7 @@
     {
       "id": "evt_14",
       "titulo": "Argentinos Juniors vs Independiente",
-      "hora": "20:00",
+      "hora": "14:00",
       "fecha_completa": "2026-11-21T15:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -233,7 +233,7 @@
     {
       "id": "evt_16",
       "titulo": "Vitória Guimarães vs Sporting Braga",
-      "hora": "20:30",
+      "hora": "14:30",
       "fecha_completa": "2026-11-21T15:30:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -251,7 +251,7 @@
     {
       "id": "evt_17",
       "titulo": "Bahia vs Coritiba",
-      "hora": "20:30",
+      "hora": "14:30",
       "fecha_completa": "2026-11-21T15:30:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -265,7 +265,7 @@
     {
       "id": "evt_18",
       "titulo": "Alianza Lima vs FC Cajamarca",
-      "hora": "20:30",
+      "hora": "14:30",
       "fecha_completa": "2026-11-21T15:30:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -279,7 +279,7 @@
     {
       "id": "evt_19",
       "titulo": "O'Higgins vs Universidad de Chile",
-      "hora": "21:00",
+      "hora": "15:00",
       "fecha_completa": "2026-11-21T16:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -293,7 +293,7 @@
     {
       "id": "evt_20",
       "titulo": "Dallas vs Portland Timbers",
-      "hora": "21:00",
+      "hora": "15:00",
       "fecha_completa": "2026-11-21T16:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -307,7 +307,7 @@
     {
       "id": "evt_21",
       "titulo": "Universidad Católica vs Barcelona",
-      "hora": "21:30",
+      "hora": "15:30",
       "fecha_completa": "2026-11-21T16:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -321,7 +321,7 @@
     {
       "id": "evt_22",
       "titulo": "Atlético Mineiro vs Boca Juniors",
-      "hora": "22:30",
+      "hora": "16:30",
       "fecha_completa": "2026-11-21T17:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -347,7 +347,7 @@
     {
       "id": "evt_23",
       "titulo": "Pachuca vs Toluca",
-      "hora": "22:50",
+      "hora": "16:50",
       "fecha_completa": "2026-11-21T17:50:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -365,7 +365,7 @@
     {
       "id": "evt_24",
       "titulo": "Santos Laguna vs León",
-      "hora": "23:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-21T18:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -383,7 +383,7 @@
     {
       "id": "evt_25",
       "titulo": "Inter Miami vs Columbus Crew",
-      "hora": "23:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-21T18:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -401,7 +401,7 @@
     {
       "id": "evt_26",
       "titulo": "Universidad de Concepción vs Ñublense",
-      "hora": "23:30",
+      "hora": "17:30",
       "fecha_completa": "2026-11-21T18:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -415,7 +415,7 @@
     {
       "id": "evt_27",
       "titulo": "Chapecoense vs Cruzeiro",
-      "hora": "00:00",
+      "hora": "18:00",
       "fecha_completa": "2026-11-21T19:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -429,7 +429,7 @@
     {
       "id": "evt_29",
       "titulo": "Pumas UNAM vs Monterrey",
-      "hora": "01:00",
+      "hora": "19:00",
       "fecha_completa": "2026-11-21T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -451,7 +451,7 @@
     {
       "id": "evt_30",
       "titulo": "Washington Spirit vs Kansas City Current",
-      "hora": "01:00",
+      "hora": "19:00",
       "fecha_completa": "2026-11-21T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -465,7 +465,7 @@
     {
       "id": "evt_34",
       "titulo": "Once Caldas vs Atlético Nacional",
-      "hora": "01:15",
+      "hora": "19:15",
       "fecha_completa": "2026-11-21T20:15:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -479,7 +479,7 @@
     {
       "id": "evt_35",
       "titulo": "Atlético Morelia vs Atlético La Paz | Final de ida",
-      "hora": "02:00",
+      "hora": "20:00",
       "fecha_completa": "2026-11-21T21:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -493,7 +493,7 @@
     {
       "id": "evt_36",
       "titulo": "Yoali Mosqueda vs Rubén Lezama",
-      "hora": "02:00",
+      "hora": "20:00",
       "fecha_completa": "2026-11-21T21:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -507,7 +507,7 @@
     {
       "id": "evt_37",
       "titulo": "Tigres UANL vs América",
-      "hora": "03:00",
+      "hora": "21:00",
       "fecha_completa": "2026-11-21T22:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -533,7 +533,7 @@
     {
       "id": "evt_44",
       "titulo": "Sporting CP vs UD da Serra",
-      "hora": "18:00",
+      "hora": "12:00",
       "fecha_completa": "2026-11-21T13:00:00-05:00",
       "status": "FINALIZADO",
       "servidores": [
@@ -551,7 +551,7 @@
     {
       "id": "evt_45",
       "titulo": "Defensa y Justicia vs Barracas Central",
-      "hora": "18:00",
+      "hora": "12:00",
       "fecha_completa": "2026-11-21T13:00:00-05:00",
       "status": "FINALIZADO",
       "servidores": [
