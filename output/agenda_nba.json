@@ -1,11 +1,11 @@
 {
-  "fecha_actualizacion": "2026-11-21T20:44:43Z",
+  "fecha_actualizacion": "2026-11-21T20:44:55Z",
   "total": 6,
   "eventos": [
     {
       "id": "evt_0",
       "titulo": "Philadelphia 76ers vs Milwaukee Bucks",
-      "hora": "18:00",
+      "hora": "12:00",
       "fecha_completa": "2026-11-21T13:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
@@ -19,7 +19,7 @@
     {
       "id": "evt_28",
       "titulo": "New York Knicks vs Portland Trail Blazers",
-      "hora": "00:30",
+      "hora": "18:30",
       "fecha_completa": "2026-11-21T19:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -33,7 +33,7 @@
     {
       "id": "evt_31",
       "titulo": "San Antonio Spurs vs New Orleans Pelicans",
-      "hora": "01:00",
+      "hora": "19:00",
       "fecha_completa": "2026-11-21T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -47,7 +47,7 @@
     {
       "id": "evt_32",
       "titulo": "Minnesota Timberwolves vs Memphis Grizzlies",
-      "hora": "01:00",
+      "hora": "19:00",
       "fecha_completa": "2026-11-21T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -65,7 +65,7 @@
     {
       "id": "evt_33",
       "titulo": "Dallas Mavericks vs Los Angeles Clippers",
-      "hora": "01:00",
+      "hora": "19:00",
       "fecha_completa": "2026-11-21T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -79,7 +79,7 @@
     {
       "id": "evt_38",
       "titulo": "Sacramento Kings vs Boston Celtics",
-      "hora": "03:00",
+      "hora": "21:00",
       "fecha_completa": "2026-11-21T22:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
