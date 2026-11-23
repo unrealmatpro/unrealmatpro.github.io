@@ -50,7 +50,6 @@
     .live-card-cta.play:hover { background: #7dd3fc; }
     .live-card-cta.goto { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
     .live-card-cta.goto:hover { background: rgba(0,255,136,0.1); }
-    .live-empty { text-align: center; padding: 30px 20px; color: var(--text-dim); font-size: 12px; font-family: 'JetBrains Mono', monospace; border: 1px dashed var(--border); border-radius: 12px; background: rgba(0,0,0,0.2); }
     .grid-v4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 30px 4%; max-width: 1400px; margin: 0 auto; }
     .card-v4 { background: var(--surface-card); border-radius: 12px; border: 1px solid var(--border); text-decoration: none; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); overflow: hidden; display: block; position: relative; color: var(--text-main); }
     .card-v4.has-live { border-color: var(--live); box-shadow: 0 0 20px rgba(255,0,76,0.15); }
@@ -200,6 +199,7 @@
       <div class='mv-controls'>
         <button class='mv-grid-btn active' id='mv-btn-g1' onclick='mvBuildGrid(1,this)'><i class='fas fa-tv'></i> 1</button>
         <button class='mv-grid-btn' id='mv-btn-g2' onclick='mvBuildGrid(2,this)'><i class='fas fa-columns'></i> 2</button>
+        <button class='mv-grid-btn' id='mv-btn-g3' onclick='mvBuildGrid(3,this)'><i class='fas fa-square'></i> 3</button>
         <button class='mv-grid-btn' id='mv-btn-g4' onclick='mvBuildGrid(4,this)'><i class='fas fa-th-large'></i> 4</button>
         <button class='mv-exit-btn' onclick='toggleMultiview()'><i class='fas fa-times'></i> SALIR</button>
       </div>
@@ -372,6 +372,7 @@
       if(button) button.classList.add('active');
       if(slots===1){ mesh.style.gridTemplateColumns='1fr'; mesh.style.gridTemplateRows='1fr'; }
       if(slots===2){ mesh.style.gridTemplateColumns='1fr 1fr'; mesh.style.gridTemplateRows='1fr'; }
+      if(slots===3){ mesh.style.gridTemplateColumns='1fr 1fr 1fr'; mesh.style.gridTemplateRows='1fr'; }
       if(slots===4){ mesh.style.gridTemplateColumns='1fr 1fr'; mesh.style.gridTemplateRows='1fr 1fr'; }
       const current=mesh.children.length;
       if(slots>current){ for(let i=current;i<slots;i++) mesh.appendChild(mvCreateSlot(i)); }
@@ -437,8 +438,24 @@
       const home=document.getElementById('hub-home-view'); const mv=document.getElementById('hub-multiview');
       const btn=document.getElementById('btn-multiview'); const btnLabel=document.getElementById('mv-btn-label');
       const isActive=mv.classList.contains('active');
-      if(isActive){ mv.classList.remove('active'); home.style.display='block'; btn.classList.remove('active'); btnLabel.textContent='MULTIPANTALLA'; }
-      else { home.style.display='none'; mv.classList.add('active'); btn.classList.add('active'); btnLabel.textContent='VOLVER AL HUB'; if(mvGetSlotCount()===0) mvBuildGrid(1, document.getElementById('mv-btn-g1')); renderMvEventsList(cachedPool.filter(e=>e.time>=Date.now()-HORAS_LIMITE_MS)); }
+      if(isActive){
+        // ✅ FIX: destruir slots al salir → detiene audio y libera memoria
+        mvSlotData = [];
+        document.getElementById('mv-grid-mesh').innerHTML = '';
+        mvActiveSlotIndex = 0;
+        mvTargetSlotIndex = 0;
+        document.querySelectorAll('.mv-controls .mv-grid-btn').forEach(b => b.classList.remove('active'));
+        const g1 = document.getElementById('mv-btn-g1');
+        if(g1) g1.classList.add('active');
+
+        mv.classList.remove('active'); home.style.display='block';
+        btn.classList.remove('active'); btnLabel.textContent='MULTIPANTALLA';
+      } else {
+        home.style.display='none'; mv.classList.add('active');
+        btn.classList.add('active'); btnLabel.textContent='VOLVER AL HUB';
+        if(mvGetSlotCount()===0) mvBuildGrid(1, document.getElementById('mv-btn-g1'));
+        renderMvEventsList(cachedPool.filter(e=>e.time>=Date.now()-HORAS_LIMITE_MS));
+      }
     }
     function openMultiviewWith(url){
       const mv=document.getElementById('hub-multiview');
