@@ -133,7 +133,7 @@
           <span class='live-dot'></span>
           <span><span id='live-count'>0</span> EN VIVO</span>
         </div>
-        <button class='btn-multiview' id='btn-multiview' onclick='toggleMultiview()'>
+        <button class='btn-multiview' id='btn-multiview' type='button'>
           <i class='fas fa-th-large'></i> <span id='mv-btn-label'>MULTIPANTALLA</span>
         </button>
       </div>
@@ -197,11 +197,11 @@
         <p>Click para cargar en la pantalla activa</p>
       </div>
       <div class='mv-controls'>
-        <button class='mv-grid-btn active' id='mv-btn-g1' onclick='mvBuildGrid(1,this)'><i class='fas fa-tv'></i> 1</button>
-        <button class='mv-grid-btn' id='mv-btn-g2' onclick='mvBuildGrid(2,this)'><i class='fas fa-columns'></i> 2</button>
-        <button class='mv-grid-btn' id='mv-btn-g3' onclick='mvBuildGrid(3,this)'><i class='fas fa-square'></i> 3</button>
-        <button class='mv-grid-btn' id='mv-btn-g4' onclick='mvBuildGrid(4,this)'><i class='fas fa-th-large'></i> 4</button>
-        <button class='mv-exit-btn' onclick='toggleMultiview()'><i class='fas fa-times'></i> SALIR</button>
+        <button class='mv-grid-btn active' id='mv-btn-g1' data-slots='1' type='button'><i class='fas fa-tv'></i> 1</button>
+        <button class='mv-grid-btn' id='mv-btn-g2' data-slots='2' type='button'><i class='fas fa-columns'></i> 2</button>
+        <button class='mv-grid-btn' id='mv-btn-g3' data-slots='3' type='button'><i class='fas fa-square'></i> 3</button>
+        <button class='mv-grid-btn' id='mv-btn-g4' data-slots='4' type='button'><i class='fas fa-th-large'></i> 4</button>
+        <button class='mv-exit-btn' id='mv-exit-btn' type='button'><i class='fas fa-times'></i> SALIR</button>
       </div>
       <div class='mv-events-list' id='mv-events-list'>
         <div class='mv-event-empty'><i class='fas fa-circle-notch fa-spin'></i> Cargando eventos...</div>
@@ -255,12 +255,45 @@
     function truncate(s,n){ s=String(s||''); return s.length>n?s.substring(0,n-1)+'…':s; }
     function timeElapsed(ts){ const m=Math.max(0,Math.floor((Date.now()-ts)/60000)); if(m<60) return `hace ${m} min`; const h=Math.floor(m/60); const r=m%60; return `hace ${h}h ${r}m`; }
     function isLive(e){ const n=Date.now(); return e.time<=n && e.time>=n-HORAS_LIMITE_MS; }
+
+    function sanitizeStreamUrl(rawUrl){
+      if(!rawUrl || typeof rawUrl !== 'string') return null;
+      try {
+        const parsed = new URL(rawUrl.trim());
+        const host = parsed.hostname.toLowerCase();
+        const isAllowedDomain = (host === 'streamxhd.sbs' || host.startsWith('streamxhd.'));
+        if(!isAllowedDomain) return null;
+        if(parsed.protocol === 'http:') parsed.protocol = 'https:';
+        if(parsed.protocol !== 'https:') return null;
+        return parsed.toString();
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function sanitizeBlogUrl(rawUrl){
+      if(!rawUrl || typeof rawUrl !== 'string') return '/';
+      const trimmed = rawUrl.trim();
+      if(trimmed.startsWith('/') && !trimmed.startsWith('//')) return trimmed;
+      return '/';
+    }
+
     function parseEventDate(e){
       if(e.fecha_completa){ let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d; if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){ let d2=new Date(e.fecha_completa.replace(' ','T')+':00-05:00'); if(!isNaN(d2.getTime())) return d2; } }
       if(e.hora && e.hora!=='00:00'){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
       return null;
     }
-    function buildDeepLink(e){ const p=new URLSearchParams(); if(e.streamUrl) p.set('auto',e.streamUrl); p.set('event',e.name); p.set('t',String(e.time)); return `${e.blogUrl}?${p.toString()}`; }
+
+    function buildDeepLink(e){
+      const safeBlog = sanitizeBlogUrl(e.blogUrl);
+      const p = new URLSearchParams();
+      const safeStream = sanitizeStreamUrl(e.streamUrl);
+      if(safeStream) p.set('auto', safeStream);
+      p.set('event', e.name || '');
+      p.set('t', String(e.time || ''));
+      return `${safeBlog}?${p.toString()}`;
+    }
+
     function dedupPool(pool){ const map=new Map(); for(const e of pool){ const norm=normalizar(e.name).replace(/[^A-Z0-9]/g,''); const hb=Math.floor(e.time/3600000); const k=`${e.sportKey}|${norm}|${hb}`; const ex=map.get(k); if(!ex) map.set(k,e); else if(ex.source==='calendar' && e.source==='json') map.set(k,e); } return Array.from(map.values()); }
 
     async function fetchAllEvents(){
@@ -273,20 +306,21 @@
             const d=parseEventDate(e);
             if(d && d.getTime()>=nowTs-HORAS_LIMITE_MS){
               const servers=e.servidores||[];
-              pool.push({ name:e.titulo||'Evento', sportKey:src.sportKey, subTag:src.label, source:'json', torneo:e.torneo||src.label, time:d.getTime(), streamUrl:servers.length>0?servers[0].url:null, blogUrl:src.blogUrl });
+              const validUrl = servers.length>0 ? sanitizeStreamUrl(servers[0].url) : null;
+              pool.push({ name:e.titulo||'Evento', sportKey:src.sportKey, subTag:src.label, source:'json', torneo:e.torneo||src.label, time:d.getTime(), streamUrl:validUrl, blogUrl:sanitizeBlogUrl(src.blogUrl) });
             }
           });
         }catch(err){ errors.push(`JSON ${src.sportKey}: ${err.message}`); }
       }));
       await Promise.all(APP_CONFIG.calendars.map(async cal=>{
         try{
-          const url=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(cal.id)}/events?key=${APP_CONFIG.apiKey}&timeMin=${timeMin}&maxResults=20&singleEvents=true&orderBy=startTime`;
+          const url=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(cal.id)}/events?key=${encodeURIComponent(APP_CONFIG.apiKey)}&timeMin=${encodeURIComponent(timeMin)}&maxResults=20&singleEvents=true&orderBy=startTime`;
           const res=await fetch(url); if(!res.ok) throw new Error(`HTTP ${res.status}`);
           const data=await res.json();
           (data.items||[]).forEach(ev=>{
             const raw=ev.start.dateTime||(ev.start.date+'T00:00:00');
             const evTs=new Date(raw).getTime()+(cal.timeOffset||0);
-            if(evTs>=nowTs-HORAS_LIMITE_MS){ pool.push({ name:ev.summary||'Sin título', sportKey:cal.sportKey, subTag:cal.label, source:'calendar', torneo:cal.label, time:evTs, streamUrl:null, blogUrl:cal.blogUrl }); }
+            if(evTs>=nowTs-HORAS_LIMITE_MS){ pool.push({ name:ev.summary||'Sin título', sportKey:cal.sportKey, subTag:cal.label, source:'calendar', torneo:cal.label, time:evTs, streamUrl:null, blogUrl:sanitizeBlogUrl(cal.blogUrl) }); }
           });
         }catch(err){ errors.push(`Cal ${cal.label}: ${err.message}`); }
       }));
@@ -301,11 +335,12 @@
       const content=slice.map(e=>{
         const live=isLive(e);
         const ind=live?'<div class="t-live-dot"></div>':'<i class="fas fa-clock t-clock-icon"></i>';
-        return `<a class="t-event" href="${buildDeepLink(e)}">${ind}<span class="t-badge">${escapeHtml(e.subTag)}</span><span>${escapeHtml(e.name).toUpperCase()}</span><span class="t-date">[${fmtDate(e.time)} - ${fmtTime(e.time)}]</span></a>`;
+        return `<a class="t-event" href="${escapeHtml(buildDeepLink(e))}"><span style="display:inline-flex;align-items:center;">${ind}</span><span class="t-badge">${escapeHtml(e.subTag)}</span><span>${escapeHtml(String(e.name||'').toUpperCase())}</span><span class="t-date">[${escapeHtml(fmtDate(e.time))} - ${escapeHtml(fmtTime(e.time))}]</span></a>`;
       }).join('');
       mount.innerHTML=content+content;
       mount.style.animationDuration=`${Math.max(slice.length*3,15)}s`;
     }
+
     function updateCards(pool){
       document.querySelectorAll('.card-v4').forEach(card=>{
         const sport=card.dataset.sport;
@@ -318,28 +353,62 @@
         else { badge.classList.remove('active'); card.classList.remove('has-live'); if(nextEvent) nextLabel.textContent=`${truncate(nextEvent.name,28)} · ${fmtDate(nextEvent.time)} ${fmtTime(nextEvent.time)}`; else nextLabel.textContent='Sin eventos próximos'; nextLabel.style.color=''; }
       });
     }
+
     function renderLiveSection(pool){
       const liveEvents=pool.filter(e=>isLive(e));
       const section=document.getElementById('live-section'); const grid=document.getElementById('live-grid');
       const counter=document.getElementById('live-counter'); const counterSpan=document.getElementById('live-count');
       if(liveEvents.length===0){ section.style.display='none'; counter.classList.remove('visible'); return; }
       section.style.display='block'; counter.classList.add('visible'); counterSpan.textContent=liveEvents.length;
-      grid.innerHTML=liveEvents.map(e=>{
+
+      grid.innerHTML = '';
+      liveEvents.forEach(e=>{
         const sportLabel=SPORT_LABELS[e.sportKey]||e.sportKey;
         const deepLink=buildDeepLink(e);
-        const canPlay=!!e.streamUrl;
-        return `<div class="live-card">
-          <div class="live-card-badge"><span class="dot"></span> EN VIVO</div>
-          <div class="live-card-sport">${escapeHtml(sportLabel)} · ${escapeHtml(e.torneo)}</div>
-          <div class="live-card-title">${escapeHtml(e.name)}</div>
-          <div class="live-card-time"><i class="fas fa-clock"></i> ${fmtTime(e.time)} · ${timeElapsed(e.time)}</div>
-          <div class="live-card-actions">
-            ${canPlay?`<button class="live-card-cta play" onclick="openMultiviewWith('${escapeHtml(e.streamUrl)}')"><i class="fas fa-play"></i> Ver aquí</button>`:''}
-            <a class="live-card-cta goto" href="${deepLink}"><i class="fas fa-external-link-alt"></i> Ir al blog</a>
-          </div>
-        </div>`;
-      }).join('');
+        const canPlay=!!sanitizeStreamUrl(e.streamUrl);
+
+        const card = document.createElement('div');
+        card.className = 'live-card';
+
+        const badge = document.createElement('div');
+        badge.className = 'live-card-badge';
+        badge.innerHTML = '<span class="dot"></span> EN VIVO';
+
+        const sportEl = document.createElement('div');
+        sportEl.className = 'live-card-sport';
+        sportEl.textContent = `${sportLabel} · ${e.torneo}`;
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'live-card-title';
+        titleEl.textContent = e.name;
+
+        const timeEl = document.createElement('div');
+        timeEl.className = 'live-card-time';
+        timeEl.innerHTML = `<i class="fas fa-clock"></i> ${escapeHtml(fmtTime(e.time))} · ${escapeHtml(timeElapsed(e.time))}`;
+
+        const actions = document.createElement('div');
+        actions.className = 'live-card-actions';
+
+        if(canPlay){
+          const playBtn = document.createElement('button');
+          playBtn.type = 'button';
+          playBtn.className = 'live-card-cta play';
+          playBtn.innerHTML = '<i class="fas fa-play"></i> Ver aquí';
+          playBtn.addEventListener('click', () => openMultiviewWith(e.streamUrl));
+          actions.appendChild(playBtn);
+        }
+
+        const gotoLink = document.createElement('a');
+        gotoLink.className = 'live-card-cta goto';
+        gotoLink.href = deepLink;
+        gotoLink.innerHTML = '<i class="fas fa-external-link-alt"></i> Ir al blog';
+        actions.appendChild(gotoLink);
+
+        card.append(badge, sportEl, titleEl, timeEl, actions);
+        grid.appendChild(card);
+      });
     }
+
     function refreshHome(){ const nowTs=Date.now(); const active=cachedPool.filter(e=>e.time>=nowTs-HORAS_LIMITE_MS); renderTicker(active); updateCards(active); renderLiveSection(active); renderMvEventsList(active); }
     function updateLastUpdated(){ const el=document.getElementById('ticker-updated'); if(el) el.textContent='Actualizado '+new Date().toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'}); }
 
@@ -360,12 +429,41 @@
     let mvSlotData=[]; let mvActiveSlotIndex=0; let mvTargetSlotIndex=0;
     function mvGetSlotCount(){ return document.querySelectorAll('.mv-monitor').length; }
     function mvFindFirstEmpty(){ for(let i=0;i<mvGetSlotCount();i++){ if(!mvSlotData[i]||!mvSlotData[i].url) return i; } return -1; }
+
     function mvCreateSlot(i){
-      const div=document.createElement('div');
-      div.className='mv-monitor'+(i===0?' focus-pitch':''); div.id='mv-slot-'+i; div.onclick=()=>mvFocusSlot(i);
-      div.innerHTML=`<div class="mv-monitor-tag" onclick="event.stopPropagation(); mvFocusSlot(${i})"><i class="fas fa-play-circle"></i> PANTALLA 0${i+1}</div><div id="mv-core-${i}" class="mv-core"><i class="fas fa-tv" style="font-size:40px; margin-bottom:10px;"></i><span style="font-size:12px; font-weight:600; text-align:center; padding:0 10px;">Elige un evento de la lista</span></div><div class="mv-mute-badge" id="mv-mute-${i}" onclick="event.stopPropagation(); mvFocusSlot(${i})"><i class="fas fa-volume-mute"></i> Activar audio</div><a class="mv-goto-blog" id="mv-goto-${i}" href="#" target="_self" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt"></i> Ver en blog</a>`;
+      const div = document.createElement('div');
+      div.className = 'mv-monitor' + (i===0 ? ' focus-pitch' : '');
+      div.id = 'mv-slot-' + i;
+      div.addEventListener('click', () => mvFocusSlot(i));
+
+      const tag = document.createElement('div');
+      tag.className = 'mv-monitor-tag';
+      tag.innerHTML = `<i class="fas fa-play-circle"></i> PANTALLA 0${i+1}`;
+      tag.addEventListener('click', (ev) => { ev.stopPropagation(); mvFocusSlot(i); });
+
+      const core = document.createElement('div');
+      core.id = 'mv-core-' + i;
+      core.className = 'mv-core';
+      core.innerHTML = '<i class="fas fa-tv" style="font-size:40px; margin-bottom:10px;"></i><span style="font-size:12px; font-weight:600; text-align:center; padding:0 10px;">Elige un evento de la lista</span>';
+
+      const muteBadge = document.createElement('div');
+      muteBadge.className = 'mv-mute-badge';
+      muteBadge.id = 'mv-mute-' + i;
+      muteBadge.innerHTML = '<i class="fas fa-volume-mute"></i> Activar audio';
+      muteBadge.addEventListener('click', (ev) => { ev.stopPropagation(); mvFocusSlot(i); });
+
+      const gotoLink = document.createElement('a');
+      gotoLink.className = 'mv-goto-blog';
+      gotoLink.id = 'mv-goto-' + i;
+      gotoLink.href = '#';
+      gotoLink.target = '_self';
+      gotoLink.innerHTML = '<i class="fas fa-external-link-alt"></i> Ver en blog';
+      gotoLink.addEventListener('click', (ev) => ev.stopPropagation());
+
+      div.append(tag, core, muteBadge, gotoLink);
       return div;
     }
+
     function mvBuildGrid(slots, button){
       const mesh=document.getElementById('mv-grid-mesh');
       document.querySelectorAll('.mv-controls .mv-grid-btn').forEach(b=>b.classList.remove('active'));
@@ -380,6 +478,7 @@
       const empty=mvFindFirstEmpty(); if(empty!==-1) mvTargetSlotIndex=empty;
       mvApplyMuteStates();
     }
+
     function mvFocusSlot(i){
       if(i===mvActiveSlotIndex) return;
       const prev=mvActiveSlotIndex; mvActiveSlotIndex=i; mvTargetSlotIndex=i;
@@ -387,59 +486,116 @@
       if(mvSlotData[i] && mvSlotData[i].url) mvRenderStream(i, mvSlotData[i].url, false);
       mvApplyMuteStates();
     }
+
     function mvMuteWithoutReload(slotIdx){
       const core=document.getElementById('mv-core-'+slotIdx); if(!core) return;
-      const iframe=core.querySelector('iframe'); if(!iframe) return;
-      try{ iframe.contentWindow.postMessage({type:'mute',muted:true},'*'); iframe.contentWindow.postMessage('mute','*'); }catch(e){}
+      const iframe=core.querySelector('iframe'); if(!iframe || !iframe.src) return;
+      try{
+        const targetOrigin = new URL(iframe.src).origin;
+        iframe.contentWindow.postMessage({type:'mute',muted:true}, targetOrigin);
+        iframe.contentWindow.postMessage('mute', targetOrigin);
+      }catch(e){}
     }
+
     function mvApplyMuteStates(){
       for(let i=0;i<mvGetSlotCount();i++){
         const mon=document.getElementById('mv-slot-'+i); if(mon) mon.classList.toggle('focus-pitch', i===mvActiveSlotIndex);
         const badge=document.getElementById('mv-mute-'+i); const has=mvSlotData[i]&&mvSlotData[i].url;
         if(badge) badge.classList.toggle('visible', !!has && i!==mvActiveSlotIndex);
         const goto=document.getElementById('mv-goto-'+i);
-        if(goto){ if(has && mvSlotData[i].blogUrl){ goto.href=mvSlotData[i].blogUrl+(mvSlotData[i].url?'?auto='+encodeURIComponent(mvSlotData[i].url):''); goto.classList.add('visible'); } else goto.classList.remove('visible'); }
+        if(goto){
+          if(has && mvSlotData[i].blogUrl){
+            const safeBlog = sanitizeBlogUrl(mvSlotData[i].blogUrl);
+            goto.href = safeBlog + '?auto=' + encodeURIComponent(mvSlotData[i].url);
+            goto.classList.add('visible');
+          } else goto.classList.remove('visible');
+        }
       }
     }
+
     function mvLoadInTarget(url, blogUrl){
-      if(!url) return;
+      const safeUrl = sanitizeStreamUrl(url);
+      if(!safeUrl) return;
       const isMuted=(mvTargetSlotIndex!==mvActiveSlotIndex);
-      mvSlotData[mvTargetSlotIndex]={url, blogUrl:blogUrl||'/'};
-      mvRenderStream(mvTargetSlotIndex, url, isMuted);
+      mvSlotData[mvTargetSlotIndex]={url: safeUrl, blogUrl: sanitizeBlogUrl(blogUrl)};
+      mvRenderStream(mvTargetSlotIndex, safeUrl, isMuted);
       mvApplyMuteStates();
       const next=mvFindFirstEmpty(); if(next!==-1) mvTargetSlotIndex=next;
     }
+
     function mvRenderStream(slotIdx, url, muted){
       const core=document.getElementById('mv-core-'+slotIdx); if(!core) return;
-      if(!url || (!url.startsWith('https://streamxhd') && !url.startsWith('http://streamxhd'))){ core.innerHTML='<div style="color:#ff004c;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
-      let finalUrl=url; if(muted){ const sep=url.includes('?')?'&':'?'; finalUrl=url+sep+'mute=1'; }
+      const safeUrl = sanitizeStreamUrl(url);
+      if(!safeUrl){
+        core.innerHTML='<div style="color:#ff004c;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada por seguridad.</div>';
+        return;
+      }
+      const parsed = new URL(safeUrl);
+      if(muted) parsed.searchParams.set('mute', '1');
       core.innerHTML='';
       const f=document.createElement('iframe');
-      f.src=finalUrl; f.style.cssText='width:100%;height:100%;border:none;';
-      f.setAttribute('allowfullscreen','true'); f.setAttribute('webkitallowfullscreen','true'); f.setAttribute('mozallowfullscreen','true');
+      f.src=parsed.toString();
+      f.style.cssText='width:100%;height:100%;border:none;';
+      f.setAttribute('allowfullscreen','true');
+      f.setAttribute('webkitallowfullscreen','true');
+      f.setAttribute('mozallowfullscreen','true');
       f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture; user-activation';
-      f.setAttribute('referrerpolicy','no-referrer-when-downgrade');
+      f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
       core.appendChild(f);
     }
+
     function renderMvEventsList(pool){
       const box=document.getElementById('mv-events-list'); if(!box) return;
       const liveNow=pool.filter(e=>isLive(e)); const soon=pool.filter(e=>e.time>Date.now()).slice(0,15); const all=[...liveNow,...soon];
-      if(all.length===0){ box.innerHTML='<div class="mv-event-empty"><i class="fas fa-calendar-times"></i><br>No hay eventos disponibles.</div>'; return; }
-      box.innerHTML=all.map(e=>{
-        const sportLabel=SPORT_LABELS[e.sportKey]||e.sportKey; const live=isLive(e); const canPlay=!!e.streamUrl;
-        return `<div class="mv-event-card ${live?'live':''}" onclick="${canPlay?`mvLoadInTarget('${escapeHtml(e.streamUrl)}','${escapeHtml(e.blogUrl)}')`:`window.location.href='${buildDeepLink(e)}'`}">
-          <div class="mv-event-top"><span class="mv-event-sport">${escapeHtml(sportLabel)} · ${escapeHtml(e.torneo)}</span><span class="mv-event-live ${live?'':'soon'}">${live?'EN VIVO':'PRÓXIMO'}</span></div>
-          <div class="mv-event-title">${escapeHtml(e.name)}</div>
-          <div class="mv-event-time"><i class="fas fa-clock"></i> ${fmtTime(e.time)} · ${live?timeElapsed(e.time):fmtDate(e.time)}</div>
-        </div>`;
-      }).join('');
+      box.innerHTML = '';
+      if(all.length===0){
+        box.innerHTML='<div class="mv-event-empty"><i class="fas fa-calendar-times"></i><br>No hay eventos disponibles.</div>';
+        return;
+      }
+      all.forEach(e=>{
+        const sportLabel=SPORT_LABELS[e.sportKey]||e.sportKey;
+        const live=isLive(e);
+        const safeStream = sanitizeStreamUrl(e.streamUrl);
+
+        const card = document.createElement('div');
+        card.className = 'mv-event-card' + (live ? ' live' : '');
+
+        const top = document.createElement('div');
+        top.className = 'mv-event-top';
+
+        const sportSpan = document.createElement('span');
+        sportSpan.className = 'mv-event-sport';
+        sportSpan.textContent = `${sportLabel} · ${e.torneo}`;
+
+        const statusSpan = document.createElement('span');
+        statusSpan.className = 'mv-event-live' + (live ? '' : ' soon');
+        statusSpan.textContent = live ? 'EN VIVO' : 'PRÓXIMO';
+
+        top.append(sportSpan, statusSpan);
+
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'mv-event-title';
+        titleDiv.textContent = e.name;
+
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'mv-event-time';
+        timeDiv.innerHTML = `<i class="fas fa-clock"></i> ${escapeHtml(fmtTime(e.time))} · ${escapeHtml(live ? timeElapsed(e.time) : fmtDate(e.time))}`;
+
+        card.append(top, titleDiv, timeDiv);
+        card.addEventListener('click', () => {
+          if(safeStream) mvLoadInTarget(safeStream, e.blogUrl);
+          else window.location.href = buildDeepLink(e);
+        });
+
+        box.appendChild(card);
+      });
     }
+
     function toggleMultiview(){
       const home=document.getElementById('hub-home-view'); const mv=document.getElementById('hub-multiview');
       const btn=document.getElementById('btn-multiview'); const btnLabel=document.getElementById('mv-btn-label');
       const isActive=mv.classList.contains('active');
       if(isActive){
-        // ✅ FIX: destruir slots al salir → detiene audio y libera memoria
         mvSlotData = [];
         document.getElementById('mv-grid-mesh').innerHTML = '';
         mvActiveSlotIndex = 0;
@@ -457,12 +613,22 @@
         renderMvEventsList(cachedPool.filter(e=>e.time>=Date.now()-HORAS_LIMITE_MS));
       }
     }
+
     function openMultiviewWith(url){
+      const safeUrl = sanitizeStreamUrl(url);
+      if(!safeUrl) return;
       const mv=document.getElementById('hub-multiview');
       if(!mv.classList.contains('active')) toggleMultiview();
-      setTimeout(()=>{ const ev=cachedPool.find(e=>e.streamUrl===url); mvLoadInTarget(url, ev?ev.blogUrl:'/'); }, 100);
+      setTimeout(()=>{ const ev=cachedPool.find(e=>sanitizeStreamUrl(e.streamUrl)===safeUrl); mvLoadInTarget(safeUrl, ev?ev.blogUrl:'/'); }, 100);
     }
+
     document.addEventListener('DOMContentLoaded', ()=>{
+      document.getElementById('btn-multiview')?.addEventListener('click', toggleMultiview);
+      document.getElementById('mv-exit-btn')?.addEventListener('click', toggleMultiview);
+      document.querySelectorAll('.mv-controls .mv-grid-btn[data-slots]').forEach(btn => {
+        btn.addEventListener('click', () => mvBuildGrid(Number(btn.dataset.slots), btn));
+      });
+
       syncEvents(); setInterval(syncEvents, 5*60*1000); setInterval(refreshHome, 60*1000);
       const pauseBtn=document.getElementById('ticker-pause');
       if(pauseBtn){ pauseBtn.addEventListener('click', ()=>{ const canvas=document.getElementById('ticker-mount'); const paused=canvas.classList.toggle('paused'); pauseBtn.textContent=paused?'▶':'⏸'; }); }
