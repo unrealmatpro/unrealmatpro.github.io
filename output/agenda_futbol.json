@@ -1,77 +1,13 @@
 {
-  "fecha_actualizacion": "2026-11-23T11:37:17Z",
-  "total": 23,
+  "fecha_actualizacion": "2026-11-23T19:58:02Z",
+  "total": 16,
   "eventos": [
     {
       "id": "evt_0",
-      "titulo": "España vs Fiyi",
-      "hora": "07:30",
-      "fecha_completa": "2026-11-23T07:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DSPORTS",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsports"
-        },
-        {
-          "nombre": "TUDNMX",
-          "url": "https://streamxhd.sbs/live1.php?stream=tudnmx"
-        }
-      ],
-      "torneo": "Copa Mundial Sub-17"
-    },
-    {
-      "id": "evt_1",
-      "titulo": "Neftchi Fergana vs Al Hilal",
-      "hora": "08:45",
-      "fecha_completa": "2026-11-23T08:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 4",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn4"
-        },
-        {
-          "nombre": "DISNEY+ 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney1"
-        }
-      ],
-      "torneo": "AFC Champions League Elite"
-    },
-    {
-      "id": "evt_2",
-      "titulo": "Italia vs Costa de Marfil",
-      "hora": "09:30",
-      "fecha_completa": "2026-11-23T09:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DSPORTS",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsports"
-        }
-      ],
-      "torneo": "Copa Mundial Sub-17"
-    },
-    {
-      "id": "evt_3",
-      "titulo": "Marruecos vs China",
-      "hora": "10:00",
-      "fecha_completa": "2026-11-23T10:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "TUDNMX",
-          "url": "https://streamxhd.sbs/live1.php?stream=tudnmx"
-        }
-      ],
-      "torneo": "Copa Mundial Sub-17"
-    },
-    {
-      "id": "evt_4",
       "titulo": "Los Eucaliptos vs La Crema",
       "hora": "13:00",
       "fecha_completa": "2026-11-23T13:00:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "ESPN",
@@ -81,11 +17,11 @@
       "torneo": "Copa Potrero"
     },
     {
-      "id": "evt_5",
+      "id": "evt_1",
       "titulo": "Juventud vs Defensor Sporting",
       "hora": "14:30",
       "fecha_completa": "2026-11-23T14:30:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "DISNEY+ 2",
@@ -95,11 +31,11 @@
       "torneo": "Liga Uruguay"
     },
     {
-      "id": "evt_6",
+      "id": "evt_2",
       "titulo": "Ceuta vs Almería",
       "hora": "14:30",
       "fecha_completa": "2026-11-23T14:30:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "LALIGA HYPERMOTION",
@@ -109,11 +45,11 @@
       "torneo": "LaLiga SmartBank"
     },
     {
-      "id": "evt_7",
+      "id": "evt_3",
       "titulo": "Monza vs Fiorentina",
       "hora": "14:45",
       "fecha_completa": "2026-11-23T14:45:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "ESPN 3",
@@ -127,7 +63,7 @@
       "torneo": "Serie A"
     },
     {
-      "id": "evt_8",
+      "id": "evt_4",
       "titulo": "Gimnasia La Plata vs Newell's Old Boys",
       "hora": "15:00",
       "fecha_completa": "2026-11-23T15:00:00-05:00",
@@ -145,7 +81,7 @@
       "torneo": "Liga Profesional"
     },
     {
-      "id": "evt_9",
+      "id": "evt_5",
       "titulo": "Brentford vs Everton",
       "hora": "15:00",
       "fecha_completa": "2026-11-23T15:00:00-05:00",
@@ -163,7 +99,7 @@
       "torneo": "Premier League"
     },
     {
-      "id": "evt_10",
+      "id": "evt_6",
       "titulo": "Levante vs Elche",
       "hora": "15:00",
       "fecha_completa": "2026-11-23T15:00:00-05:00",
@@ -185,7 +121,7 @@
       "torneo": "LaLiga"
     },
     {
-      "id": "evt_11",
+      "id": "evt_7",
       "titulo": "2 de Mayo vs Sportivo San Lorenzo",
       "hora": "16:00",
       "fecha_completa": "2026-11-23T16:00:00-05:00",
@@ -199,7 +135,7 @@
       "torneo": "Liga Paraguay"
     },
     {
-      "id": "evt_12",
+      "id": "evt_8",
       "titulo": "Albion vs Danubio",
       "hora": "17:30",
       "fecha_completa": "2026-11-23T17:30:00-05:00",
@@ -213,7 +149,7 @@
       "torneo": "Liga Uruguay"
     },
     {
-      "id": "evt_13",
+      "id": "evt_9",
       "titulo": "Internacional vs Vitória",
       "hora": "17:30",
       "fecha_completa": "2026-11-23T17:30:00-05:00",
@@ -227,7 +163,7 @@
       "torneo": "Brasileirão"
     },
     {
-      "id": "evt_14",
+      "id": "evt_10",
       "titulo": "Botafogo vs São Paulo",
       "hora": "18:00",
       "fecha_completa": "2026-11-23T18:00:00-05:00",
@@ -241,7 +177,7 @@
       "torneo": "Brasileirão"
     },
     {
-      "id": "evt_15",
+      "id": "evt_11",
       "titulo": "Nacional Asunción vs Cerro Porteño",
       "hora": "18:15",
       "fecha_completa": "2026-11-23T18:15:00-05:00",
@@ -255,7 +191,7 @@
       "torneo": "Liga Paraguay"
     },
     {
-      "id": "evt_16",
+      "id": "evt_12",
       "titulo": "Santos vs Grêmio",
       "hora": "19:00",
       "fecha_completa": "2026-11-23T19:00:00-05:00",
@@ -273,7 +209,7 @@
       "torneo": "Brasileirão"
     },
     {
-      "id": "evt_19",
+      "id": "evt_15",
       "titulo": "Boca Juniors de Cali vs Deportes Quindío",
       "hora": "19:30",
       "fecha_completa": "2026-11-23T19:30:00-05:00",
@@ -291,7 +227,7 @@
       "torneo": "Primera B"
     },
     {
-      "id": "evt_23",
+      "id": "evt_19",
       "titulo": "Washington Commanders vs Cincinnati Bengals",
       "hora": "20:00",
       "fecha_completa": "2026-11-23T20:00:00-05:00",
@@ -305,7 +241,7 @@
       "torneo": "NFL"
     },
     {
-      "id": "evt_24",
+      "id": "evt_20",
       "titulo": "St. Louis City vs Los Angeles FC",
       "hora": "20:00",
       "fecha_completa": "2026-11-23T20:00:00-05:00",
@@ -318,56 +254,6 @@
         {
           "nombre": "FOX DEPORTES USA",
           "url": "https://streamxhd.sbs/live1.php?stream=fox_deportes_usa"
-        }
-      ],
-      "torneo": "MLS"
-    },
-    {
-      "id": "evt_35",
-      "titulo": "Instituto vs Huracán",
-      "hora": "20:00",
-      "fecha_completa": "2026-11-22T20:00:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "ESPN PREMIUM",
-          "url": "https://streamxhd.sbs/live1.php?stream=espnpremium"
-        },
-        {
-          "nombre": "VIX3",
-          "url": "https://streamxhd.sbs/live1.php?stream=vix3"
-        }
-      ],
-      "torneo": "Liga Profesional"
-    },
-    {
-      "id": "evt_37",
-      "titulo": "Querétaro vs Necaxa",
-      "hora": "20:10",
-      "fecha_completa": "2026-11-22T20:10:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "FOX ONE",
-          "url": "https://streamxhd.sbs/live1.php?stream=foxone"
-        },
-        {
-          "nombre": "TUDN USA",
-          "url": "https://streamxhd.sbs/live1.php?stream=tudn_usa"
-        }
-      ],
-      "torneo": "Liga MX"
-    },
-    {
-      "id": "evt_39",
-      "titulo": "Vancouver Whitecaps vs Real Salt Lake",
-      "hora": "20:30",
-      "fecha_completa": "2026-11-22T20:30:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "APPLETV3",
-          "url": "https://streamxhd.sbs/live1.php?stream=appletv3"
         }
       ],
       "torneo": "MLS"
