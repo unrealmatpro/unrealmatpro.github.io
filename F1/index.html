@@ -8,7 +8,7 @@
   <link href='https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap' rel='stylesheet'/>
 
   <style>
-    :root { --f1-red:#e10600; --carbon-black:#0a0a0a; --surface-dark:rgba(20,20,20,0.9); --text-main:#f5f5f7; --text-soft:#999; }
+    :root { --f1-red:#e10600; --carbon-black:#0a0a0a; --surface-dark:rgba(20,20,20,0.9); --text-main:#f5f5f7; --text-soft:#999; --toast-accent:#ff5c5c; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background-color: var(--carbon-black); color: var(--text-main); font-family: 'Outfit', sans-serif; overflow: hidden; width: 100vw; height: 100vh; }
     .stadium-app { width: 100%; height: 100vh; display: flex; flex-direction: column; }
@@ -71,22 +71,38 @@
     .sport-badge.FUTBOL { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
     .sport-badge.NBA { background: rgba(200,16,46,0.15); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.35); }
     .sport-badge.F1 { background: rgba(225,6,0,0.15); color: #ff5c5c; border: 1px solid rgba(225,6,0,0.35); }
+    .um-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
+    .um-toast { background: linear-gradient(135deg, #1a0000 0%, #050505 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
+    .um-toast-header { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--toast-accent); }
+    .um-toast-icon { font-size: 16px; }
+    .um-toast-title { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.3; }
+    .um-toast-meta { font-size: 11px; color: #999; font-family: 'JetBrains Mono', monospace; }
+    .um-toast-actions { display: flex; gap: 8px; margin-top: 4px; }
+    .um-toast-btn { flex: 1; padding: 8px 10px; border-radius: 5px; font-size: 11px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; font-family: 'Outfit', sans-serif; }
+    .um-toast-btn.watch { background: var(--toast-accent); color: #000; }
+    .um-toast-btn.watch:hover { opacity: 0.85; }
+    .um-toast-btn.dismiss { background: transparent; color: #999; border: 1px solid rgba(255,255,255,0.2); flex: 0 0 auto; padding: 8px 12px; }
+    .um-toast-btn.dismiss:hover { color: #fff; border-color: #fff; }
+    @keyframes toastSlideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes toastSlideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
     @media(max-width: 900px) {
       body { overflow-y: auto; }
       .stadium-app { height: auto; min-height: 100vh; }
       header { flex-direction: column; height: auto; padding: 12px; gap: 12px; }
       .top-ticker-container { width: 100%; }
-      .stadium-controls { width: 100%; justify-content: space-between; }
-      .grid-btn { flex: 1; justify-content: center; padding: 0 5px; }
+      .stadium-controls { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+      .grid-btn { flex: 1; justify-content: center; padding: 0 5px; min-width: 55px; }
       .stadium-main { grid-template-columns: 1fr; height: auto; overflow: visible; }
       .video-wrapper { aspect-ratio: 16/9; flex: none; height: auto; min-height: auto; }
       .stadium-sidebar { border-left: none; border-top: 2px solid var(--f1-red); height: auto; overflow: visible; }
       .tab-content { overflow-y: visible; height: auto; max-height: none; }
+      .um-toast-container { bottom: 10px; right: 10px; left: 10px; max-width: none; }
     }
   </style>
 </head>
 <body>
   <button id='exit-cinema-btn' onclick='disableCinemaMode()'><i class='fas fa-compress-alt'></i> SALIR MODO CINE</button>
+  <div class='um-toast-container' id='um-toast-container'></div>
 
   <div class='stadium-app' id='stadium-app-wrapper'>
     <header>
@@ -101,6 +117,7 @@
       <div class='stadium-controls'>
         <button class='grid-btn active-grid' id='btn-g1' onclick='buildStadiumGrid(1,this)'><i class='fas fa-tv'></i> 1 TV</button>
         <button class='grid-btn' id='btn-g2' onclick='buildStadiumGrid(2,this)'><i class='fas fa-columns'></i> 2 TV</button>
+        <button class='grid-btn' id='btn-g3' onclick='buildStadiumGrid(3,this)'><i class='fas fa-square'></i> 3 TV</button>
         <button class='grid-btn' id='btn-g4' onclick='buildStadiumGrid(4,this)'><i class='fas fa-th-large'></i> 4 TV</button>
         <button class='grid-btn cinema-btn' onclick='enableCinemaMode()'><i class='fas fa-film'></i> CINE</button>
       </div>
@@ -140,6 +157,9 @@
     let targetSlotIndex = 0;
     const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
     const CAL_ID = "i3vhcidiluqakvb92ue0hl3nmg@group.calendar.google.com";
+    const DEPORTE_ACTUAL = 'F1';
+    const notifiedEventKeys = new Set();
+    const _notificationData = {};
 
     function recargarBlog(btn){ btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
     function escapeHTML(str){ if(!str) return ''; return str.replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
@@ -164,6 +184,7 @@
       if(button) button.classList.add('active-grid');
       if(slots===1){ mesh.style.gridTemplateColumns='1fr'; mesh.style.gridTemplateRows='1fr'; }
       if(slots===2){ mesh.style.gridTemplateColumns='1fr 1fr'; mesh.style.gridTemplateRows='1fr'; }
+      if(slots===3){ mesh.style.gridTemplateColumns='1fr 1fr 1fr'; mesh.style.gridTemplateRows='1fr'; }
       if(slots===4){ mesh.style.gridTemplateColumns='1fr 1fr'; mesh.style.gridTemplateRows='1fr 1fr'; }
       const current=mesh.children.length;
       if(slots>current){ for(let i=current;i<slots;i++) mesh.appendChild(createSlotElement(i)); }
@@ -197,6 +218,26 @@
       renderStream(targetSlotIndex, url, isMuted);
       applyMuteStates();
       const next=findFirstEmptySlot(); if(next!==-1) targetSlotIndex=next;
+    }
+    function openInNewSlot(url){
+      if(!url) return;
+      let slotCount = getSlotCount();
+      let free = findFirstEmptySlot();
+      const hayReproduccion = slotData.some(s => s && s.url);
+      if(free === -1){
+        if(slotCount === 1) buildStadiumGrid(2, document.getElementById('btn-g2'));
+        else if(slotCount === 2) buildStadiumGrid(3, document.getElementById('btn-g3'));
+        else if(slotCount === 3) buildStadiumGrid(4, document.getElementById('btn-g4'));
+        else { alert('No hay pantallas libres. Cierra una para añadir otro evento.'); return; }
+        free = findFirstEmptySlot();
+      }
+      if(free === -1) return;
+      const muted = hayReproduccion;
+      slotData[free] = { url };
+      renderStream(free, url, muted);
+      if(!hayReproduccion){ activeSlotIndex = free; targetSlotIndex = free; }
+      else { targetSlotIndex = free; }
+      applyMuteStates();
     }
     function renderStream(slotIdx, url, muted){
       const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
@@ -243,8 +284,6 @@
           }
           return null;
         }));
-
-        // Calendar de F1
         try{
           const tMin = new Date(Date.now()-2.5*60*60*1000).toISOString();
           const calRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CAL_ID)}/events?key=${API_KEY}&timeMin=${tMin}&maxResults=15&singleEvents=true&orderBy=startTime`);
@@ -270,6 +309,7 @@
         });
         datosOriginales = Array.from(map.values());
         renderSidebarFeed(datosOriginales);
+        checkUpcomingEvents();
       }catch(e){
         console.error(e);
         document.getElementById('stadium-feed-target').innerHTML='<div style="padding:20px;opacity:.5;text-align:center;color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> No se pudo cargar la agenda.</div>';
@@ -335,11 +375,70 @@
       document.getElementById('exit-cinema-btn').style.display='none';
     }
 
+    function checkUpcomingEvents(){
+      const now = Date.now();
+      const WINDOW_START = -3 * 60 * 1000;
+      const WINDOW_END = 10 * 60 * 1000;
+      const eventsList = datosOriginales || [];
+      for(const e of eventsList){
+        if(e.deporte === DEPORTE_ACTUAL) continue;
+        if(!e.eventDateObj) continue;
+        const t = e.eventDateObj.getTime();
+        if(t < now + WINDOW_START) continue;
+        if(t > now + WINDOW_END) continue;
+        if(!e.servidores || e.servidores.length === 0) continue;
+        const url = e.servidores[0].url;
+        if(!url) continue;
+        const yaCargado = slotData.some(s => s && s.url === url);
+        if(yaCargado) continue;
+        const key = e.deporte + '|' + normalizar(e.titulo||e.summary) + '|' + t;
+        if(notifiedEventKeys.has(key)) continue;
+        notifiedEventKeys.add(key);
+        showNotification(e);
+      }
+    }
+    function showNotification(e){
+      const container = document.getElementById('um-toast-container');
+      if(!container) return;
+      const now = Date.now();
+      const startsIn = e.eventDateObj.getTime() - now;
+      const isLive = startsIn <= 0;
+      const timeLabel = isLive ? 'EN VIVO ahora' : (startsIn < 60000 ? 'Comienza en menos de 1 min' : `Comienza en ${Math.ceil(startsIn/60000)} min`);
+      const sportIcon = e.deporte === 'FUTBOL' ? '⚽' : e.deporte === 'NBA' ? '🏀' : e.deporte === 'F1' ? '🏎️' : '📺';
+      const sportName = e.deporte === 'FUTBOL' ? 'Fútbol' : e.deporte === 'NBA' ? 'NBA' : e.deporte === 'F1' ? 'F1' : e.deporte;
+      const id = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+      _notificationData[id] = { url: e.servidores[0].url };
+      const title = e.titulo || e.summary || 'Evento';
+      const torneo = e.torneo || '';
+      const toast = document.createElement('div');
+      toast.className = 'um-toast'; toast.id = id;
+      toast.innerHTML = `
+        <div class="um-toast-header"><span class="um-toast-icon">${sportIcon}</span><span>${sportName}${torneo ? ' · ' + escapeHTML(torneo) : ''}</span></div>
+        <div class="um-toast-title">${escapeHTML(title)}</div>
+        <div class="um-toast-meta">${timeLabel}</div>
+        <div class="um-toast-actions">
+          <button class="um-toast-btn watch" onclick="openFromNotification('${id}')"><i class="fas fa-plus"></i> Ver en nueva pantalla</button>
+          <button class="um-toast-btn dismiss" onclick="dismissNotification('${id}')"><i class="fas fa-times"></i></button>
+        </div>`;
+      container.appendChild(toast);
+      setTimeout(() => { dismissNotification(id); }, 25000);
+    }
+    function openFromNotification(toastId){
+      const data = _notificationData[toastId];
+      if(data && data.url) openInNewSlot(data.url);
+      dismissNotification(toastId);
+      delete _notificationData[toastId];
+    }
+    function dismissNotification(toastId){
+      const t = document.getElementById(toastId);
+      if(t){ t.style.animation = 'toastSlideOut 0.3s ease'; setTimeout(() => t.remove(), 300); }
+    }
+
     document.addEventListener('DOMContentLoaded', ()=>{
       buildStadiumGrid(1, null);
       cargarAgenda();
+      setInterval(checkUpcomingEvents, 60000);
 
-      // ===== DEEP-LINK DESDE EL HUB =====
       (function handleDeepLink(){
         const params = new URLSearchParams(location.search);
         const auto = params.get('auto');
