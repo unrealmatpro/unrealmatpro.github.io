@@ -152,6 +152,7 @@
 
   <script>
     let datosOriginales = [];
+    let eventosNotificables = [];
     let slotData = [];
     let activeSlotIndex = 0;
     let targetSlotIndex = 0;
@@ -161,9 +162,23 @@
     const notifiedEventKeys = new Set();
     const _notificationData = {};
 
+    const F1_TERMS = [
+      "F1", "FORMULA 1", "FÓRMULA 1", "GRAND PRIX", "GRAN PREMIO",
+      "PRACTICA", "PRÁCTICA", "FREE PRACTICE", "FP1", "FP2", "FP3",
+      "CLASIFICACION", "CLASIFICACIÓN", "QUALIFYING", "QUALY",
+      "SPRINT", "SHOOTOUT", "ON BOARD", "CIRCUITO", "FIA FORMULA"
+    ];
+
     function recargarBlog(btn){ if(btn) btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
     function escapeHTML(str){ if(str==null) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
     function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
+    function claveEvento(titulo, torneo){ return `${normalizar(titulo).replace(/[^A-Z0-9]/g,'')}|${normalizar(torneo)}`; }
+
+    function esEventoF1(ev){
+      if(ev.isCalendar) return true;
+      const texto = `${normalizar(ev.titulo||ev.summary)} ${normalizar(ev.torneo||'')}`;
+      return F1_TERMS.some(term => texto.includes(normalizar(term)));
+    }
 
     function sanitizeStreamUrl(rawUrl){
       if(!rawUrl || typeof rawUrl !== 'string') return null;
@@ -325,7 +340,7 @@
       ];
       try{
         const responses=await Promise.all(urls.map(u=>fetch(u.url).catch(()=>null)));
-        let rawEvents=[];
+        let allParsedEvents=[];
         await Promise.all(responses.map((res,index)=>{
           if(res && res.ok){
             return res.json().then(data=>{
@@ -339,37 +354,97 @@
                       .map(s=>({ nombre: s.nombre||s.stream||'Opción', url: sanitizeStreamUrl(s.url||s.live1_url||'') }))
                       .filter(s=>!!s.url);
                   }
-                  rawEvents.push(e);
+                  allParsedEvents.push(e);
                 });
               }
             }).catch(()=>{});
           }
           return null;
         }));
+
+        const ahora = new Date();
+        allParsedEvents.forEach(e => { if(!e.eventDateObj) e.eventDateObj = parseEventDate(e); });
+
+        // Eventos de otros deportes conservados solo para notificaciones cross-sport
+        eventosNotificables = allParsedEvents.filter(e => {
+          if(e.deporte === DEPORTE_ACTUAL) return false;
+          if(!e.eventDateObj) return false;
+          const diffHours = (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60);
+          return diffHours <= 2.5;
+        });
+
+        // Señales de F1 encontradas en JSON para reemplazar/completar eventos del calendario de F1
+        const senalesF1 = allParsedEvents.filter(e => e.deporte === 'F1' && esEventoF1(e) && e.servidores && e.servidores.length > 0);
+        const senalesPorClave = new Map();
+        senalesF1.forEach(s => {
+          const k = claveEvento(s.titulo || s.summary, s.torneo || 'F1');
+          if(!senalesPorClave.has(k)) senalesPorClave.set(k, s);
+        });
+
+        // Base principal de agenda F1: Google Calendar de F1 (reemplazado por señal del sitio si existe)
+        let f1Events = [];
         try{
           const tMin = new Date(Date.now()-2.5*60*60*1000).toISOString();
-          const calRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CAL_ID)}/events?key=${encodeURIComponent(API_KEY)}&timeMin=${encodeURIComponent(tMin)}&maxResults=15&singleEvents=true&orderBy=startTime`);
+          const calRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CAL_ID)}/events?key=${encodeURIComponent(API_KEY)}&timeMin=${encodeURIComponent(tMin)}&maxResults=25&singleEvents=true&orderBy=startTime`);
           if(calRes.ok){
             const calData = await calRes.json();
             (calData.items||[]).forEach(ev=>{
               const raw = ev.start.dateTime || (ev.start.date + 'T00:00:00');
-              rawEvents.push({ titulo: ev.summary||'Sesión F1', torneo: 'CALENDARIO F1', deporte: 'F1', eventDateObj: new Date(raw), servidores: [], isCalendar: true });
+              const titulo = ev.summary || 'Sesión F1';
+              const torneo = 'FÓRMULA 1';
+              const k = claveEvento(titulo, torneo);
+              const matchSenal = senalesPorClave.get(k);
+              f1Events.push({
+                titulo: matchSenal ? (matchSenal.titulo || titulo) : titulo,
+                summary: matchSenal ? (matchSenal.titulo || titulo) : titulo,
+                torneo: (matchSenal && matchSenal.torneo) ? matchSenal.torneo : torneo,
+                deporte: 'F1',
+                eventDateObj: new Date(raw),
+                servidores: matchSenal ? matchSenal.servidores : [],
+                isCalendar: !matchSenal,
+                reemplazadoPorSenal: !!matchSenal
+              });
             });
           }
         }catch(err){}
 
-        const ahora = new Date();
-        rawEvents.forEach(e => { if(!e.eventDateObj) e.eventDateObj = parseEventDate(e); });
-        let filtrados = rawEvents.filter(e => { if(!e.eventDateObj) return true; const diffHours = (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60); return diffHours <= 2.5; });
-        filtrados.sort((a,b) => { if(!a.eventDateObj) return 1; if(!b.eventDateObj) return -1; return a.eventDateObj.getTime()-b.eventDateObj.getTime(); });
-
-        const map = new Map();
-        filtrados.forEach(e => {
-          const k = normalizar(e.titulo).replace(/[^A-Z0-9]/g,'') + '|' + e.deporte;
-          if(!map.has(k)) map.set(k, e);
-          else { const ex = map.get(k); if((!ex.servidores || ex.servidores.length === 0) && e.servidores && e.servidores.length > 0) map.set(k, e); }
+        // Si no hay eventos de calendario aún o hay señales F1 sin entrada exacta en calendario, sumar solo F1 filtrada y deduplicada
+        senalesF1.forEach(s => {
+          const k = claveEvento(s.titulo || s.summary, s.torneo || 'F1');
+          const yaExiste = f1Events.some(item => claveEvento(item.titulo || item.summary, item.torneo || 'F1') === k);
+          if(!yaExiste) {
+            f1Events.push({ ...s, deporte: 'F1' });
+          }
         });
-        datosOriginales = Array.from(map.values());
+
+        let filtrados = f1Events.filter(e => {
+          if(!esEventoF1(e)) return false;
+          if(!e.eventDateObj) return true;
+          const diffHours = (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60);
+          return diffHours <= 2.5;
+        });
+
+        filtrados.sort((a,b) => {
+          if(!a.eventDateObj) return 1;
+          if(!b.eventDateObj) return -1;
+          return a.eventDateObj.getTime()-b.eventDateObj.getTime();
+        });
+
+        const dedupMap = new Map();
+        filtrados.forEach(e => {
+          const timeBucket = e.eventDateObj ? Math.floor(e.eventDateObj.getTime() / (60 * 60 * 1000)) : 'sin-fecha';
+          const k = `${normalizar(e.titulo||e.summary).replace(/[^A-Z0-9]/g,'')}|${timeBucket}`;
+          if(!dedupMap.has(k)){
+            dedupMap.set(k, e);
+          } else {
+            const ex = dedupMap.get(k);
+            if((!ex.servidores || ex.servidores.length === 0) && e.servidores && e.servidores.length > 0){
+              dedupMap.set(k, { ...e, eventDateObj: ex.eventDateObj || e.eventDateObj });
+            }
+          }
+        });
+
+        datosOriginales = Array.from(dedupMap.values());
         renderSidebarFeed(datosOriginales);
         checkUpcomingEvents();
       }catch(e){
@@ -382,12 +457,12 @@
       const box=document.getElementById('stadium-feed-target');
       box.innerHTML='';
       if(!events||events.length===0){
-        box.innerHTML='<div style="padding:20px;opacity:.5;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No hay sesiones disponibles.</div>';
+        box.innerHTML='<div style="padding:20px;opacity:.5;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No hay sesiones de F1 disponibles.</div>';
         return;
       }
       events.forEach((e,idx)=>{
         const num=e.servidores?e.servidores.length:0;
-        const deporte=e.deporte||'F1';
+        const deporte='F1';
         let safeTime='Por confirmar';
         if(e.eventDateObj){
           const f=e.eventDateObj.toLocaleDateString([],{day:'2-digit',month:'2-digit'});
@@ -404,9 +479,9 @@
         card.className = 'stadium-card';
         if(status==='FINALIZADO') card.style.opacity = '.65';
         card.innerHTML = `
-          <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||deporte)}<span class="sport-badge ${escapeHTML(deporte)}">${escapeHTML(deporte)}</span></span><span class="card-live" style="${bs}">${escapeHTML(bt)}</span></div>
+          <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||'FÓRMULA 1')}<span class="sport-badge ${deporte}">${deporte}</span></span><span class="card-live" style="${bs}">${escapeHTML(bt)}</span></div>
           <div class="card-title">${escapeHTML(e.titulo||e.summary)}</div>
-          <div class="card-bottom"><span><i class="fas fa-clock"></i> ${escapeHTML(safeTime)}</span><span><i class="fas fa-satellite-dish"></i> ${num>0?num+' Canales':'Sin señal aún'}</span></div>`;
+          <div class="card-bottom"><span><i class="fas fa-clock"></i> ${escapeHTML(safeTime)}</span><span><i class="fas fa-satellite-dish"></i> ${num>0?num+' Canales':'Calendario F1'}</span></div>`;
         card.addEventListener('click', () => prepararPartido(idx));
         box.appendChild(card);
       });
@@ -425,7 +500,7 @@
       list.innerHTML = '';
       if(!partido.servidores || partido.servidores.length===0){
         const t=document.getElementById('stadium-core-'+targetSlotIndex);
-        if(t) t.innerHTML='<div style="color:#fff;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;"><i class="fas fa-hourglass-half" style="font-size:40px;color:var(--f1-red);margin-bottom:15px;"></i><h3 style="margin-bottom:10px;">Señal aún no publicada</h3><p style="font-size:12px;color:#999;max-width:300px;">La sesión está agendada, pero los canales aún no están disponibles.</p></div>';
+        if(t) t.innerHTML='<div style="color:#fff;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;"><i class="fas fa-calendar-check" style="font-size:40px;color:var(--f1-red);margin-bottom:15px;"></i><h3 style="margin-bottom:10px;">Sesión programada en Calendario F1</h3><p style="font-size:12px;color:#999;max-width:320px;">El evento figura en el calendario de Fórmula 1; los canales de transmisión se habilitarán cuando estén publicados.</p></div>';
         panel.style.display='none';
         return;
       }
@@ -464,7 +539,7 @@
       const now = Date.now();
       const WINDOW_START = -3 * 60 * 1000;
       const WINDOW_END = 10 * 60 * 1000;
-      const eventsList = datosOriginales || [];
+      const eventsList = eventosNotificables || [];
       for(const e of eventsList){
         if(e.deporte === DEPORTE_ACTUAL) continue;
         if(!e.eventDateObj) continue;
