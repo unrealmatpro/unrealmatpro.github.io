@@ -75,6 +75,7 @@
     #exit-cinema-btn:hover { background: #5d3c82; }
     .sport-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; }
     .sport-badge.FUTBOL { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
+    .sport-badge.OTROS { background: rgba(217,177,74,0.15); color: #f4d03f; border: 1px solid rgba(217,177,74,0.35); }
     .sport-badge.NBA { background: rgba(200,16,46,0.15); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.35); }
     .sport-badge.F1 { background: rgba(225,6,0,0.15); color: #ff5c5c; border: 1px solid rgba(225,6,0,0.35); }
     .um-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
@@ -145,7 +146,7 @@
       <aside class='stadium-sidebar' id='app-sidebar-stadium'>
         <nav class='sport-tabs'>
           <button class='sport-tab active' data-sport='FUTBOL' type='button'><i class='fas fa-futbol'></i> FÚTBOL</button>
-          <button class='sport-tab' data-sport='TODOS' type='button'><i class='fas fa-globe'></i> TODOS</button>
+          <button class='sport-tab' data-sport='OTROS' type='button'><i class='fas fa-layer-group'></i> OTROS</button>
         </nav>
         <div class='search-container'>
             <i class='fas fa-search search-icon'></i>
@@ -168,11 +169,20 @@
     const DEPORTE_ACTUAL = 'FUTBOL';
     const notifiedEventKeys = new Set();
     const _notificationData = {};
+    const OTROS_DEPORTES = ['NFL', 'MLB', 'NHL'];
 
     function recargarBlog(btn){ if(btn) btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
     function escapeHTML(str){ if(str==null) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
     function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
     function iniciarReloj(){ setInterval(()=>{ const el = document.getElementById('current-time-display'); if(el) el.textContent = new Date().toLocaleTimeString('es-ES'); },1000); }
+
+    function detectarSubdeporteOtros(ev){
+      const texto = `${normalizar(ev.titulo||ev.summary)} ${normalizar(ev.torneo||ev.leagueName||'')}`;
+      for(const dep of OTROS_DEPORTES){
+        if(new RegExp(`\\b${dep}\\b`).test(texto)) return dep;
+      }
+      return null;
+    }
 
     function sanitizeStreamUrl(rawUrl){
       if(!rawUrl || typeof rawUrl !== 'string') return null;
@@ -336,9 +346,9 @@
     async function cargarAgenda(){
       const baseUrl="../output/";
       const urls=[
-        { sport:"FUTBOL", url:`${baseUrl}agenda_futbol.json?v=${Date.now()}` },
-        { sport:"NBA", url:`${baseUrl}agenda_nba.json?v=${Date.now()}` },
-        { sport:"F1", url:`${baseUrl}agenda_f1.json?v=${Date.now()}` }
+        { sport:"FUTBOL", url:`${baseUrl}agenda_futbol.json?v=${Date.now()}`, isPrimaryFutbolJson:true },
+        { sport:"NBA", url:`${baseUrl}agenda_nba.json?v=${Date.now()}`, isPrimaryFutbolJson:false },
+        { sport:"F1", url:`${baseUrl}agenda_f1.json?v=${Date.now()}`, isPrimaryFutbolJson:false }
       ];
       try{
         const responses=await Promise.all(urls.map(u=>fetch(u.url).catch(()=>null)));
@@ -349,7 +359,18 @@
               const lista=data.eventos||data;
               if(Array.isArray(lista)){
                 lista.forEach(e=>{
-                  e.deporte=urls[index].sport;
+                  const origenSport = urls[index].sport;
+                  const esFutbolJson = !!urls[index].isPrimaryFutbolJson;
+                  const subOtros = detectarSubdeporteOtros(e);
+
+                  if(esFutbolJson){
+                    e.deporte = subOtros ? 'OTROS' : 'FUTBOL';
+                    e.subdeporte = subOtros || 'FUTBOL';
+                  } else {
+                    e.deporte = origenSport;
+                    e.subdeporte = subOtros || origenSport;
+                  }
+
                   if(e.titulo && !e.summary) e.summary=e.titulo;
                   if(e.servidores){
                     e.servidores=e.servidores
@@ -388,6 +409,7 @@
         const safeTitle=escapeHTML(e.summary||e.titulo);
         const safeLeague=escapeHTML(e.leagueName||e.torneo||"DEPORTE");
         const deporte=e.deporte||'FUTBOL';
+        const badgeTexto=escapeHTML(e.subdeporte||deporte);
         let safeTime='Por confirmar';
         if(e.eventDateObj) safeTime=e.eventDateObj.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
         const status=getDynamicStatus(e.eventDateObj, e.status);
@@ -401,7 +423,7 @@
         card.className = 'stadium-card';
         if(status==='FINALIZADO') card.style.opacity = '.65';
         card.innerHTML = `
-          <div class="card-top"><span class="card-league">${safeLeague}<span class="sport-badge ${escapeHTML(deporte)}">${escapeHTML(deporte)}</span></span><span class="card-live" style="${bs}">${escapeHTML(bt)}</span></div>
+          <div class="card-top"><span class="card-league">${safeLeague}<span class="sport-badge ${escapeHTML(deporte)}">${badgeTexto}</span></span><span class="card-live" style="${bs}">${escapeHTML(bt)}</span></div>
           <div class="card-title">${safeTitle}</div>
           <div class="card-bottom"><span><i class="fas fa-clock"></i> ${escapeHTML(safeTime)}</span><span><i class="fas fa-satellite-dish"></i> ${numOpciones} Opciones</span></div>`;
         card.addEventListener('click', () => prepararPartido(globalIndex));
@@ -412,17 +434,25 @@
     function filterBySport(sport, element){
       currentSport=sport;
       if(element){ document.querySelectorAll('.sport-tab').forEach(t=>t.classList.remove('active')); element.classList.add('active'); }
-      let filtered=allEvents;
-      if(sport!=='TODOS') filtered=allEvents.filter(e=>e.deporte===sport);
+      let filtered=[];
+      if(sport==='FUTBOL'){
+        filtered=allEvents.filter(e=>e.deporte==='FUTBOL');
+      } else if(sport==='OTROS'){
+        filtered=allEvents.filter(e=>e.deporte==='OTROS');
+      } else {
+        filtered=allEvents.filter(e=>e.deporte==='FUTBOL');
+      }
       filteredEvents=filtered;
       renderSidebarFeed(filteredEvents);
     }
 
     function filtrarBusqueda(){
       const input=normalizar(document.getElementById('search-input').value);
-      let baseList=currentSport==='TODOS'?allEvents:allEvents.filter(e=>e.deporte===currentSport);
+      let baseList=currentSport==='OTROS'
+        ? allEvents.filter(e=>e.deporte==='OTROS')
+        : allEvents.filter(e=>e.deporte==='FUTBOL');
       if(!input){ renderSidebarFeed(baseList); return; }
-      const filtrados=baseList.filter(e=>normalizar(e.summary||e.titulo).includes(input)||normalizar(e.leagueName||e.torneo||"").includes(input));
+      const filtrados=baseList.filter(e=>normalizar(e.summary||e.titulo).includes(input)||normalizar(e.leagueName||e.torneo||e.subdeporte||"").includes(input));
       renderSidebarFeed(filtrados);
     }
 
@@ -475,9 +505,10 @@
 
     function actualizarTicker(){
       const track=document.getElementById('stadium-ticker-track'); if(!track) return;
-      if(allEvents.length===0){ track.innerHTML='<div class="ticker-node">No hay eventos programados...</div>'; return; }
+      const futbolList=allEvents.filter(e=>e.deporte==='FUTBOL');
+      if(futbolList.length===0){ track.innerHTML='<div class="ticker-node">No hay partidos de fútbol programados...</div>'; return; }
       let html='';
-      allEvents.slice(0,10).forEach(e=>{
+      futbolList.slice(0,10).forEach(e=>{
         let safeTime='Por confirmar';
         if(e.eventDateObj) safeTime=e.eventDateObj.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
         html+=`<div class="ticker-node"><span style="color:var(--gold);margin-right:8px;"><i class="fas fa-circle"></i></span> ${escapeHTML(e.summary||e.titulo)} <span style="color:var(--text-soft);margin-left:8px;">(${escapeHTML(safeTime)})</span></div>`;
@@ -517,7 +548,7 @@
       const isLive = startsIn <= 0;
       const timeLabel = isLive ? 'EN VIVO ahora' : (startsIn < 60000 ? 'Comienza en menos de 1 min' : `Comienza en ${Math.ceil(startsIn/60000)} min`);
       const sportIcon = e.deporte === 'FUTBOL' ? '⚽' : e.deporte === 'NBA' ? '🏀' : e.deporte === 'F1' ? '🏎️' : '📺';
-      const sportName = e.deporte === 'FUTBOL' ? 'Fútbol' : e.deporte === 'NBA' ? 'NBA' : e.deporte === 'F1' ? 'F1' : e.deporte;
+      const sportName = e.subdeporte || (e.deporte === 'FUTBOL' ? 'Fútbol' : e.deporte === 'NBA' ? 'NBA' : e.deporte === 'F1' ? 'F1' : 'Otros');
       const id = 'toast-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
       _notificationData[id] = { url: safeUrl };
       const title = e.titulo || e.summary || 'Evento';
