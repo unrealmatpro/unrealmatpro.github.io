@@ -3,112 +3,118 @@
 <head>
   <meta charset='UTF-8'/>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' name='viewport'/>
-  <title>NBA LIVE | UNREALMAT PRO+</title>
+  <title>NBA Hub | UNREALMAT PRO</title>
   <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
-  <link href='https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@900&family=Outfit:wght@400;700&family=JetBrains+Mono:wght@700&display=swap' rel='stylesheet'/>
+  <link href='https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Outfit:wght@400;600;800&display=swap' rel='stylesheet'/>
 
   <style>
-    :root { --nba-blue:#1d428a; --nba-red:#c8102e; --nba-gold:#fdb927; --bg-arena:#02040a; --text-main:#ffffff; --text-soft:#8892b0; --toast-accent:#ff5c7c; }
+    :root { --nba-blue:#1d428a; --nba-red:#c8102e; --nba-gold:#fdb927; --bg-dark:#050810; --surface-glass:rgba(15,23,42,0.85); --border-glow:rgba(29,66,138,0.4); --toast-accent:#fdb927; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: var(--bg-arena); color: var(--text-main); font-family: 'Outfit', sans-serif; overflow: hidden; width: 100vw; height: 100vh; background-image: radial-gradient(circle at 50% -10%, rgba(29, 66, 138, 0.4) 0%, transparent 60%); }
+    body { background: radial-gradient(circle at top right, #0a1428 0%, var(--bg-dark) 100%); color: #f8fafc; font-family: 'Outfit', sans-serif; overflow: hidden; width: 100vw; height: 100vh; }
     .stadium-app { width: 100%; height: 100vh; display: flex; flex-direction: column; }
-    header { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: rgba(0,0,0,0.95); border-bottom: 2px solid var(--nba-blue); z-index: 100; flex-shrink: 0; }
+    header { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: rgba(5, 8, 16, 0.9); border-bottom: 2px solid var(--nba-blue); box-shadow: 0 4px 20px rgba(0,0,0,0.6); z-index: 100; flex-shrink: 0; }
     .brand-box { display: flex; align-items: center; gap: 20px; }
-    .brand-box h1 { font-family: 'Big Shoulders Display'; font-size: 28px; letter-spacing: 2px; text-transform: uppercase; }
-    .brand-box h1 span { color: var(--nba-red); }
-    .btn-return, .btn-refresh { font-family: 'Big Shoulders Display'; font-size: 14px; color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); padding: 6px 15px; border-radius: 2px; transition: 0.3s; background: transparent; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-    .btn-return:hover, .btn-refresh:hover { background: #fff; color: #000; }
+    .brand-box h1 { font-family: 'Big Shoulders Display', sans-serif; font-weight: 900; font-size: 32px; letter-spacing: 1px; text-transform: uppercase; color: #fff; }
+    .brand-box h1 span { color: var(--nba-red); text-shadow: 0 0 10px rgba(200,16,46,0.5); }
+    .btn-return, .btn-refresh { font-size: 11px; font-weight: 800; color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); padding: 7px 14px; border-radius: 6px; transition: 0.2s; background: rgba(255,255,255,0.05); cursor: pointer; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .btn-return:hover, .btn-refresh:hover { background: var(--nba-blue); border-color: var(--nba-gold); color: var(--nba-gold); }
     .btn-refresh i { transition: transform 0.5s ease; }
     .btn-refresh.spinning i { transform: rotate(360deg); }
-    .stadium-controls { display: flex; gap: 10px; align-items: center; }
-    .grid-btn { height: 38px; padding: 0 14px; border: none; background: #111a2e; color: #a0b5a9; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 8px; font-family: 'Outfit', sans-serif; }
-    .active-grid { background: var(--nba-red); color: white; }
-    .cinema-btn { background: #2d132c; color: #ff7b89; border: 1px solid #801336; }
-    .stadium-main { flex: 1; display: grid; grid-template-columns: 1fr 420px; overflow: hidden; height: calc(100vh - 112px); }
+    .stadium-controls { display: flex; gap: 8px; align-items: center; }
+    .grid-btn { height: 36px; padding: 0 12px; border: 1px solid rgba(255,255,255,0.1); background: #0f172a; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+    .grid-btn:hover { border-color: var(--nba-blue); color: #fff; }
+    .active-grid { background: var(--nba-blue); color: #fff; border-color: var(--nba-gold); box-shadow: 0 0 10px rgba(29,66,138,0.6); }
+    .cinema-btn { background: rgba(200,16,46,0.2); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.5); }
+    .cinema-btn:hover { background: var(--nba-red); color: #fff; }
+    .stadium-main { flex: 1; display: grid; grid-template-columns: 1fr 420px; overflow: hidden; height: calc(100vh - 70px); }
     .stadium-player-zone { display: flex; flex-direction: column; background: #000; height: 100%; width: 100%; min-height: 0; }
     .video-wrapper { width: 100%; flex: 1; min-height: 0; position: relative; }
-    #stadium-grid-mesh { width: 100%; height: 100%; display: grid; gap: 10px; }
-    .stadium-monitor { background: #000; overflow: hidden; position: relative; border: 2px solid rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; }
-    .stadium-monitor.focus-pitch { border-color: var(--nba-red); box-shadow: inset 0 0 20px rgba(200,16,46,0.15); }
-    .monitor-tag { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.85); padding: 5px 12px; border-radius: 4px; font-size: 10px; font-weight: 700; color: #fff; border-left: 3px solid var(--nba-blue); z-index: 10; cursor: pointer; }
+    #stadium-grid-mesh { width: 100%; height: 100%; display: grid; gap: 8px; }
+    .stadium-monitor { background: #000; overflow: hidden; position: relative; border: 2px solid rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; }
+    .stadium-monitor.focus-pitch { border-color: var(--nba-gold); box-shadow: inset 0 0 20px rgba(253,185,39,0.15); }
+    .monitor-tag { position: absolute; top: 10px; left: 10px; background: rgba(5,8,16,0.85); padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; color: #fff; border-left: 3px solid var(--nba-gold); z-index: 10; cursor: pointer; }
     .stadium-core { width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #555; }
-    .mute-badge { position: absolute; top: 42px; right: 8px; background: rgba(200,16,46,0.92); color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 50; display: none; align-items: center; gap: 5px; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); }
+    .mute-badge { position: absolute; top: 40px; right: 8px; background: rgba(200,16,46,0.92); color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 50; display: none; align-items: center; gap: 5px; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); }
     .mute-badge.visible { display: flex; }
     .mute-badge:hover { background: rgba(255,50,0,0.98); }
-    #alternative-servers-panel { display: none; padding: 15px; background: #05050a; border-bottom: 2px solid rgba(255,255,255,0.05); flex-shrink: 0; max-height: 120px; overflow-y: auto; }
-    .alt-servers-title { color: var(--nba-gold); font-size: 12px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; font-family: 'JetBrains Mono'; }
-    .alt-servers-list { display: flex; flex-wrap: wrap; gap: 8px; }
-    .alt-btn { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 700; transition: 0.2s; }
-    .alt-btn:hover { background: var(--nba-red); border-color: var(--nba-red); }
-    .stadium-sidebar { background: #05050a; border-left: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-    .tab-navigation { display: flex; background: rgba(0, 0, 0, 0.4); border-bottom: 1px solid rgba(255, 255, 255, 0.05); flex-shrink: 0; }
-    .tab-link { flex: 1; padding: 14px; background: transparent; border: none; color: var(--text-soft); font-weight: 700; font-size: 12px; text-align: center; text-transform: uppercase; }
-    .search-container { padding: 12px; background: #02040a; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; flex-shrink: 0; }
-    .search-input { width: 100%; background: #111a2e; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 10px 10px 35px; border-radius: 4px; font-family: 'Outfit', sans-serif; font-size: 13px; outline: none; transition: border 0.2s; }
-    .search-input:focus { border-color: var(--nba-red); }
-    .search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); color: var(--text-soft); }
+    #alternative-servers-panel { display: none; padding: 12px 16px; background: #0a0f1d; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; max-height: 110px; overflow-y: auto; }
+    .alt-servers-title { color: var(--nba-gold); font-size: 11px; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+    .alt-servers-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .alt-btn { background: rgba(255,255,255,0.05); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 5px; cursor: pointer; font-size: 11px; font-weight: 700; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+    .alt-btn:hover { background: var(--nba-blue); border-color: var(--nba-gold); color: #fff; }
+    .stadium-sidebar { background: var(--surface-glass); backdrop-filter: blur(12px); border-left: 1px solid var(--border-glow); display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+    .hero-match { padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); background: linear-gradient(135deg, rgba(29,66,138,0.4) 0%, rgba(5,8,16,0.9) 100%); border-left: 4px solid var(--nba-gold); flex-shrink: 0; }
+    .hero-label { color: var(--nba-gold); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .hero-title { font-family: 'Big Shoulders Display', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 0.5px; color: #fff; text-transform: uppercase; }
+    .tab-navigation { display: flex; background: rgba(0, 0, 0, 0.3); border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+    .tab-link { flex: 1; padding: 12px; background: transparent; border: none; color: #cbd5e1; font-weight: 700; font-size: 11px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+    .search-container { padding: 12px; background: rgba(5,8,16,0.5); border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; flex-shrink: 0; }
+    .search-input { width: 100%; background: #050810; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 9px 10px 9px 34px; border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 12px; outline: none; transition: 0.2s; }
+    .search-input:focus { border-color: var(--nba-gold); box-shadow: 0 0 0 2px rgba(253,185,39,0.15); }
+    .search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 12px; }
     .tab-content { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-height: 0; }
-    .tab-content::-webkit-scrollbar { width: 6px; }
-    .tab-content::-webkit-scrollbar-track { background: #02040a; }
+    .tab-content::-webkit-scrollbar { width: 5px; }
+    .tab-content::-webkit-scrollbar-track { background: transparent; }
     .tab-content::-webkit-scrollbar-thumb { background: var(--nba-blue); border-radius: 3px; }
-    .tab-content::-webkit-scrollbar-thumb:hover { background: var(--nba-red); }
-    .stadium-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; padding: 12px; cursor: pointer; transition: 0.2s; position: relative; border-left: 3px solid var(--nba-blue); flex-shrink: 0; }
-    .stadium-card:hover { background: rgba(255,255,255,0.07); border-left-color: var(--nba-red); }
-    .card-top { display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center; }
-    .card-league { color: var(--nba-gold); font-size: 10px; font-family: 'JetBrains Mono'; text-transform: uppercase; display: flex; align-items: center; flex-wrap: wrap; }
-    .card-live { font-size: 9px; font-family: 'JetBrains Mono'; font-weight: bold; padding: 2px 6px; border-radius: 2px; }
-    .card-title { font-size: 15px; font-family: 'Big Shoulders Display'; font-weight: bold; margin-bottom: 8px; }
-    .card-bottom { display: flex; justify-content: space-between; color: var(--text-soft); font-size: 11px; }
-    #exit-cinema-btn { position: fixed; bottom: 24px; right: 24px; background: var(--nba-red); color: white; border: none; padding: 14px 22px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; z-index: 99999; display: none; box-shadow: 0 6px 20px rgba(0,0,0,0.7); }
+    .stadium-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; }
+    .stadium-card:hover { background: rgba(29,66,138,0.2); border-color: var(--nba-gold); transform: translateX(3px); }
+    .card-top { display: flex; justify-content: space-between; align-items: center; }
+    .card-league { color: var(--nba-gold); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; flex-wrap: wrap; }
+    .card-live { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+    .card-title { font-size: 13px; font-weight: 700; color: #f1f5f9; line-height: 1.3; }
+    .card-bottom { display: flex; justify-content: space-between; color: #94a3b8; font-size: 10px; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; margin-top: 2px; }
+    #exit-cinema-btn { position: fixed; bottom: 24px; right: 24px; background: var(--nba-red); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; z-index: 99999; display: none; box-shadow: 0 6px 20px rgba(0,0,0,0.7); text-transform: uppercase; letter-spacing: 0.5px; }
     .sport-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; }
     .sport-badge.FUTBOL { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
     .sport-badge.NBA { background: rgba(200,16,46,0.15); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.35); }
+    .sport-badge.OTROS { background: rgba(253,185,39,0.15); color: #fdb927; border: 1px solid rgba(253,185,39,0.35); }
     .sport-badge.F1 { background: rgba(225,6,0,0.15); color: #ff5c5c; border: 1px solid rgba(225,6,0,0.35); }
-    .um-toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
-    .um-toast { background: linear-gradient(135deg, #1a0a0e 0%, #050208 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
+    .um-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
+    .um-toast { background: linear-gradient(135deg, #1a1505 0%, #050810 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
     .um-toast-header { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--toast-accent); }
     .um-toast-icon { font-size: 16px; }
     .um-toast-title { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.3; }
-    .um-toast-meta { font-size: 11px; color: #8892b0; font-family: 'JetBrains Mono', monospace; }
+    .um-toast-meta { font-size: 11px; color: #94a3b8; font-family: 'JetBrains Mono', monospace; }
     .um-toast-actions { display: flex; gap: 8px; margin-top: 4px; }
     .um-toast-btn { flex: 1; padding: 8px 10px; border-radius: 5px; font-size: 11px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; font-family: 'Outfit', sans-serif; }
     .um-toast-btn.watch { background: var(--toast-accent); color: #000; }
     .um-toast-btn.watch:hover { opacity: 0.85; }
-    .um-toast-btn.dismiss { background: transparent; color: #8892b0; border: 1px solid rgba(255,255,255,0.2); flex: 0 0 auto; padding: 8px 12px; }
+    .um-toast-btn.dismiss { background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.2); flex: 0 0 auto; padding: 8px 12px; }
     .um-toast-btn.dismiss:hover { color: #fff; border-color: #fff; }
     @keyframes toastSlideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes toastSlideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
     @media(max-width: 900px) {
       body { overflow-y: auto; }
       .stadium-app { height: auto; min-height: 100vh; }
-      header { flex-direction: column; height: auto; padding: 12px; gap: 12px; }
+      header { flex-direction: column; height: auto; padding: 12px; gap: 10px; }
+      .brand-box { width: 100%; justify-content: space-between; flex-wrap: wrap; }
       .stadium-controls { width: 100%; justify-content: space-between; flex-wrap: wrap; }
       .grid-btn { flex: 1; justify-content: center; padding: 0 5px; min-width: 55px; }
       .stadium-main { grid-template-columns: 1fr; height: auto; overflow: visible; }
       .video-wrapper { aspect-ratio: 16/9; flex: none; height: auto; min-height: auto; }
-      .stadium-sidebar { border-left: none; border-top: 2px solid var(--nba-red); height: auto; overflow: visible; }
+      .stadium-sidebar { border-left: none; border-top: 2px solid var(--nba-blue); height: auto; overflow: visible; }
       .tab-content { overflow-y: visible; height: auto; max-height: none; }
       .um-toast-container { bottom: 10px; right: 10px; left: 10px; max-width: none; }
     }
   </style>
 </head>
 <body>
-  <button id='exit-cinema-btn' onclick='disableCinemaMode()'><i class='fas fa-compress-alt'></i> SALIR MODO CINE</button>
+  <button id='exit-cinema-btn' type='button'><i class='fas fa-compress-alt'></i> SALIR MODO CINE</button>
   <div class='um-toast-container' id='um-toast-container'></div>
 
   <div class='stadium-app' id='stadium-app-wrapper'>
     <header>
       <div class='brand-box'>
-        <h1>UNREALMAT<span>NBA</span></h1>
-        <a class='btn-return' href='/'>WEB PRINCIPAL</a>
-        <button class='btn-refresh' onclick='recargarBlog(this)'><i class='fas fa-sync-alt'></i> ACTUALIZAR</button>
+        <h1>UNREALMAT <span>NBA</span></h1>
+        <a class='btn-return' href='/'><i class='fas fa-home'></i> WEB PRINCIPAL</a>
+        <button class='btn-refresh' id='btn-refresh' type='button'><i class='fas fa-sync-alt'></i> ACTUALIZAR</button>
       </div>
       <div class='stadium-controls'>
-        <button class='grid-btn active-grid' id='btn-g1' onclick='buildStadiumGrid(1,this)'><i class='fas fa-tv'></i> 1 TV</button>
-        <button class='grid-btn' id='btn-g2' onclick='buildStadiumGrid(2,this)'><i class='fas fa-columns'></i> 2 TV</button>
-        <button class='grid-btn' id='btn-g3' onclick='buildStadiumGrid(3,this)'><i class='fas fa-square'></i> 3 TV</button>
-        <button class='grid-btn' id='btn-g4' onclick='buildStadiumGrid(4,this)'><i class='fas fa-th-large'></i> 4 TV</button>
-        <button class='grid-btn cinema-btn' onclick='enableCinemaMode()'><i class='fas fa-film'></i> CINE</button>
+        <button class='grid-btn active-grid' id='btn-g1' data-slots='1' type='button'><i class='fas fa-tv'></i> 1 TV</button>
+        <button class='grid-btn' id='btn-g2' data-slots='2' type='button'><i class='fas fa-columns'></i> 2 TV</button>
+        <button class='grid-btn' id='btn-g3' data-slots='3' type='button'><i class='fas fa-square'></i> 3 TV</button>
+        <button class='grid-btn' id='btn-g4' data-slots='4' type='button'><i class='fas fa-th-large'></i> 4 TV</button>
+        <button class='grid-btn cinema-btn' id='btn-cinema' type='button'><i class='fas fa-film'></i> CINE</button>
       </div>
     </header>
 
@@ -122,13 +128,17 @@
       </section>
 
       <aside class='stadium-sidebar' id='app-sidebar-stadium'>
-        <nav class='tab-navigation'><button class='tab-link active-tab'>Agenda de Partidos</button></nav>
+        <div class='hero-match'>
+          <div class='hero-label'><i class='fas fa-basketball-ball'></i> NBA EN VIVO</div>
+          <div class='hero-title'>Partidos del Día</div>
+        </div>
+        <nav class='tab-navigation'><button class='tab-link active-tab' type='button'>Agenda de NBA</button></nav>
         <div class='search-container'>
             <i class='fas fa-search search-icon'></i>
-            <input class='search-input' id='search-input' onkeyup='filtrarBusqueda()' placeholder='Buscar equipo NBA...' type='text'/>
+            <input class='search-input' id='search-input' placeholder='Buscar equipo o liga...' type='text'/>
         </div>
         <div class='tab-content' id='panel-agenda-content'>
-          <div id='stadium-feed-target'><div style='padding:20px; text-align:center; opacity:0.6;'><i class='fas fa-circle-notch fa-spin'></i> Buscando partidos...</div></div>
+          <div id='stadium-feed-target'><div style='padding:20px; text-align:center; opacity:0.6;'><i class='fas fa-circle-notch fa-spin'></i> Sincronizando partidos...</div></div>
         </div>
       </aside>
     </main>
@@ -136,30 +146,77 @@
 
   <script>
     let datosOriginales = [];
+    let eventosNotificables = [];
     let slotData = [];
     let activeSlotIndex = 0;
     let targetSlotIndex = 0;
     const DEPORTE_ACTUAL = 'NBA';
     const notifiedEventKeys = new Set();
     const _notificationData = {};
+    const OTROS_DEPORTES = ['NFL', 'MLB', 'NHL'];
 
-    function recargarBlog(btn){ btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
-    function escapeHTML(str){ if(!str) return ''; return str.replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
+    function recargarBlog(btn){ if(btn) btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
+    function escapeHTML(str){ if(str==null) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
     function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
+
+    function detectarSubdeporteOtros(ev){
+      const texto = `${normalizar(ev.titulo||ev.summary)} ${normalizar(ev.torneo||'')}`;
+      for(const dep of OTROS_DEPORTES){
+        if(new RegExp(`\\b${dep}\\b`).test(texto)) return dep;
+      }
+      return null;
+    }
+
+    function sanitizeStreamUrl(rawUrl){
+      if(!rawUrl || typeof rawUrl !== 'string') return null;
+      try {
+        const parsed = new URL(rawUrl.trim());
+        const host = parsed.hostname.toLowerCase();
+        if(!host.startsWith('streamxhd.')) return null;
+        if(parsed.protocol === 'http:') parsed.protocol = 'https:';
+        if(parsed.protocol !== 'https:') return null;
+        return parsed.toString();
+      } catch (e) {
+        return null;
+      }
+    }
+
     function parseEventDate(e){
       if(e.fecha_completa){ let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d; if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){ let d2=new Date(e.fecha_completa.replace(" ","T")+":00-05:00"); if(!isNaN(d2.getTime())) return d2; } }
       if(e.hora && e.hora!=="00:00"){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
       return null;
     }
+
     function getDynamicStatus(date, orig){ if(!date) return orig||"PRÓXIMO"; const diff=(new Date().getTime()-date.getTime())/(1000*60*60); if(diff<0) return "PRÓXIMO"; if(diff<=2.5) return "EN VIVO"; return "FINALIZADO"; }
     function getSlotCount(){ return document.querySelectorAll('.stadium-monitor').length; }
     function findFirstEmptySlot(){ for(let i=0;i<getSlotCount();i++){ if(!slotData[i]||!slotData[i].url) return i; } return -1; }
 
     function createSlotElement(i){
-      const div=document.createElement('div'); div.className='stadium-monitor'+(i===0?' focus-pitch':''); div.id='stadium-slot-'+i; div.onclick=()=>focusSlot(i);
-      div.innerHTML=`<div class="monitor-tag" onclick="event.stopPropagation(); focusSlot(${i})"><i class="fas fa-play-circle"></i> TV 0${i+1}</div><div id="stadium-core-${i}" class="stadium-core"><i class="fas fa-tv" style="font-size:40px; margin-bottom:10px;"></i><span style="font-size:12px; font-weight:600; text-align:center; padding:0 10px;">Selecciona un partido</span></div><div class="mute-badge" id="mute-badge-${i}" onclick="event.stopPropagation(); focusSlot(${i})"><i class="fas fa-volume-mute"></i> Activar audio</div>`;
+      const div = document.createElement('div');
+      div.className = 'stadium-monitor' + (i===0 ? ' focus-pitch' : '');
+      div.id = 'stadium-slot-' + i;
+      div.addEventListener('click', () => focusSlot(i));
+
+      const tag = document.createElement('div');
+      tag.className = 'monitor-tag';
+      tag.innerHTML = `<i class="fas fa-play-circle"></i> TV 0${i+1}`;
+      tag.addEventListener('click', (ev) => { ev.stopPropagation(); focusSlot(i); });
+
+      const core = document.createElement('div');
+      core.id = 'stadium-core-' + i;
+      core.className = 'stadium-core';
+      core.innerHTML = '<i class="fas fa-tv" style="font-size:40px; margin-bottom:10px;"></i><span style="font-size:12px; font-weight:600; text-align:center; padding:0 10px;">Selecciona un partido</span>';
+
+      const muteBadge = document.createElement('div');
+      muteBadge.className = 'mute-badge';
+      muteBadge.id = 'mute-badge-' + i;
+      muteBadge.innerHTML = '<i class="fas fa-volume-mute"></i> Activar audio';
+      muteBadge.addEventListener('click', (ev) => { ev.stopPropagation(); focusSlot(i); });
+
+      div.append(tag, core, muteBadge);
       return div;
     }
+
     function buildStadiumGrid(slots, button){
       const mesh=document.getElementById('stadium-grid-mesh');
       document.querySelectorAll('.stadium-controls .grid-btn').forEach(b=>{ if(!b.classList.contains('cinema-btn')) b.classList.remove('active-grid'); });
@@ -174,6 +231,7 @@
       const empty=findFirstEmptySlot(); if(empty!==-1) targetSlotIndex=empty;
       applyMuteStates();
     }
+
     function focusSlot(i){
       if(i===activeSlotIndex) return;
       const prev=activeSlotIndex; activeSlotIndex=i; targetSlotIndex=i;
@@ -181,11 +239,17 @@
       if(slotData[i] && slotData[i].url) renderStream(i, slotData[i].url, false);
       applyMuteStates();
     }
+
     function muteIframeWithoutReload(slotIdx){
       const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
-      const iframe=core.querySelector('iframe'); if(!iframe) return;
-      try{ iframe.contentWindow.postMessage({type:'mute',muted:true},'*'); iframe.contentWindow.postMessage('mute','*'); }catch(e){}
+      const iframe=core.querySelector('iframe'); if(!iframe || !iframe.src) return;
+      try{
+        const targetOrigin = new URL(iframe.src).origin;
+        iframe.contentWindow.postMessage({type:'mute',muted:true}, targetOrigin);
+        iframe.contentWindow.postMessage('mute', targetOrigin);
+      }catch(e){}
     }
+
     function applyMuteStates(){
       for(let i=0;i<getSlotCount();i++){
         const m=document.getElementById('stadium-slot-'+i); if(m) m.classList.toggle('focus-pitch', i===activeSlotIndex);
@@ -193,16 +257,20 @@
         if(badge) badge.classList.toggle('visible', !!has && i!==activeSlotIndex);
       }
     }
+
     function loadInTarget(url){
-      if(!url) return;
+      const safeUrl = sanitizeStreamUrl(url);
+      if(!safeUrl) return;
       const isMuted=(targetSlotIndex!==activeSlotIndex);
-      slotData[targetSlotIndex]={url};
-      renderStream(targetSlotIndex, url, isMuted);
+      slotData[targetSlotIndex]={url: safeUrl};
+      renderStream(targetSlotIndex, safeUrl, isMuted);
       applyMuteStates();
       const next=findFirstEmptySlot(); if(next!==-1) targetSlotIndex=next;
     }
+
     function openInNewSlot(url){
-      if(!url) return;
+      const safeUrl = sanitizeStreamUrl(url);
+      if(!safeUrl) return;
       let slotCount = getSlotCount();
       let free = findFirstEmptySlot();
       const hayReproduccion = slotData.some(s => s && s.url);
@@ -215,26 +283,36 @@
       }
       if(free === -1) return;
       const muted = hayReproduccion;
-      slotData[free] = { url };
-      renderStream(free, url, muted);
+      slotData[free] = { url: safeUrl };
+      renderStream(free, safeUrl, muted);
       if(!hayReproduccion){ activeSlotIndex = free; targetSlotIndex = free; }
       else { targetSlotIndex = free; }
       applyMuteStates();
     }
+
     function renderStream(slotIdx, url, muted){
       const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
-      if(!url || (!url.startsWith('https://streamxhd') && !url.startsWith('http://streamxhd'))){ core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
-      let finalUrl=url; if(muted){ const sep=url.includes('?')?'&':'?'; finalUrl=url+sep+'mute=1'; }
+      const safeUrl = sanitizeStreamUrl(url);
+      if(!safeUrl){
+        core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada por seguridad.</div>';
+        return;
+      }
+      const parsed = new URL(safeUrl);
+      if(muted) parsed.searchParams.set('mute', '1');
       const isMobile=/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       core.innerHTML='';
       const f=document.createElement('iframe');
-      f.src=finalUrl; f.style.cssText='width:100%;height:100%;border:none;';
-      f.setAttribute('allowfullscreen','true'); f.setAttribute('webkitallowfullscreen','true'); f.setAttribute('mozallowfullscreen','true');
+      f.src=parsed.toString();
+      f.style.cssText='width:100%;height:100%;border:none;';
+      f.setAttribute('allowfullscreen','true');
+      f.setAttribute('webkitallowfullscreen','true');
+      f.setAttribute('mozallowfullscreen','true');
       f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture; user-activation';
-      f.setAttribute('referrerpolicy','no-referrer-when-downgrade');
+      f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
       core.appendChild(f);
       if(isMobile){
-        const ov=document.createElement('div'); ov.style.cssText='position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#ffcc00;padding:8px 15px;border-radius:6px;font-size:10px;font-weight:bold;text-align:center;width:90%;max-width:400px;z-index:99999;border:1px solid #ffcc00;pointer-events:none;';
+        const ov=document.createElement('div');
+        ov.style.cssText='position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#ffcc00;padding:8px 15px;border-radius:6px;font-size:10px;font-weight:bold;text-align:center;width:90%;max-width:400px;z-index:99999;border:1px solid #ffcc00;pointer-events:none;';
         ov.innerHTML='⚠️ Si el video no carga, activa el <b>bloqueador de ventanas emergentes</b>.';
         core.appendChild(ov);
       }
@@ -256,9 +334,16 @@
               const lista=data.eventos||data;
               if(Array.isArray(lista)){
                 lista.forEach(e=>{
-                  e.deporte=urls[index].sport;
+                  const origenSport = urls[index].sport;
+                  const subOtros = detectarSubdeporteOtros(e);
+                  e.deporte = subOtros ? 'OTROS' : origenSport;
+                  e.subdeporte = subOtros || origenSport;
                   if(e.titulo && !e.summary) e.summary=e.titulo;
-                  if(e.servidores){ e.servidores=e.servidores.map(s=>({ nombre: s.nombre||s.stream||'Opción', url: s.url||s.live1_url||'' })); }
+                  if(e.servidores){
+                    e.servidores=e.servidores
+                      .map(s=>({ nombre: s.nombre||s.stream||'Opción', url: sanitizeStreamUrl(s.url||s.live1_url||'') }))
+                      .filter(s=>!!s.url);
+                  }
                   rawEvents.push(e);
                 });
               }
@@ -270,67 +355,104 @@
         rawEvents.forEach(e=>{ e.eventDateObj=parseEventDate(e); });
         let filtrados=rawEvents.filter(e=>{ if(!e.eventDateObj) return true; const diffHours=(ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60); return diffHours<=2.5; });
         filtrados.sort((a,b)=>{ if(!a.eventDateObj) return 1; if(!b.eventDateObj) return -1; return a.eventDateObj.getTime()-b.eventDateObj.getTime(); });
-        datosOriginales=filtrados;
+
+        eventosNotificables = filtrados.filter(e => e.deporte !== DEPORTE_ACTUAL);
+
+        const nbaFiltrados = filtrados.filter(e => e.deporte === DEPORTE_ACTUAL);
+        const map = new Map();
+        nbaFiltrados.forEach(e => {
+          const k = normalizar(e.titulo).replace(/[^A-Z0-9]/g,'') + '|' + e.deporte;
+          if(!map.has(k)) map.set(k, e);
+          else { const ex = map.get(k); if((!ex.servidores || ex.servidores.length === 0) && e.servidores && e.servidores.length > 0) map.set(k, e); }
+        });
+        datosOriginales = Array.from(map.values());
         renderSidebarFeed(datosOriginales);
         checkUpcomingEvents();
       }catch(e){
         console.error(e);
-        document.getElementById('stadium-feed-target').innerHTML='<div style="padding:20px;opacity:.5;text-align:center;color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> No hay partidos en este momento.</div>';
+        document.getElementById('stadium-feed-target').innerHTML='<div style="padding:20px;opacity:.5;text-align:center;color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> No se pudo cargar la agenda.</div>';
       }
     }
+
     function renderSidebarFeed(events){
       const box=document.getElementById('stadium-feed-target');
-      if(!events||events.length===0){ box.innerHTML='<div style="padding:20px;opacity:.5;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No se encontraron eventos.</div>'; return; }
-      box.innerHTML=events.map((e,idx)=>{
+      box.innerHTML='';
+      if(!events||events.length===0){
+        box.innerHTML='<div style="padding:20px;opacity:.5;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No hay partidos disponibles.</div>';
+        return;
+      }
+      events.forEach((e,idx)=>{
         const num=e.servidores?e.servidores.length:0;
         const deporte=e.deporte||'NBA';
         let safeTime='Por confirmar';
-        if(e.eventDateObj) safeTime=e.eventDateObj.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+        if(e.eventDateObj){
+          const f=e.eventDateObj.toLocaleDateString([],{day:'2-digit',month:'2-digit'});
+          const h=e.eventDateObj.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+          safeTime=`${f} · ${h}`;
+        }
         const status=getDynamicStatus(e.eventDateObj, e.status);
         let bt, bs;
         if(status==='FINALIZADO'){ bt='FINALIZADO'; bs='background:rgba(139,163,181,0.2);color:#8ba3b5;border:1px solid rgba(139,163,181,0.4);'; }
-        else if(status==='EN VIVO'){ bt='EN VIVO'; bs='background:rgba(200,16,46,0.2);color:#c8102e;border:1px solid #c8102e;'; }
-        else { bt='PRÓXIMO'; bs='background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid #38bdf8;'; }
-        const op=status==='FINALIZADO'?'opacity:.65;':'';
-        return `<div class="stadium-card" onclick="prepararPartido(${idx})" style="${op}">
-          <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||deporte)}<span class="sport-badge ${deporte}">${deporte}</span></span><span class="card-live" style="${bs}">${bt}</span></div>
+        else if(status==='EN VIVO'){ bt='EN VIVO'; bs='background:rgba(200,16,46,0.25);color:#ff5c7c;border:1px solid #c8102e;'; }
+        else { bt='PRÓXIMO'; bs='background:rgba(253,185,39,0.2);color:#fdb927;border:1px solid #fdb927;'; }
+
+        const card = document.createElement('div');
+        card.className = 'stadium-card';
+        if(status==='FINALIZADO') card.style.opacity = '.65';
+        card.innerHTML = `
+          <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||'NBA')}<span class="sport-badge ${escapeHTML(deporte)}">${escapeHTML(deporte)}</span></span><span class="card-live" style="${bs}">${escapeHTML(bt)}</span></div>
           <div class="card-title">${escapeHTML(e.titulo||e.summary)}</div>
-          <div class="card-bottom"><span><i class="fas fa-clock"></i> ${safeTime}</span><span><i class="fas fa-satellite-dish"></i> ${num} Canales</span></div>
-        </div>`;
-      }).join('');
+          <div class="card-bottom"><span><i class="fas fa-clock"></i> ${escapeHTML(safeTime)}</span><span><i class="fas fa-satellite-dish"></i> ${num>0?num+' Canales':'Sin señal aún'}</span></div>`;
+        card.addEventListener('click', () => prepararPartido(idx));
+        box.appendChild(card);
+      });
     }
+
     function filtrarBusqueda(){
-      const input=normalizar(document.getElementById('search-input').value);
-      if(!input){ renderSidebarFeed(datosOriginales); return; }
-      renderSidebarFeed(datosOriginales.filter(e=>normalizar(e.titulo||e.summary).includes(input) || normalizar(e.torneo||'').includes(input)));
+      const inp=normalizar(document.getElementById('search-input').value);
+      if(!inp){ renderSidebarFeed(datosOriginales); return; }
+      renderSidebarFeed(datosOriginales.filter(e => normalizar(e.titulo||e.summary).includes(inp) || normalizar(e.torneo||'NBA').includes(inp)));
     }
+
     function prepararPartido(index){
       const partido=datosOriginales[index]; if(!partido) return;
-      const panel=document.getElementById('alternative-servers-panel'); const list=document.getElementById('alt-servers-list');
-      if(partido.servidores && partido.servidores.length){
-        list.innerHTML=partido.servidores.map((s,i)=>{
-          const u=escapeHTML(s.url), n=escapeHTML(s.nombre||'Opción '+(i+1));
-          return `<button class="alt-btn" onclick="loadInTarget('${u}')"><i class="fas fa-play"></i> ${n}</button>`;
-        }).join('');
-      } else list.innerHTML=`<button class="alt-btn" disabled>No hay servidores</button>`;
+      const panel=document.getElementById('alternative-servers-panel');
+      const list=document.getElementById('alt-servers-list');
+      list.innerHTML = '';
+      if(!partido.servidores || partido.servidores.length===0){
+        const t=document.getElementById('stadium-core-'+targetSlotIndex);
+        if(t) t.innerHTML='<div style="color:#fff;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;"><i class="fas fa-hourglass-half" style="font-size:40px;color:var(--nba-gold);margin-bottom:15px;"></i><h3 style="margin-bottom:10px;">Señal aún no publicada</h3><p style="font-size:12px;color:#94a3b8;max-width:300px;">El partido está agendado, pero los canales aún no están disponibles.</p></div>';
+        panel.style.display='none';
+        return;
+      }
+      partido.servidores.forEach((s,i)=>{
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'alt-btn';
+        btn.innerHTML = `<i class="fas fa-play"></i> ${escapeHTML(s.nombre||'Opción '+(i+1))}`;
+        btn.addEventListener('click', () => loadInTarget(s.url));
+        list.appendChild(btn);
+      });
       panel.style.display='block';
-      if(partido.servidores && partido.servidores.length) loadInTarget(partido.servidores[0].url);
-      if(window.innerWidth<=900) window.scrollTo({top:0,behavior:'smooth'});
+      loadInTarget(partido.servidores[0].url);
+      if(window.innerWidth<=900) window.scrollTo({ top:0, behavior:'smooth' });
     }
+
     function enableCinemaMode(){
       document.querySelector('header').style.display='none';
       document.getElementById('app-sidebar-stadium').style.display='none';
       document.getElementById('alternative-servers-panel').style.display='none';
-      const mainView=document.getElementById('app-body-stadium');
-      mainView.style.gridTemplateColumns='1fr'; mainView.style.height='100vh';
+      const m=document.getElementById('app-body-stadium');
+      m.style.gridTemplateColumns='1fr'; m.style.height='100vh';
       document.getElementById('exit-cinema-btn').style.display='block';
     }
+
     function disableCinemaMode(){
       document.querySelector('header').style.display='flex';
       document.getElementById('app-sidebar-stadium').style.display='flex';
-      const mainView=document.getElementById('app-body-stadium');
-      mainView.style.gridTemplateColumns=window.innerWidth<=900?'1fr':'1fr 420px';
-      mainView.style.height=window.innerWidth<=900?'auto':'calc(100vh - 112px)';
+      const m=document.getElementById('app-body-stadium');
+      m.style.gridTemplateColumns=window.innerWidth<=900?'1fr':'1fr 420px';
+      m.style.height=window.innerWidth<=900?'auto':'calc(100vh - 70px)';
       document.getElementById('exit-cinema-btn').style.display='none';
     }
 
@@ -338,7 +460,7 @@
       const now = Date.now();
       const WINDOW_START = -3 * 60 * 1000;
       const WINDOW_END = 10 * 60 * 1000;
-      const eventsList = datosOriginales || [];
+      const eventsList = eventosNotificables || [];
       for(const e of eventsList){
         if(e.deporte === DEPORTE_ACTUAL) continue;
         if(!e.eventDateObj) continue;
@@ -346,17 +468,18 @@
         if(t < now + WINDOW_START) continue;
         if(t > now + WINDOW_END) continue;
         if(!e.servidores || e.servidores.length === 0) continue;
-        const url = e.servidores[0].url;
+        const url = sanitizeStreamUrl(e.servidores[0].url);
         if(!url) continue;
         const yaCargado = slotData.some(s => s && s.url === url);
         if(yaCargado) continue;
         const key = e.deporte + '|' + normalizar(e.titulo||e.summary) + '|' + t;
         if(notifiedEventKeys.has(key)) continue;
         notifiedEventKeys.add(key);
-        showNotification(e);
+        showNotification(e, url);
       }
     }
-    function showNotification(e){
+
+    function showNotification(e, safeUrl){
       const container = document.getElementById('um-toast-container');
       if(!container) return;
       const now = Date.now();
@@ -364,37 +487,61 @@
       const isLive = startsIn <= 0;
       const timeLabel = isLive ? 'EN VIVO ahora' : (startsIn < 60000 ? 'Comienza en menos de 1 min' : `Comienza en ${Math.ceil(startsIn/60000)} min`);
       const sportIcon = e.deporte === 'FUTBOL' ? '⚽' : e.deporte === 'NBA' ? '🏀' : e.deporte === 'F1' ? '🏎️' : '📺';
-      const sportName = e.deporte === 'FUTBOL' ? 'Fútbol' : e.deporte === 'NBA' ? 'NBA' : e.deporte === 'F1' ? 'F1' : e.deporte;
-      const id = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
-      _notificationData[id] = { url: e.servidores[0].url };
+      const sportName = e.subdeporte || (e.deporte === 'FUTBOL' ? 'Fútbol' : e.deporte === 'NBA' ? 'NBA' : e.deporte === 'F1' ? 'F1' : 'Otros');
+      const id = 'toast-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+      _notificationData[id] = { url: safeUrl };
       const title = e.titulo || e.summary || 'Evento';
       const torneo = e.torneo || '';
+
       const toast = document.createElement('div');
-      toast.className = 'um-toast'; toast.id = id;
+      toast.className = 'um-toast';
+      toast.id = id;
       toast.innerHTML = `
-        <div class="um-toast-header"><span class="um-toast-icon">${sportIcon}</span><span>${sportName}${torneo ? ' · ' + escapeHTML(torneo) : ''}</span></div>
+        <div class="um-toast-header"><span class="um-toast-icon">${escapeHTML(sportIcon)}</span><span>${escapeHTML(sportName)}${torneo ? ' · ' + escapeHTML(torneo) : ''}</span></div>
         <div class="um-toast-title">${escapeHTML(title)}</div>
-        <div class="um-toast-meta">${timeLabel}</div>
-        <div class="um-toast-actions">
-          <button class="um-toast-btn watch" onclick="openFromNotification('${id}')"><i class="fas fa-plus"></i> Ver en nueva pantalla</button>
-          <button class="um-toast-btn dismiss" onclick="dismissNotification('${id}')"><i class="fas fa-times"></i></button>
-        </div>`;
+        <div class="um-toast-meta">${escapeHTML(timeLabel)}</div>
+        <div class="um-toast-actions"></div>`;
+
+      const actions = toast.querySelector('.um-toast-actions');
+      const watchBtn = document.createElement('button');
+      watchBtn.type = 'button';
+      watchBtn.className = 'um-toast-btn watch';
+      watchBtn.innerHTML = '<i class="fas fa-plus"></i> Ver en nueva pantalla';
+      watchBtn.addEventListener('click', () => openFromNotification(id));
+
+      const dismissBtn = document.createElement('button');
+      dismissBtn.type = 'button';
+      dismissBtn.className = 'um-toast-btn dismiss';
+      dismissBtn.innerHTML = '<i class="fas fa-times"></i>';
+      dismissBtn.addEventListener('click', () => dismissNotification(id));
+
+      actions.append(watchBtn, dismissBtn);
       container.appendChild(toast);
       setTimeout(() => { dismissNotification(id); }, 25000);
     }
+
     function openFromNotification(toastId){
       const data = _notificationData[toastId];
       if(data && data.url) openInNewSlot(data.url);
       dismissNotification(toastId);
       delete _notificationData[toastId];
     }
+
     function dismissNotification(toastId){
       const t = document.getElementById(toastId);
       if(t){ t.style.animation = 'toastSlideOut 0.3s ease'; setTimeout(() => t.remove(), 300); }
     }
 
     document.addEventListener('DOMContentLoaded', ()=>{
-      buildStadiumGrid(1, null);
+      document.getElementById('btn-refresh')?.addEventListener('click', function(){ recargarBlog(this); });
+      document.getElementById('btn-cinema')?.addEventListener('click', enableCinemaMode);
+      document.getElementById('exit-cinema-btn')?.addEventListener('click', disableCinemaMode);
+      document.getElementById('search-input')?.addEventListener('keyup', filtrarBusqueda);
+      document.querySelectorAll('.stadium-controls .grid-btn[data-slots]').forEach(btn => {
+        btn.addEventListener('click', () => buildStadiumGrid(Number(btn.dataset.slots), btn));
+      });
+
+      buildStadiumGrid(1, document.getElementById('btn-g1'));
       cargarAgenda();
       setInterval(checkUpcomingEvents, 60000);
 
@@ -410,7 +557,11 @@
           const agendaLista = datosOriginales && slot0;
           if(agendaLista){
             clearInterval(tryLoad);
-            if(auto){ const url = decodeURIComponent(auto); slotData[0]={url}; renderStream(0,url,false); applyMuteStates(); return; }
+            if(auto){
+              const safeUrl = sanitizeStreamUrl(decodeURIComponent(auto));
+              if(safeUrl){ slotData[0]={url: safeUrl}; renderStream(0,safeUrl,false); applyMuteStates(); }
+              return;
+            }
             if(eventName){
               const objetivo = normalizar(eventName);
               const idx = datosOriginales.findIndex(e => normalizar(e.titulo||e.summary).includes(objetivo));
