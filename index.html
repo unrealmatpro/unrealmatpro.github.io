@@ -249,12 +249,21 @@
     let cachedPool = [];
 
     function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function jsonAttr(s){ return escapeHtml(JSON.stringify(s==null?'':s)); }
     function normalizar(t){ return (t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase(); }
     function fmtDate(ts){ return new Date(ts).toLocaleDateString('es-UY',{day:'2-digit',month:'short'}); }
     function fmtTime(ts){ return new Date(ts).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'}); }
     function truncate(s,n){ s=String(s||''); return s.length>n?s.substring(0,n-1)+'…':s; }
     function timeElapsed(ts){ const m=Math.max(0,Math.floor((Date.now()-ts)/60000)); if(m<60) return `hace ${m} min`; const h=Math.floor(m/60); const r=m%60; return `hace ${h}h ${r}m`; }
     function isLive(e){ const n=Date.now(); return e.time<=n && e.time>=n-HORAS_LIMITE_MS; }
+    function isValidStreamUrl(url){
+      if(!url || typeof url !== 'string') return false;
+      try{
+        const u = new URL(url);
+        if(u.protocol !== 'https:' && u.protocol !== 'http:') return false;
+        return u.hostname.toLowerCase().startsWith('streamxhd');
+      }catch(e){ return false; }
+    }
     function parseEventDate(e){
       if(e.fecha_completa){ let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d; if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){ let d2=new Date(e.fecha_completa.replace(' ','T')+':00-05:00'); if(!isNaN(d2.getTime())) return d2; } }
       if(e.hora && e.hora!=='00:00'){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
@@ -301,7 +310,7 @@
       const content=slice.map(e=>{
         const live=isLive(e);
         const ind=live?'<div class="t-live-dot"></div>':'<i class="fas fa-clock t-clock-icon"></i>';
-        return `<a class="t-event" href="${buildDeepLink(e)}">${ind}<span class="t-badge">${escapeHtml(e.subTag)}</span><span>${escapeHtml(e.name).toUpperCase()}</span><span class="t-date">[${fmtDate(e.time)} - ${fmtTime(e.time)}]</span></a>`;
+        return `<a class="t-event" href="${escapeHtml(buildDeepLink(e))}">${ind}<span class="t-badge">${escapeHtml(e.subTag)}</span><span>${escapeHtml(e.name).toUpperCase()}</span><span class="t-date">[${fmtDate(e.time)} - ${fmtTime(e.time)}]</span></a>`;
       }).join('');
       mount.innerHTML=content+content;
       mount.style.animationDuration=`${Math.max(slice.length*3,15)}s`;
@@ -328,33 +337,34 @@
         const sportLabel=SPORT_LABELS[e.sportKey]||e.sportKey;
         const deepLink=buildDeepLink(e);
         const canPlay=!!e.streamUrl;
+        const safeBtn = canPlay ? `<button class="live-card-cta play" onclick="openMultiviewWith(${jsonAttr(e.streamUrl)})"><i class="fas fa-play"></i> Ver aquí</button>` : '';
         return `<div class="live-card">
           <div class="live-card-badge"><span class="dot"></span> EN VIVO</div>
           <div class="live-card-sport">${escapeHtml(sportLabel)} · ${escapeHtml(e.torneo)}</div>
           <div class="live-card-title">${escapeHtml(e.name)}</div>
           <div class="live-card-time"><i class="fas fa-clock"></i> ${fmtTime(e.time)} · ${timeElapsed(e.time)}</div>
           <div class="live-card-actions">
-            ${canPlay?`<button class="live-card-cta play" onclick="openMultiviewWith('${escapeHtml(e.streamUrl)}')"><i class="fas fa-play"></i> Ver aquí</button>`:''}
-            <a class="live-card-cta goto" href="${deepLink}"><i class="fas fa-external-link-alt"></i> Ir al blog</a>
+            ${safeBtn}
+            <a class="live-card-cta goto" href="${escapeHtml(deepLink)}"><i class="fas fa-external-link-alt"></i> Ir al blog</a>
           </div>
         </div>`;
       }).join('');
     }
     function refreshHome(){ const nowTs=Date.now(); const active=cachedPool.filter(e=>e.time>=nowTs-HORAS_LIMITE_MS); renderTicker(active); updateCards(active); renderLiveSection(active); renderMvEventsList(active); }
-    function updateLastUpdated(){ const el=document.getElementById('ticker-updated'); if(el) el.textContent='Actualizado '+new Date().toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'}); }
+    function updateLastUpdated(ts){ const el=document.getElementById('ticker-updated'); if(el){ const d=ts?new Date(ts):new Date(); el.textContent='Actualizado '+d.toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'}); } }
 
     async function syncEvents(){
-      let result=null;
-      try{ const raw=localStorage.getItem(CACHE_KEY); if(raw){ const cached=JSON.parse(raw); if(Date.now()-cached.ts<CACHE_TTL && Array.isArray(cached.data) && cached.data.length>0){ result={pool:cached.data}; } } }catch(e){}
+      let result=null; let cacheTs=null;
+      try{ const raw=localStorage.getItem(CACHE_KEY); if(raw){ const cached=JSON.parse(raw); if(Date.now()-cached.ts<CACHE_TTL && Array.isArray(cached.data) && cached.data.length>0){ result={pool:cached.data}; cacheTs=cached.ts; } } }catch(e){}
       if(!result){
         try{
           const fetched=await fetchAllEvents(); result=fetched;
           const totalSources=APP_CONFIG.jsonSources.length+APP_CONFIG.calendars.length;
-          if(fetched.pool.length>0 || fetched.errors.length<totalSources){ try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ts:Date.now(), data:fetched.pool})); }catch(e){} }
+          if(fetched.pool.length>0 || fetched.errors.length<totalSources){ cacheTs=Date.now(); try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ts:cacheTs, data:fetched.pool})); }catch(e){} }
           if(fetched.errors.length>0) console.warn('[HUB] Errores:', fetched.errors);
         }catch(e){ console.error('[HUB] Error fatal:', e); return; }
       }
-      cachedPool=result.pool; refreshHome(); updateLastUpdated();
+      cachedPool=result.pool; refreshHome(); updateLastUpdated(cacheTs);
     }
 
     let mvSlotData=[]; let mvActiveSlotIndex=0; let mvTargetSlotIndex=0;
@@ -403,6 +413,11 @@
     }
     function mvLoadInTarget(url, blogUrl){
       if(!url) return;
+      if(!isValidStreamUrl(url)){ console.warn('[HUB] URL bloqueada:', url); return; }
+      if(mvTargetSlotIndex < 0 || mvTargetSlotIndex >= mvGetSlotCount()){
+        const empty = mvFindFirstEmpty();
+        mvTargetSlotIndex = empty !== -1 ? empty : 0;
+      }
       const isMuted=(mvTargetSlotIndex!==mvActiveSlotIndex);
       mvSlotData[mvTargetSlotIndex]={url, blogUrl:blogUrl||'/'};
       mvRenderStream(mvTargetSlotIndex, url, isMuted);
@@ -411,7 +426,7 @@
     }
     function mvRenderStream(slotIdx, url, muted){
       const core=document.getElementById('mv-core-'+slotIdx); if(!core) return;
-      if(!url || (!url.startsWith('https://streamxhd') && !url.startsWith('http://streamxhd'))){ core.innerHTML='<div style="color:#ff004c;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
+      if(!isValidStreamUrl(url)){ core.innerHTML='<div style="color:#ff004c;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
       let finalUrl=url; if(muted){ const sep=url.includes('?')?'&':'?'; finalUrl=url+sep+'mute=1'; }
       core.innerHTML='';
       const f=document.createElement('iframe');
@@ -426,8 +441,11 @@
       const liveNow=pool.filter(e=>isLive(e)); const soon=pool.filter(e=>e.time>Date.now()).slice(0,15); const all=[...liveNow,...soon];
       if(all.length===0){ box.innerHTML='<div class="mv-event-empty"><i class="fas fa-calendar-times"></i><br>No hay eventos disponibles.</div>'; return; }
       box.innerHTML=all.map(e=>{
-        const sportLabel=SPORT_LABELS[e.sportKey]||e.sportKey; const live=isLive(e); const canPlay=!!e.streamUrl;
-        return `<div class="mv-event-card ${live?'live':''}" onclick="${canPlay?`mvLoadInTarget('${escapeHtml(e.streamUrl)}','${escapeHtml(e.blogUrl)}')`:`window.location.href='${buildDeepLink(e)}'`}">
+        const sportLabel=SPORT_LABELS[e.sportKey]||e.sportKey; const live=isLive(e); const canPlay=!!e.streamUrl && isValidStreamUrl(e.streamUrl);
+        const onclickAttr = canPlay
+          ? `mvLoadInTarget(${jsonAttr(e.streamUrl)},${jsonAttr(e.blogUrl)})`
+          : `window.location.href=${jsonAttr(buildDeepLink(e))}`;
+        return `<div class="mv-event-card ${live?'live':''}" onclick="${escapeHtml(onclickAttr)}">
           <div class="mv-event-top"><span class="mv-event-sport">${escapeHtml(sportLabel)} · ${escapeHtml(e.torneo)}</span><span class="mv-event-live ${live?'':'soon'}">${live?'EN VIVO':'PRÓXIMO'}</span></div>
           <div class="mv-event-title">${escapeHtml(e.name)}</div>
           <div class="mv-event-time"><i class="fas fa-clock"></i> ${fmtTime(e.time)} · ${live?timeElapsed(e.time):fmtDate(e.time)}</div>
@@ -446,7 +464,6 @@
         document.querySelectorAll('.mv-controls .mv-grid-btn').forEach(b => b.classList.remove('active'));
         const g1 = document.getElementById('mv-btn-g1');
         if(g1) g1.classList.add('active');
-
         mv.classList.remove('active'); home.style.display='block';
         btn.classList.remove('active'); btnLabel.textContent='MULTIPANTALLA';
       } else {
@@ -457,6 +474,7 @@
       }
     }
     function openMultiviewWith(url){
+      if(!isValidStreamUrl(url)){ console.warn('[HUB] URL no válida:', url); return; }
       const mv=document.getElementById('hub-multiview');
       if(!mv.classList.contains('active')) toggleMultiview();
       setTimeout(()=>{ const ev=cachedPool.find(e=>e.streamUrl===url); mvLoadInTarget(url, ev?ev.blogUrl:'/'); }, 100);
