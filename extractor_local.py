@@ -16,12 +16,10 @@ GITHUB_REPO = os.environ.get("GITHUB_REPO", "unrealmat-tv")
 
 BASE_URLS = [
     "https://streamxhd.sbs",
-    "https://streamxhd.sx",
 ]
 
 OUTPUT_DIR = Path("output")
 
-# Catálogo de deportes y palabras clave
 DEPORTE_KEYWORDS = {
     "futbol": [
         "FUTBOL", "FÚTBOL", "SOCCER", "LIGA", "PREMIER LEAGUE", "LA LIGA",
@@ -59,7 +57,6 @@ DEPORTE_KEYWORDS = {
     ],
 }
 
-# Expresiones regulares estrictas para siglas cortas que pueden aparecer como subcadenas
 REGEX_POR_DEPORTE = {
     "futbol": [r"\bFUTBOL\b", r"\bFÚTBOL\b", r"\bSOCCER\b", r"\bFIFA\b", r"\bMLS\b"],
     "nba": [r"\bNBA\b", r"\bWNBA\b", r"\bBASKET\b", r"\bBÁSQUET\b", r"\bBALONCESTO\b"],
@@ -76,16 +73,11 @@ def normalizar_texto(texto: str) -> str:
 
 
 def clasificar_deporte(titulo: str, torneo: str = "") -> str:
-    """
-    Clasifica un evento en 'futbol', 'nba', 'f1' u 'otros'.
-    Evita que eventos de NFL/MLB/NHL/otros caigan por descarte en fútbol o NBA.
-    """
     texto = normalizar_texto(f"{titulo or ''} {torneo or ''}")
     if not texto:
         return "otros"
 
     puntajes = {"futbol": 0, "nba": 0, "f1": 0, "otros": 0}
-
     for deporte, patrones in REGEX_POR_DEPORTE.items():
         for patron in patrones:
             if re.search(patron, texto):
@@ -97,16 +89,11 @@ def clasificar_deporte(titulo: str, torneo: str = "") -> str:
             if kw_norm and kw_norm in texto:
                 puntajes[deporte] += 1
 
-    # Si 'otros' (ej. NFL, MLB, NHL) tiene coincidencia explícita y no hay coincidencia clara de F1/NBA/Fútbol
     if puntajes["otros"] >= 3 and puntajes["f1"] == 0 and puntajes["nba"] == 0 and puntajes["futbol"] == 0:
         return "otros"
 
     mejor_deporte = max(puntajes.items(), key=lambda item: item[1])
-    if mejor_deporte[1] > 0:
-        # Si hay empate o 'otros' gana claramente, respetarlo
-        return mejor_deporte[0]
-
-    return "otros"
+    return mejor_deporte[0] if mejor_deporte[1] > 0 else "otros"
 
 
 def normalizar_url_stream(url: str) -> str:
@@ -122,13 +109,29 @@ def normalizar_url_stream(url: str) -> str:
     return limpia
 
 
-def construir_payload_archivo(deporte: str, eventos: list) -> dict:
+def construir_payload_archivo(deporte: str, eventos: list, conservado_previo: bool = False) -> dict:
     return {
         "deporte": deporte,
         "actualizado_utc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
         "total": len(eventos),
+        "conservado_previo": conservado_previo,
         "eventos": eventos,
     }
+
+
+def cargar_eventos_previos(nombre_archivo: str) -> list:
+    ruta = OUTPUT_DIR / nombre_archivo
+    if not ruta.exists():
+        return []
+    try:
+        data = json.loads(ruta.read_text(encoding="utf-8"))
+        if isinstance(data, dict) and isinstance(data.get("eventos"), list):
+            return data["eventos"]
+        if isinstance(data, list):
+            return data
+    except Exception:
+        pass
+    return []
 
 
 def guardar_json_local(nombre_archivo: str, payload: dict) -> Path:
@@ -148,7 +151,7 @@ def subir_github(ruta_repo: str, contenido_str: str, mensaje_commit: str) -> Non
     headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json",
-        "User-Agent": "UNREALMAT-Extractor/2.0",
+        "User-Agent": "UNREALMAT-Extractor/2.1",
         "X-GitHub-Api-Version": "2022-11-28",
     }
 
@@ -207,7 +210,7 @@ def deduplicar_eventos(eventos: list) -> list:
             "torneo": (ev.get("torneo") or "").strip(),
             "fecha_completa": (ev.get("fecha_completa") or "").strip(),
             "hora": (ev.get("hora") or "00:00").strip(),
-            "status": (ev.get("status") or "PRÓXIMO").strip(),
+            "status": (ev.get("status") or "EN VIVO").strip(),
             "servidores": servidores_validos,
         }
 
@@ -220,29 +223,27 @@ def deduplicar_eventos(eventos: list) -> list:
                 if s["url"] not in urls_existentes:
                     existente["servidores"].append(s)
                     urls_existentes.add(s["url"])
-            if not existente.get("fecha_completa") and ev_limpio.get("fecha_completa"):
-                existente["fecha_completa"] = ev_limpio["fecha_completa"]
-            if (not existente.get("hora") or existente.get("hora") == "00:00") and ev_limpio.get("hora") != "00:00":
-                existente["hora"] = ev_limpio["hora"]
 
     return list(mapa.values())
 
 
 async def _extraer_de_pagina(page, base_url: str) -> list:
     await page.goto(base_url, wait_until="domcontentloaded", timeout=35000)
-    await page.wait_for_timeout(2500)
+    await page.wait_for_timeout(3000)
 
     items_raw = await page.evaluate(
         """
         () => {
             const resultados = [];
+            const vistos = new Set();
             const candidatos = document.querySelectorAll(
-                '.event-row, .match-item, .evento, .agenda-item, tr[data-href], a[href*="stream"], a[href*="canal"], a[href*="live"], a[href*="ver"]'
+                'li, tr, article, .card, .item, .evento, .event-row, .match-item, .agenda-item, a[href]'
             );
 
             candidatos.forEach((el) => {
                 const texto = (el.innerText || '').trim();
-                if (!texto || texto.length < 4) return;
+                if (!texto || texto.length < 5 || texto.length > 500) return;
+
                 const enlaces = Array.from(el.querySelectorAll('a[href]')).map((a) => ({
                     nombre: (a.innerText || a.getAttribute('title') || 'Canal').trim(),
                     url: a.href || a.getAttribute('href') || ''
@@ -253,10 +254,15 @@ async def _extraer_de_pagina(page, base_url: str) -> list:
                         url: el.href
                     });
                 }
-                resultados.push({
-                    texto,
-                    enlaces
-                });
+
+                const enlacesValidos = enlaces.filter((e) => e.url && !e.url.startsWith('javascript:') && e.url !== window.location.href + '#');
+                if (enlacesValidos.length === 0 && !/\\b([01]?\\d|2[0-3]):[0-5]\\d\\b/.test(texto)) return;
+
+                const firma = texto.slice(0, 120);
+                if (vistos.has(firma)) return;
+                vistos.add(firma);
+
+                resultados.push({ texto, enlaces: enlacesValidos });
             });
             return resultados;
         }
@@ -283,7 +289,7 @@ async def _extraer_de_pagina(page, base_url: str) -> list:
         for idx, enl in enumerate(item.get("enlaces", [])):
             url_abs = urllib.parse.urljoin(base_url, enl.get("url", ""))
             url_norm = normalizar_url_stream(url_abs)
-            if url_norm and "streamxhd" in url_norm.lower():
+            if url_norm:
                 nombre_srv = enl.get("nombre") or f"Opción {idx + 1}"
                 if len(nombre_srv) > 30:
                     nombre_srv = f"Opción {idx + 1}"
@@ -295,7 +301,7 @@ async def _extraer_de_pagina(page, base_url: str) -> list:
                 "torneo": torneo,
                 "fecha_completa": fecha_completa,
                 "hora": hora,
-                "status": "EN VIVO" if hora != "00:00" else "PRÓXIMO",
+                "status": "EN VIVO",
                 "servidores": servidores,
             })
 
@@ -345,7 +351,17 @@ def ejecutar() -> None:
     ts_commit = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
     for deporte, nombre_archivo in mapa_archivos.items():
-        payload = construir_payload_archivo(deporte, datos[deporte])
+        eventos_nuevos = datos[deporte]
+        conservado_previo = False
+
+        if len(eventos_nuevos) == 0:
+            previos = cargar_eventos_previos(nombre_archivo)
+            if len(previos) > 0:
+                eventos_nuevos = previos
+                conservado_previo = True
+                print(f"[INFO] {nombre_archivo}: 0 eventos nuevos; se conservan {len(previos)} eventos previos.")
+
+        payload = construir_payload_archivo(deporte, eventos_nuevos, conservado_previo=conservado_previo)
         ruta_local = guardar_json_local(nombre_archivo, payload)
         contenido_str = ruta_local.read_text(encoding="utf-8")
         subir_github(
