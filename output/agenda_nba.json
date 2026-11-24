@@ -1,9 +1,9 @@
 {
-  "fecha_actualizacion": "2026-11-24T18:59:31Z",
+  "fecha_actualizacion": "2026-11-24T23:49:26Z",
   "total": 3,
   "eventos": [
     {
-      "id": "evt_14",
+      "id": "evt_2",
       "titulo": "Orlando Magic vs Detroit Pistons",
       "hora": "17:00",
       "fecha_completa": "2026-11-24T19:00:00-05:00",
@@ -18,7 +18,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_16",
+      "id": "evt_4",
       "titulo": "Washington Wizards vs Boston Celtics",
       "hora": "18:00",
       "fecha_completa": "2026-11-24T20:00:00-05:00",
@@ -41,7 +41,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_20",
+      "id": "evt_8",
       "titulo": "Denver Nuggets vs Dallas Mavericks",
       "hora": "20:00",
       "fecha_completa": "2026-11-24T22:00:00-05:00",
