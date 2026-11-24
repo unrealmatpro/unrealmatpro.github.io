@@ -65,10 +65,7 @@
     .card-bottom { display: flex; justify-content: space-between; color: #94a3b8; font-size: 10px; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px; margin-top: 2px; }
     #exit-cinema-btn { position: fixed; bottom: 24px; right: 24px; background: var(--nba-red); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-size: 11px; font-weight: 800; cursor: pointer; z-index: 99999; display: none; box-shadow: 0 6px 20px rgba(0,0,0,0.7); text-transform: uppercase; letter-spacing: 0.5px; }
     .sport-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; }
-    .sport-badge.FUTBOL { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
     .sport-badge.NBA { background: rgba(200,16,46,0.15); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.35); }
-    .sport-badge.OTROS { background: rgba(253,185,39,0.15); color: #fdb927; border: 1px solid rgba(253,185,39,0.35); }
-    .sport-badge.F1 { background: rgba(225,6,0,0.15); color: #ff5c5c; border: 1px solid rgba(225,6,0,0.35); }
     .um-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
     .um-toast { background: linear-gradient(135deg, #1a1505 0%, #050810 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
     .um-toast-header { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--toast-accent); }
@@ -159,20 +156,17 @@
     function escapeHTML(str){ if(str==null) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
     function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
 
-    function detectarSubdeporteOtros(ev){
-      const texto = `${normalizar(ev.titulo||ev.summary)} ${normalizar(ev.torneo||'')}`;
-      for(const dep of OTROS_DEPORTES){
-        if(new RegExp(`\\b${dep}\\b`).test(texto)) return dep;
-      }
-      return null;
+    function esOtroDeporte(ev){
+      const texto = `${normalizar(ev.titulo||ev.summary||ev.evento)} ${normalizar(ev.torneo||ev.leagueName||ev.liga||'')}`;
+      return OTROS_DEPORTES.some(dep => new RegExp(`\\b${dep}\\b`).test(texto));
     }
 
     function sanitizeStreamUrl(rawUrl){
       if(!rawUrl || typeof rawUrl !== 'string') return null;
+      const limpia = rawUrl.trim();
+      if(!limpia) return null;
       try {
-        const parsed = new URL(rawUrl.trim());
-        const host = parsed.hostname.toLowerCase();
-        if(!host.startsWith('streamxhd.')) return null;
+        const parsed = new URL(limpia.startsWith('//') ? 'https:' + limpia : limpia);
         if(parsed.protocol === 'http:') parsed.protocol = 'https:';
         if(parsed.protocol !== 'https:') return null;
         return parsed.toString();
@@ -182,12 +176,37 @@
     }
 
     function parseEventDate(e){
-      if(e.fecha_completa){ let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d; if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){ let d2=new Date(e.fecha_completa.replace(" ","T")+":00-05:00"); if(!isNaN(d2.getTime())) return d2; } }
-      if(e.hora && e.hora!=="00:00"){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
+      if(e.fecha_completa){
+        const d = new Date(e.fecha_completa);
+        if(!isNaN(d.getTime())) return d;
+        if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){
+          const d2 = new Date(e.fecha_completa.replace(" ","T")+":00-05:00");
+          if(!isNaN(d2.getTime())) return d2;
+        }
+      }
+      if(e.hora && e.hora !== "00:00"){
+        const matchHora = String(e.hora).match(/(\d{1,2}):(\d{2})/);
+        if(matchHora){
+          const now = new Date();
+          const hh = String(matchHora[1]).padStart(2,'0');
+          const mm = matchHora[2];
+          const iso = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${hh}:${mm}:00`;
+          const d3 = new Date(iso);
+          if(!isNaN(d3.getTime())) return d3;
+        }
+      }
       return null;
     }
 
-    function getDynamicStatus(date, orig){ if(!date) return orig||"PRÓXIMO"; const diff=(new Date().getTime()-date.getTime())/(1000*60*60); if(diff<0) return "PRÓXIMO"; if(diff<=2.5) return "EN VIVO"; return "FINALIZADO"; }
+    function getDynamicStatus(date, orig){
+      if(orig) return String(orig).toUpperCase();
+      if(!date) return "EN VIVO";
+      const diffHours = (Date.now() - date.getTime()) / (1000 * 60 * 60);
+      if(diffHours < 0) return "PRÓXIMO";
+      if(diffHours <= 3.5) return "EN VIVO";
+      return "FINALIZADO";
+    }
+
     function getSlotCount(){ return document.querySelectorAll('.stadium-monitor').length; }
     function findFirstEmptySlot(){ for(let i=0;i<getSlotCount();i++){ if(!slotData[i]||!slotData[i].url) return i; } return -1; }
 
@@ -271,22 +290,19 @@
     function openInNewSlot(url){
       const safeUrl = sanitizeStreamUrl(url);
       if(!safeUrl) return;
-      let slotCount = getSlotCount();
+      const activeCount = slotData.filter(s => s && s.url).length;
+      const desiredSlots = Math.min(4, Math.max(2, activeCount + 1));
+      const targetBtn = document.getElementById('btn-g' + desiredSlots);
+      buildStadiumGrid(desiredSlots, targetBtn);
+
       let free = findFirstEmptySlot();
-      const hayReproduccion = slotData.some(s => s && s.url);
-      if(free === -1){
-        if(slotCount === 1) buildStadiumGrid(2, document.getElementById('btn-g2'));
-        else if(slotCount === 2) buildStadiumGrid(3, document.getElementById('btn-g3'));
-        else if(slotCount === 3) buildStadiumGrid(4, document.getElementById('btn-g4'));
-        else { alert('No hay pantallas libres. Cierra una para añadir otro evento.'); return; }
-        free = findFirstEmptySlot();
-      }
-      if(free === -1) return;
-      const muted = hayReproduccion;
+      if(free === -1) free = desiredSlots - 1;
+      const hasPrimaryAudio = slotData.some((s, idx) => idx !== free && s && s.url);
       slotData[free] = { url: safeUrl };
-      renderStream(free, safeUrl, muted);
-      if(!hayReproduccion){ activeSlotIndex = free; targetSlotIndex = free; }
-      else { targetSlotIndex = free; }
+      renderStream(free, safeUrl, hasPrimaryAudio);
+
+      if(!hasPrimaryAudio){ activeSlotIndex = free; }
+      targetSlotIndex = findFirstEmptySlot() !== -1 ? findFirstEmptySlot() : free;
       applyMuteStates();
     }
 
@@ -318,6 +334,19 @@
       }
     }
 
+    function normalizarServidores(ev){
+      const rawList = Array.isArray(ev.servidores) ? ev.servidores : (Array.isArray(ev.canales) ? ev.canales : []);
+      const valid = rawList
+        .map((s, i) => ({
+          nombre: (s && (s.nombre || s.stream || s.canal)) || `Opción ${i + 1}`,
+          url: sanitizeStreamUrl(s && (s.url || s.live1_url || s.stream_url || s.link || ''))
+        }))
+        .filter(s => !!s.url);
+      if(valid.length > 0) return valid;
+      const directUrl = sanitizeStreamUrl(ev.url || ev.live1_url || ev.stream_url || '');
+      return directUrl ? [{ nombre: 'Opción 1', url: directUrl }] : [];
+    }
+
     async function cargarAgenda(){
       const baseUrl="../output/";
       const urls=[
@@ -327,45 +356,39 @@
       ];
       try{
         const responses=await Promise.all(urls.map(u=>fetch(u.url).catch(()=>null)));
-        let rawEvents=[];
+        let nbaEvents = [];
+        let otherEvents = [];
+
         await Promise.all(responses.map((res,index)=>{
           if(res && res.ok){
             return res.json().then(data=>{
-              const lista=data.eventos||data;
+              const lista = Array.isArray(data) ? data : (Array.isArray(data?.eventos) ? data.eventos : (Array.isArray(data?.partidos) ? data.partidos : []));
               if(Array.isArray(lista)){
                 lista.forEach(e=>{
+                  if(!e || typeof e !== 'object') return;
                   const origenSport = urls[index].sport;
-                  const subOtros = detectarSubdeporteOtros(e);
-                  e.deporte = subOtros ? 'OTROS' : origenSport;
-                  e.subdeporte = subOtros || origenSport;
-                  if(e.titulo && !e.summary) e.summary=e.titulo;
-                  if(e.servidores){
-                    e.servidores=e.servidores
-                      .map(s=>({ nombre: s.nombre||s.stream||'Opción', url: sanitizeStreamUrl(s.url||s.live1_url||'') }))
-                      .filter(s=>!!s.url);
+                  if(!e.summary) e.summary = e.titulo || e.evento || e.partido || 'Evento NBA';
+                  if(!e.titulo) e.titulo = e.summary;
+                  if(!e.torneo) e.torneo = e.leagueName || e.liga || e.competicion || 'NBA';
+                  e.servidores = normalizarServidores(e);
+                  e.eventDateObj = parseEventDate(e);
+
+                  if(origenSport === 'NBA' && !esOtroDeporte(e)){
+                    e.deporte = 'NBA';
+                    nbaEvents.push(e);
+                  } else {
+                    e.deporte = esOtroDeporte(e) ? 'OTROS' : origenSport;
+                    otherEvents.push(e);
                   }
-                  rawEvents.push(e);
                 });
               }
             }).catch(()=>{});
           }
           return null;
         }));
-        const ahora=new Date();
-        rawEvents.forEach(e=>{ e.eventDateObj=parseEventDate(e); });
-        let filtrados=rawEvents.filter(e=>{ if(!e.eventDateObj) return true; const diffHours=(ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60); return diffHours<=2.5; });
-        filtrados.sort((a,b)=>{ if(!a.eventDateObj) return 1; if(!b.eventDateObj) return -1; return a.eventDateObj.getTime()-b.eventDateObj.getTime(); });
 
-        eventosNotificables = filtrados.filter(e => e.deporte !== DEPORTE_ACTUAL);
-
-        const nbaFiltrados = filtrados.filter(e => e.deporte === DEPORTE_ACTUAL);
-        const map = new Map();
-        nbaFiltrados.forEach(e => {
-          const k = normalizar(e.titulo).replace(/[^A-Z0-9]/g,'') + '|' + e.deporte;
-          if(!map.has(k)) map.set(k, e);
-          else { const ex = map.get(k); if((!ex.servidores || ex.servidores.length === 0) && e.servidores && e.servidores.length > 0) map.set(k, e); }
-        });
-        datosOriginales = Array.from(map.values());
+        eventosNotificables = otherEvents;
+        datosOriginales = nbaEvents;
         renderSidebarFeed(datosOriginales);
         checkUpcomingEvents();
       }catch(e){
@@ -383,24 +406,23 @@
       }
       events.forEach((e,idx)=>{
         const num=e.servidores?e.servidores.length:0;
-        const deporte=e.deporte||'NBA';
-        let safeTime='Por confirmar';
-        if(e.eventDateObj){
+        let safeTime = e.hora && e.hora !== "00:00" ? e.hora : 'En vivo / Hoy';
+        if(e.eventDateObj && !isNaN(e.eventDateObj.getTime())){
           const f=e.eventDateObj.toLocaleDateString([],{day:'2-digit',month:'2-digit'});
           const h=e.eventDateObj.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
           safeTime=`${f} · ${h}`;
         }
         const status=getDynamicStatus(e.eventDateObj, e.status);
         let bt, bs;
-        if(status==='FINALIZADO'){ bt='FINALIZADO'; bs='background:rgba(139,163,181,0.2);color:#8ba3b5;border:1px solid rgba(139,163,181,0.4);'; }
-        else if(status==='EN VIVO'){ bt='EN VIVO'; bs='background:rgba(200,16,46,0.25);color:#ff5c7c;border:1px solid #c8102e;'; }
-        else { bt='PRÓXIMO'; bs='background:rgba(253,185,39,0.2);color:#fdb927;border:1px solid #fdb927;'; }
+        if(status.includes('FINAL')){ bt='FINALIZADO'; bs='background:rgba(139,163,181,0.2);color:#8ba3b5;border:1px solid rgba(139,163,181,0.4);'; }
+        else if(status.includes('PRÓX') || status.includes('PROX')){ bt='PRÓXIMO'; bs='background:rgba(253,185,39,0.2);color:#fdb927;border:1px solid #fdb927;'; }
+        else { bt='EN VIVO'; bs='background:rgba(200,16,46,0.25);color:#ff5c7c;border:1px solid #c8102e;'; }
 
         const card = document.createElement('div');
         card.className = 'stadium-card';
-        if(status==='FINALIZADO') card.style.opacity = '.65';
+        if(bt==='FINALIZADO') card.style.opacity = '.65';
         card.innerHTML = `
-          <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||'NBA')}<span class="sport-badge ${escapeHTML(deporte)}">${escapeHTML(deporte)}</span></span><span class="card-live" style="${bs}">${escapeHTML(bt)}</span></div>
+          <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||'NBA')}<span class="sport-badge NBA">NBA</span></span><span class="card-live" style="${bs}">${escapeHTML(bt)}</span></div>
           <div class="card-title">${escapeHTML(e.titulo||e.summary)}</div>
           <div class="card-bottom"><span><i class="fas fa-clock"></i> ${escapeHTML(safeTime)}</span><span><i class="fas fa-satellite-dish"></i> ${num>0?num+' Canales':'Sin señal aún'}</span></div>`;
         card.addEventListener('click', () => prepararPartido(idx));
@@ -465,13 +487,11 @@
         if(e.deporte === DEPORTE_ACTUAL) continue;
         if(!e.eventDateObj) continue;
         const t = e.eventDateObj.getTime();
-        if(t < now + WINDOW_START) continue;
-        if(t > now + WINDOW_END) continue;
+        if(t < now + WINDOW_START || t > now + WINDOW_END) continue;
         if(!e.servidores || e.servidores.length === 0) continue;
         const url = sanitizeStreamUrl(e.servidores[0].url);
         if(!url) continue;
-        const yaCargado = slotData.some(s => s && s.url === url);
-        if(yaCargado) continue;
+        if(slotData.some(s => s && s.url === url)) continue;
         const key = e.deporte + '|' + normalizar(e.titulo||e.summary) + '|' + t;
         if(notifiedEventKeys.has(key)) continue;
         notifiedEventKeys.add(key);
@@ -482,12 +502,11 @@
     function showNotification(e, safeUrl){
       const container = document.getElementById('um-toast-container');
       if(!container) return;
-      const now = Date.now();
-      const startsIn = e.eventDateObj.getTime() - now;
+      const startsIn = e.eventDateObj.getTime() - Date.now();
       const isLive = startsIn <= 0;
       const timeLabel = isLive ? 'EN VIVO ahora' : (startsIn < 60000 ? 'Comienza en menos de 1 min' : `Comienza en ${Math.ceil(startsIn/60000)} min`);
-      const sportIcon = e.deporte === 'FUTBOL' ? '⚽' : e.deporte === 'NBA' ? '🏀' : e.deporte === 'F1' ? '🏎️' : '📺';
-      const sportName = e.subdeporte || (e.deporte === 'FUTBOL' ? 'Fútbol' : e.deporte === 'NBA' ? 'NBA' : e.deporte === 'F1' ? 'F1' : 'Otros');
+      const sportIcon = e.deporte === 'FUTBOL' ? '⚽' : e.deporte === 'F1' ? '🏎️' : '📺';
+      const sportName = e.deporte || 'Otros';
       const id = 'toast-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
       _notificationData[id] = { url: safeUrl };
       const title = e.titulo || e.summary || 'Evento';
@@ -544,33 +563,6 @@
       buildStadiumGrid(1, document.getElementById('btn-g1'));
       cargarAgenda();
       setInterval(checkUpcomingEvents, 60000);
-
-      (function handleDeepLink(){
-        const params = new URLSearchParams(location.search);
-        const auto = params.get('auto');
-        const eventName = params.get('event');
-        if(!auto && !eventName) return;
-        let intentos = 0;
-        const tryLoad = setInterval(()=>{
-          intentos++;
-          const slot0 = document.getElementById('stadium-core-0');
-          const agendaLista = datosOriginales && slot0;
-          if(agendaLista){
-            clearInterval(tryLoad);
-            if(auto){
-              const safeUrl = sanitizeStreamUrl(decodeURIComponent(auto));
-              if(safeUrl){ slotData[0]={url: safeUrl}; renderStream(0,safeUrl,false); applyMuteStates(); }
-              return;
-            }
-            if(eventName){
-              const objetivo = normalizar(eventName);
-              const idx = datosOriginales.findIndex(e => normalizar(e.titulo||e.summary).includes(objetivo));
-              if(idx !== -1) prepararPartido(idx);
-            }
-          }
-          if(intentos > 75) clearInterval(tryLoad);
-        }, 200);
-      })();
     });
   </script>
 </body>
