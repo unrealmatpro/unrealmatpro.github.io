@@ -26,7 +26,7 @@
     .active-grid { background: var(--wr-red); color: #fff; border-color: var(--wr-gold); }
     .cinema-btn { background: rgba(251,191,36,0.14); color: var(--wr-gold); border: 1px solid rgba(251,191,36,0.45); }
     .cinema-btn:hover { background: var(--wr-gold); color: #000; }
-    .stadium-main { flex: 1; display: grid; grid-template-columns: 1fr 420px; overflow: hidden; height: calc(100vh - 70px); }
+    .stadium-main { flex: 1; display: grid; grid-template-columns: 1fr 440px; overflow: hidden; height: calc(100vh - 70px); }
     .stadium-player-zone { display: flex; flex-direction: column; background: #000; height: 100%; width: 100%; min-height: 0; }
     .video-wrapper { width: 100%; flex: 1; min-height: 0; position: relative; }
     #stadium-grid-mesh { width: 100%; height: 100%; display: grid; gap: 8px; }
@@ -47,17 +47,21 @@
     .alt-btn:hover { background: var(--wr-red); border-color: var(--wr-gold); color: #fff; }
     .alt-btn.replay-btn:hover { background: var(--wr-gold); border-color: var(--wr-gold); color: #000; }
     .stadium-sidebar { background: var(--wr-panel); border-left: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-    .hero-match { padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); background: linear-gradient(135deg, rgba(225,29,72,0.28) 0%, rgba(7,7,11,0.95) 100%); border-left: 4px solid var(--wr-gold); flex-shrink: 0; }
+    .hero-match { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); background: linear-gradient(135deg, rgba(225,29,72,0.28) 0%, rgba(7,7,11,0.95) 100%); border-left: 4px solid var(--wr-gold); flex-shrink: 0; }
     .hero-label { color: var(--wr-gold); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; }
-    .hero-title { font-family: 'Big Shoulders Display', sans-serif; font-size: 25px; font-weight: 900; letter-spacing: 0.5px; color: #fff; text-transform: uppercase; }
-    .filter-tabs { display: flex; background: #09090e; border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; }
-    .filter-tab { flex: 1; padding: 11px 6px; background: transparent; border: none; color: var(--text-soft); font-weight: 800; font-size: 10px; text-transform: uppercase; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; }
-    .filter-tab.active { color: var(--wr-gold); border-bottom-color: var(--wr-gold); background: rgba(251,191,36,0.06); }
-    .search-container { padding: 12px; background: rgba(7,7,11,0.5); border-bottom: 1px solid rgba(255,255,255,0.06); position: relative; flex-shrink: 0; }
+    .hero-title { font-family: 'Big Shoulders Display', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 0.5px; color: #fff; text-transform: uppercase; }
+    .company-tabs { display: flex; background: #09090e; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; overflow-x: auto; }
+    .company-tab { flex: 1; min-width: 66px; padding: 11px 6px; background: transparent; border: none; color: var(--text-soft); font-weight: 800; font-size: 10px; text-transform: uppercase; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; font-family: 'JetBrains Mono', monospace; }
+    .company-tab.active { color: var(--wr-gold); border-bottom-color: var(--wr-gold); background: rgba(251,191,36,0.08); }
+    .mode-subbar { display: flex; gap: 6px; padding: 8px 12px; background: #0d0d14; border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; }
+    .mode-filter-btn { flex: 1; padding: 6px 8px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1); background: #151520; color: #cbd5e1; font-size: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+    .mode-filter-btn.active { background: var(--wr-red); border-color: var(--wr-gold); color: #fff; }
+    .search-container { padding: 10px 12px; background: rgba(7,7,11,0.5); border-bottom: 1px solid rgba(255,255,255,0.06); position: relative; flex-shrink: 0; }
     .search-input { width: 100%; background: #07070b; border: 1px solid rgba(255,255,255,0.12); color: #fff; padding: 9px 10px 9px 34px; border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 12px; outline: none; }
     .search-input:focus { border-color: var(--wr-gold); }
     .search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 12px; }
-    .tab-content { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+    .tab-content { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+    .company-section-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800; color: var(--wr-gold); text-transform: uppercase; letter-spacing: 1px; padding: 4px 8px; border-left: 3px solid var(--wr-red); background: rgba(255,255,255,0.03); border-radius: 0 4px 4px 0; }
     .stadium-card { background: var(--wr-card); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; }
     .stadium-card:hover { border-color: var(--wr-gold); transform: translateX(3px); }
     .card-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
@@ -120,43 +124,67 @@
 
       <aside class='stadium-sidebar' id='app-sidebar-stadium'>
         <div class='hero-match'>
-          <div class='hero-label'><i class='fas fa-fist-raised'></i> WWE · AEW · TNA · NJPW</div>
-          <div class='hero-title'>Cartelera y Replays</div>
+          <div class='hero-label'><i class='fas fa-fist-raised'></i> AGENDA DIVIDIDA POR EMPRESA</div>
+          <div class='hero-title' id='hero-company-title'>TODAS LAS EMPRESAS</div>
         </div>
-        <nav class='filter-tabs'>
-          <button class='filter-tab active' data-filter='ALL' type='button'>TODOS</button>
-          <button class='filter-tab' data-filter='LIVE' type='button'>LIVE</button>
-          <button class='filter-tab' data-filter='REPLAY' type='button'>REPLAY</button>
-          <button class='filter-tab' data-filter='CAL' type='button'>CALENDARIO</button>
+        <nav class='company-tabs' id='company-tabs'>
+          <button class='company-tab active' data-company='ALL' type='button'>TODAS</button>
+          <button class='company-tab' data-company='WWE' type='button'>WWE</button>
+          <button class='company-tab' data-company='AEW' type='button'>AEW</button>
+          <button class='company-tab' data-company='TNA' type='button'>TNA</button>
+          <button class='company-tab' data-company='NJPW' type='button'>NJPW</button>
+          <button class='company-tab' data-company='OTRAS' type='button'>OTRAS</button>
         </nav>
+        <div class='mode-subbar'>
+          <button class='mode-filter-btn active' data-mode='ALL' type='button'>TODO</button>
+          <button class='mode-filter-btn' data-mode='LIVE' type='button'>LIVE</button>
+          <button class='mode-filter-btn' data-mode='REPLAY' type='button'>REPLAY</button>
+          <button class='mode-filter-btn' data-mode='CAL' type='button'>CALENDARIO</button>
+        </div>
         <div class='search-container'>
           <i class='fas fa-search search-icon'></i>
           <input class='search-input' id='search-input' placeholder='Buscar RAW, SmackDown, Dynamite, PLE...' type='text'/>
         </div>
         <div class='tab-content' id='panel-agenda-content'>
-          <div id='stadium-feed-target'><div style='padding:20px; text-align:center; opacity:0.6;'><i class='fas fa-circle-notch fa-spin'></i> Cargando eventos de Wrestling...</div></div>
+          <div id='stadium-feed-target'><div style='padding:20px; text-align:center; opacity:0.6;'><i class='fas fa-circle-notch fa-spin'></i> Cargando carteleras por empresa...</div></div>
         </div>
       </aside>
     </main>
   </div>
 
   <script>
+    const EMPRESAS_ORDEN = ['WWE', 'AEW', 'TNA', 'NJPW', 'OTRAS'];
     let allWrestlingEvents = [];
-    let currentFilter = 'ALL';
+    let externalCrossSportEvents = [];
+    let currentCompany = 'ALL';
+    let currentMode = 'ALL';
     let slotData = [];
     let activeSlotIndex = 0;
     let targetSlotIndex = 0;
+    const notifiedEventKeys = new Set();
+    const _notificationData = {};
     const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
     const WRESTLING_CALENDARS = [
-      { label: 'WWE',  id: 'a070eeba37995e97cff5a176f99d4ed9e90b671a0a9e9e22e5eb370312c54e62@group.calendar.google.com', timeOffset: 3600000 },
-      { label: 'AEW',  id: '0827b95e8b37fd9559f457c39aa6733daaaa4ffe4833d2a27917ed65eb01d052@group.calendar.google.com', timeOffset: 3600000 },
-      { label: 'TNA',  id: '727b20f12dcf43bd661017bafba52fd7a8ad706a2ebe48afa6a5f4b391b71490@group.calendar.google.com', timeOffset: 3600000 },
-      { label: 'NJPW', id: 'n6l35ni6rcbffi1m4m5g5ocnh4@group.calendar.google.com', timeOffset: 3600000 }
+      { company: 'WWE',  id: 'a070eeba37995e97cff5a176f99d4ed9e90b671a0a9e9e22e5eb370312c54e62@group.calendar.google.com', timeOffset: 3600000 },
+      { company: 'AEW',  id: '0827b95e8b37fd9559f457c39aa6733daaaa4ffe4833d2a27917ed65eb01d052@group.calendar.google.com', timeOffset: 3600000 },
+      { company: 'TNA',  id: '727b20f12dcf43bd661017bafba52fd7a8ad706a2ebe48afa6a5f4b391b71490@group.calendar.google.com', timeOffset: 3600000 },
+      { company: 'NJPW', id: 'n6l35ni6rcbffi1m4m5g5ocnh4@group.calendar.google.com', timeOffset: 3600000 }
     ];
 
     function recargarBlog(btn){ if(btn) btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
     function escapeHTML(str){ if(str==null) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
     function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
+
+    function detectarEmpresa(rawCompany, titulo){
+      const c = normalizar(rawCompany);
+      if(['WWE', 'AEW', 'TNA', 'NJPW'].includes(c)) return c;
+      const t = `${c} ${normalizar(titulo)}`;
+      if(/\b(WWE|RAW|SMACKDOWN|NXT|WRESTLEMANIA|ROYAL RUMBLE|SUMMERSLAM|MONEY IN THE BANK|SURVIVOR SERIES|PLE)\b/.test(t)) return 'WWE';
+      if(/\b(AEW|DYNAMITE|RAMPAGE|COLLISION|DOUBLE OR NOTHING|ALL IN|ALL OUT|FORBIDDEN DOOR|REVOLUTION)\b/.test(t)) return 'AEW';
+      if(/\b(TNA|IMPACT|BOUND FOR GLORY|SLAMMIVERSARY|HARD TO KILL)\b/.test(t)) return 'TNA';
+      if(/\b(NJPW|NEW JAPAN|WRESTLE KINGDOM|DOMINION|G1 CLIMAX|BOSJ|SUPER JUNIOR)\b/.test(t)) return 'NJPW';
+      return 'OTRAS';
+    }
 
     function sanitizeStreamUrl(rawUrl){
       if(!rawUrl || typeof rawUrl !== 'string') return null;
@@ -269,6 +297,28 @@
       const next = findFirstEmptySlot(); if(next!==-1) targetSlotIndex=next;
     }
 
+    function openInMultiSlotFromNotification(url){
+      const safeUrl = sanitizeStreamUrl(url);
+      if(!safeUrl) return;
+      const activeCount = slotData.filter(s => s && s.url).length;
+      const desiredSlots = Math.min(4, Math.max(2, activeCount + 1));
+      const targetBtn = document.getElementById('btn-g' + desiredSlots);
+      buildStadiumGrid(desiredSlots, targetBtn);
+
+      let free = findFirstEmptySlot();
+      if(free === -1){
+        free = desiredSlots - 1;
+      }
+      const hasPrimaryAudio = slotData.some((s, idx) => idx !== free && s && s.url);
+      slotData[free] = { url: safeUrl };
+      renderStream(free, safeUrl, hasPrimaryAudio);
+      if(!hasPrimaryAudio){
+        activeSlotIndex = free;
+      }
+      targetSlotIndex = findFirstEmptySlot() !== -1 ? findFirstEmptySlot() : free;
+      applyMuteStates();
+    }
+
     function renderStream(slotIdx, url, muted){
       const core = document.getElementById('stadium-core-'+slotIdx); if(!core) return;
       const safeUrl = sanitizeStreamUrl(url);
@@ -308,16 +358,18 @@
           const data = await res.json();
           const eventos = Array.isArray(data.eventos) ? data.eventos : (Array.isArray(data) ? data : []);
           eventos.forEach(ev => {
+            const titulo = ev.titulo || ev.evento || 'Show de Wrestling';
+            const empresa = detectarEmpresa(ev.promocion || ev.empresa || ev.torneo || '', titulo);
             const liveSrv = normalizarServidores(ev.servidores_live || ev.live || []);
             const replaySrv = normalizarServidores(ev.servidores_replay || ev.replay || []);
             const fallbackSrv = (liveSrv.length === 0 && replaySrv.length === 0) ? normalizarServidores(ev.servidores || []) : [];
             combined.push({
-              titulo: ev.titulo || ev.evento || 'Show de Wrestling',
-              promocion: ev.promocion || ev.empresa || ev.torneo || 'WRESTLING',
+              titulo,
+              empresa,
+              etiquetaEmpresa: ev.promocion || ev.empresa || empresa,
               eventDateObj: parseEventDate(ev),
               servidoresLive: liveSrv.length > 0 ? liveSrv : fallbackSrv,
-              servidoresReplay: replaySrv,
-              isCalendar: false
+              servidoresReplay: replaySrv
             });
           });
         }
@@ -333,18 +385,19 @@
           (cData.items || []).forEach(item => {
             const raw = item.start.dateTime || (item.start.date + 'T00:00:00');
             const ts = new Date(raw).getTime() + (cal.timeOffset || 0);
-            const titulo = item.summary || `Evento ${cal.label}`;
+            const titulo = item.summary || `Evento ${cal.company}`;
             const yaExiste = combined.some(existing =>
+              existing.empresa === cal.company &&
               normalizar(existing.titulo).replace(/[^A-Z0-9]/g,'') === normalizar(titulo).replace(/[^A-Z0-9]/g,'')
             );
             if(!yaExiste){
               combined.push({
                 titulo,
-                promocion: cal.label,
+                empresa: cal.company,
+                etiquetaEmpresa: cal.company,
                 eventDateObj: new Date(ts),
                 servidoresLive: [],
-                servidoresReplay: [],
-                isCalendar: true
+                servidoresReplay: []
               });
             }
           });
@@ -359,68 +412,179 @@
 
       allWrestlingEvents = combined;
       aplicarFiltros();
+      cargarEventosOtrosDeportes();
     }
 
-    function obtenerEventosFiltrados(){
-      const q = normalizar(document.getElementById('search-input').value);
-      return allWrestlingEvents.filter(ev => {
-        const hasLive = ev.servidoresLive && ev.servidoresLive.length > 0;
-        const hasReplay = ev.servidoresReplay && ev.servidoresReplay.length > 0;
-        if(currentFilter === 'LIVE' && !hasLive) return false;
-        if(currentFilter === 'REPLAY' && !hasReplay) return false;
-        if(currentFilter === 'CAL' && (hasLive || hasReplay)) return false;
-        if(q){
-          const hayMatch = normalizar(ev.titulo).includes(q) || normalizar(ev.promocion).includes(q);
-          if(!hayMatch) return false;
-        }
-        return true;
+    async function cargarEventosOtrosDeportes(){
+      const fuentes = [
+        { deporte: 'FUTBOL', url: `../output/agenda_futbol.json?v=${Date.now()}` },
+        { deporte: 'NBA',    url: `../output/agenda_nba.json?v=${Date.now()}` },
+        { deporte: 'F1',     url: `../output/agenda_f1.json?v=${Date.now()}` }
+      ];
+      const lista = [];
+      await Promise.all(fuentes.map(async f => {
+        try{
+          const r = await fetch(f.url);
+          if(!r.ok) return;
+          const d = await r.json();
+          (d.eventos || []).forEach(ev => {
+            const srvs = normalizarServidores(ev.servidores || []);
+            if(srvs.length > 0){
+              lista.push({
+                deporte: f.deporte,
+                titulo: ev.titulo || 'Evento',
+                torneo: ev.torneo || f.deporte,
+                eventDateObj: parseEventDate(ev),
+                url: srvs[0].url
+              });
+            }
+          });
+        }catch(e){}
+      }));
+      externalCrossSportEvents = lista;
+      checkUpcomingEvents();
+    }
+
+    function checkUpcomingEvents(){
+      const now = Date.now();
+      const WINDOW_START = -3 * 60 * 1000;
+      const WINDOW_END = 10 * 60 * 1000;
+      for(const ev of externalCrossSportEvents){
+        if(!ev.eventDateObj || !ev.url) continue;
+        const t = ev.eventDateObj.getTime();
+        if(t < now + WINDOW_START || t > now + WINDOW_END) continue;
+        if(slotData.some(s => s && s.url === ev.url)) continue;
+        const key = `${ev.deporte}|${normalizar(ev.titulo)}|${t}`;
+        if(notifiedEventKeys.has(key)) continue;
+        notifiedEventKeys.add(key);
+        showNotification(ev);
+      }
+    }
+
+    function showNotification(ev){
+      const container = document.getElementById('um-toast-container');
+      if(!container) return;
+      const startsIn = ev.eventDateObj.getTime() - Date.now();
+      const timeLabel = startsIn <= 0 ? 'EN VIVO ahora' : `Comienza en ${Math.max(1, Math.ceil(startsIn/60000))} min`;
+      const id = 'toast-' + Date.now() + '-' + Math.random().toString(36).slice(2,7);
+      _notificationData[id] = { url: ev.url };
+
+      const toast = document.createElement('div');
+      toast.className = 'um-toast';
+      toast.id = id;
+      toast.innerHTML = `
+        <div class="um-toast-header"><i class="fas fa-bell"></i><span>${escapeHTML(ev.deporte)} · ${escapeHTML(ev.torneo)}</span></div>
+        <div class="um-toast-title">${escapeHTML(ev.titulo)}</div>
+        <div class="um-toast-meta">${escapeHTML(timeLabel)}</div>
+        <div class="um-toast-actions"></div>`;
+
+      const actions = toast.querySelector('.um-toast-actions');
+      const watchBtn = document.createElement('button');
+      watchBtn.type = 'button';
+      watchBtn.className = 'um-toast-btn watch';
+      watchBtn.innerHTML = '<i class="fas fa-th-large"></i> Abrir multipantalla';
+      watchBtn.addEventListener('click', () => {
+        const item = _notificationData[id];
+        if(item && item.url) openInMultiSlotFromNotification(item.url);
+        delete _notificationData[id];
+        toast.remove();
       });
+
+      const dismissBtn = document.createElement('button');
+      dismissBtn.type = 'button';
+      dismissBtn.className = 'um-toast-btn dismiss';
+      dismissBtn.innerHTML = '<i class="fas fa-times"></i>';
+      dismissBtn.addEventListener('click', () => { delete _notificationData[id]; toast.remove(); });
+
+      actions.append(watchBtn, dismissBtn);
+      container.appendChild(toast);
+      setTimeout(() => { delete _notificationData[id]; toast.remove(); }, 25000);
+    }
+
+    function cumpleFiltroModo(ev){
+      const hasLive = ev.servidoresLive && ev.servidoresLive.length > 0;
+      const hasReplay = ev.servidoresReplay && ev.servidoresReplay.length > 0;
+      if(currentMode === 'LIVE') return hasLive;
+      if(currentMode === 'REPLAY') return hasReplay;
+      if(currentMode === 'CAL') return !hasLive && !hasReplay;
+      return true;
+    }
+
+    function cumpleBusqueda(ev, q){
+      if(!q) return true;
+      return normalizar(ev.titulo).includes(q) || normalizar(ev.empresa).includes(q) || normalizar(ev.etiquetaEmpresa).includes(q);
+    }
+
+    function crearTarjetaEvento(ev){
+      const globalIdx = allWrestlingEvents.indexOf(ev);
+      const hasLive = ev.servidoresLive && ev.servidoresLive.length > 0;
+      const hasReplay = ev.servidoresReplay && ev.servidoresReplay.length > 0;
+      let estadoLabel = 'CALENDARIO';
+      let estadoStyle = 'background:rgba(148,163,184,0.16);color:#cbd5e1;border:1px solid rgba(148,163,184,0.35);';
+      if(hasLive){
+        estadoLabel = 'LIVE';
+        estadoStyle = 'background:rgba(225,29,72,0.22);color:#fb7185;border:1px solid #e11d48;';
+      } else if(hasReplay){
+        estadoLabel = 'REPLAY';
+        estadoStyle = 'background:rgba(251,191,36,0.18);color:#fbbf24;border:1px solid #fbbf24;';
+      }
+
+      const fechaTexto = ev.eventDateObj
+        ? `${ev.eventDateObj.toLocaleDateString([], {day:'2-digit',month:'2-digit'})} · ${ev.eventDateObj.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`
+        : 'Horario por confirmar';
+
+      const canalesCount = (ev.servidoresLive?.length || 0) + (ev.servidoresReplay?.length || 0);
+
+      const card = document.createElement('div');
+      card.className = 'stadium-card';
+      card.innerHTML = `
+        <div class="card-top">
+          <span class="card-league">${escapeHTML(ev.empresa)}</span>
+          <span class="card-live" style="${estadoStyle}">${escapeHTML(estadoLabel)}</span>
+        </div>
+        <div class="card-title">${escapeHTML(ev.titulo)}</div>
+        <div class="card-bottom">
+          <span><i class="fas fa-clock"></i> ${escapeHTML(fechaTexto)}</span>
+          <span><i class="fas fa-satellite-dish"></i> ${canalesCount > 0 ? canalesCount + ' Canales' : 'Agenda'}</span>
+        </div>`;
+      card.addEventListener('click', () => seleccionarShow(globalIdx));
+      return card;
     }
 
     function aplicarFiltros(){
-      const lista = obtenerEventosFiltrados();
+      const q = normalizar(document.getElementById('search-input').value);
+      const heroTitle = document.getElementById('hero-company-title');
+      if(heroTitle){
+        heroTitle.textContent = currentCompany === 'ALL' ? 'TODAS LAS EMPRESAS' : `CARTELERA · ${currentCompany}`;
+      }
+
       const box = document.getElementById('stadium-feed-target');
       box.innerHTML = '';
-      if(lista.length === 0){
-        box.innerHTML = '<div style="padding:20px;opacity:.6;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No hay shows para este filtro.</div>';
+
+      const filtrados = allWrestlingEvents.filter(ev =>
+        (currentCompany === 'ALL' || ev.empresa === currentCompany) &&
+        cumpleFiltroModo(ev) &&
+        cumpleBusqueda(ev, q)
+      );
+
+      if(filtrados.length === 0){
+        box.innerHTML = '<div style="padding:20px;opacity:.6;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No hay shows para esta empresa o filtro.</div>';
         return;
       }
 
-      lista.forEach(ev => {
-        const globalIdx = allWrestlingEvents.indexOf(ev);
-        const hasLive = ev.servidoresLive && ev.servidoresLive.length > 0;
-        const hasReplay = ev.servidoresReplay && ev.servidoresReplay.length > 0;
-        let estadoLabel = 'CALENDARIO';
-        let estadoStyle = 'background:rgba(148,163,184,0.16);color:#cbd5e1;border:1px solid rgba(148,163,184,0.35);';
-        if(hasLive){
-          estadoLabel = 'LIVE';
-          estadoStyle = 'background:rgba(225,29,72,0.22);color:#fb7185;border:1px solid #e11d48;';
-        } else if(hasReplay){
-          estadoLabel = 'REPLAY';
-          estadoStyle = 'background:rgba(251,191,36,0.18);color:#fbbf24;border:1px solid #fbbf24;';
-        }
-
-        const fechaTexto = ev.eventDateObj
-          ? `${ev.eventDateObj.toLocaleDateString([], {day:'2-digit',month:'2-digit'})} · ${ev.eventDateObj.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`
-          : 'Horario por confirmar';
-
-        const canalesCount = (ev.servidoresLive?.length || 0) + (ev.servidoresReplay?.length || 0);
-
-        const card = document.createElement('div');
-        card.className = 'stadium-card';
-        card.innerHTML = `
-          <div class="card-top">
-            <span class="card-league">${escapeHTML(ev.promocion)}</span>
-            <span class="card-live" style="${estadoStyle}">${escapeHTML(estadoLabel)}</span>
-          </div>
-          <div class="card-title">${escapeHTML(ev.titulo)}</div>
-          <div class="card-bottom">
-            <span><i class="fas fa-clock"></i> ${escapeHTML(fechaTexto)}</span>
-            <span><i class="fas fa-satellite-dish"></i> ${canalesCount > 0 ? canalesCount + ' Canales' : 'Agenda'}</span>
-          </div>`;
-        card.addEventListener('click', () => seleccionarShow(globalIdx));
-        box.appendChild(card);
-      });
+      if(currentCompany === 'ALL'){
+        EMPRESAS_ORDEN.forEach(emp => {
+          const grupo = filtrados.filter(e => e.empresa === emp);
+          if(grupo.length === 0) return;
+          const secTitle = document.createElement('div');
+          secTitle.className = 'company-section-title';
+          secTitle.textContent = `${emp} (${grupo.length})`;
+          box.appendChild(secTitle);
+          grupo.forEach(ev => box.appendChild(crearTarjetaEvento(ev)));
+        });
+      } else {
+        filtrados.forEach(ev => box.appendChild(crearTarjetaEvento(ev)));
+      }
     }
 
     function seleccionarShow(index){
@@ -438,7 +602,7 @@
         panel.style.display = 'none';
         const core = document.getElementById('stadium-core-' + targetSlotIndex);
         if(core){
-          core.innerHTML = `<div style="color:#fff;padding:20px;text-align:center;"><i class="fas fa-calendar-alt" style="font-size:36px;color:var(--wr-gold);margin-bottom:12px;"></i><h3 style="margin-bottom:8px;">${escapeHTML(ev.titulo)}</h3><p style="font-size:12px;color:#94a3b8;max-width:320px;">Show programado en agenda. Los enlaces LIVE o REPLAY aparecerán cuando estén disponibles.</p></div>`;
+          core.innerHTML = `<div style="color:#fff;padding:20px;text-align:center;"><i class="fas fa-calendar-alt" style="font-size:36px;color:var(--wr-gold);margin-bottom:12px;"></i><h3 style="margin-bottom:8px;">${escapeHTML(ev.empresa)} · ${escapeHTML(ev.titulo)}</h3><p style="font-size:12px;color:#94a3b8;max-width:320px;">Show programado en agenda. Los enlaces LIVE o REPLAY aparecerán cuando estén disponibles.</p></div>`;
         }
         return;
       }
@@ -495,7 +659,7 @@
       document.querySelector('header').style.display='flex';
       document.getElementById('app-sidebar-stadium').style.display='flex';
       const m = document.getElementById('app-body-stadium');
-      m.style.gridTemplateColumns = window.innerWidth<=900 ? '1fr' : '1fr 420px';
+      m.style.gridTemplateColumns = window.innerWidth<=900 ? '1fr' : '1fr 440px';
       m.style.height = window.innerWidth<=900 ? 'auto' : 'calc(100vh - 70px)';
       document.getElementById('exit-cinema-btn').style.display='none';
     }
@@ -508,17 +672,26 @@
       document.querySelectorAll('.stadium-controls .grid-btn[data-slots]').forEach(btn => {
         btn.addEventListener('click', () => buildStadiumGrid(Number(btn.dataset.slots), btn));
       });
-      document.querySelectorAll('.filter-tabs .filter-tab[data-filter]').forEach(tab => {
+      document.querySelectorAll('.company-tabs .company-tab[data-company]').forEach(tab => {
         tab.addEventListener('click', function(){
-          document.querySelectorAll('.filter-tabs .filter-tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.company-tabs .company-tab').forEach(t => t.classList.remove('active'));
           this.classList.add('active');
-          currentFilter = this.dataset.filter;
+          currentCompany = this.dataset.company;
+          aplicarFiltros();
+        });
+      });
+      document.querySelectorAll('.mode-subbar .mode-filter-btn[data-mode]').forEach(btn => {
+        btn.addEventListener('click', function(){
+          document.querySelectorAll('.mode-subbar .mode-filter-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentMode = this.dataset.mode;
           aplicarFiltros();
         });
       });
 
       buildStadiumGrid(1, document.getElementById('btn-g1'));
       cargarWrestling();
+      setInterval(checkUpcomingEvents, 60000);
     });
   </script>
 </body>
