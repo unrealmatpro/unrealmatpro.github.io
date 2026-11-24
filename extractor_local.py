@@ -39,12 +39,11 @@ def clave_dedup(titulo: str, hora: str) -> str:
     t = re.sub(r"\s+", " ", t).strip()
     return f"{t}__{(hora or '00:00').zfill(5)}"
 
-F1_KEYWORDS = [normalizar(k) for k in ["F1", "MOTOGP", "MOTO GP", "PRACTICA", "FREE PRACTICE", "CLASIFICACION", "QUALY", "SPRINT", "GRAND PRIX", "GRAN PREMIO", "VERSTAPPEN", "HAMILTON", "LECLERC", "SAINZ", "ALONSO", "PEREZ", "RED BULL", "FERRARI", "MCLAREN", "FP1", "FP2", "FP3", "ON BOARD", "COLAPINTO", "QATAR"]]
+F1_KEYWORDS = [normalizar(k) for k in ["F1", "FORMULA 1", "MOTOGP", "MOTO GP", "PRACTICA", "FREE PRACTICE", "CLASIFICACION", "QUALY", "SPRINT", "GRAND PRIX", "GRAN PREMIO", "VERSTAPPEN", "HAMILTON", "LECLERC", "SAINZ", "ALONSO", "PEREZ", "RED BULL", "FERRARI", "MCLAREN", "FP1", "FP2", "FP3", "ON BOARD", "COLAPINTO", "QATAR"]]
 NBA_KEYWORDS = [normalizar(k) for k in ["NBA", "BASKET", "BALONCESTO", "LAKERS", "CELTICS", "BULLS", "HEAT", "WARRIORS", "BUCKS", "SUNS", "MAVERICKS", "KNICKS", "BLAZERS", "NETS", "76ERS", "SIXERS", "NUGGETS", "CLIPPERS", "SPURS", "ROCKETS", "GRIZZLIES", "PELICANS", "THUNDER", "TIMBERWOLVES", "CAVALIERS", "PISTONS", "PACERS", "HORNETS", "WIZARDS", "MAGIC", "HAWKS", "RAPTORS", "KINGS", "JAZZ"]]
-TENIS_KEYWORDS = [normalizar(k) for k in ["ATP", "WTA", "TENIS", "TENNIS", "FRITZ", "ALCARAZ", "DJOKOVIC", "NADAL", "SABALENKA", "MUCHOVA"]]
-BOXEO_KEYWORDS = [normalizar(k) for k in ["BOXEO", "BOXING", "KNOCKOUT", "BXSTRS", "CANELO", "WBC", "WBA", "IBF", "WBO"]]
-NFL_KEYWORDS = [normalizar(k) for k in ["NFL", "RAVENS", "JAGUARS", "CHIEFS", "PATRIOTS", "COWBOYS", "PACKERS", "49ERS", "EAGLES", "STEELERS", "BRONCOS", "VIKINGS", "BILLS"]]
-NHL_KEYWORDS = [normalizar(k) for k in ["NHL", "AVALANCHE", "MAPLE LEAFS", "WILD", "CANADIENS", "CAPITALS", "SENATORS", "DEVILS", "JETS", "PANTHERS", "BLUE JACKETS", "PREDATORS", "ISLANDERS", "SHARKS", "OILERS", "RANGERS", "FLYERS", "CANUCKS"]]
+NFL_KEYWORDS = [normalizar(k) for k in ["NFL", "RAVENS", "JAGUARS", "CHIEFS", "PATRIOTS", "COWBOYS", "PACKERS", "49ERS", "EAGLES", "STEELERS", "BRONCOS", "VIKINGS", "BILLS", "DOLPHINS", "LIONS", "BENGALS", "TEXANS", "SEAHAWKS", "FALCONS", "SAINTS", "RAMS", "CHARGERS", "RAIDERS", "BEARS", "COMMANDERS", "BUCCANEERS", "CARDINALS", "TITANS", "COLTS", "GIANTS", "JETS", "PANTHERS", "BROWNS"]]
+MLB_KEYWORDS = [normalizar(k) for k in ["MLB", "BASEBALL", "BEISBOL", "YANKEES", "DODGERS", "RED SOX", "METS", "ASTROS", "BRAVES", "PADRES", "PHILLIES", "CUBS", "CARDINALS", "MARINERS", "ORIOLES", "RANGERS", "GUARDIANS", "TWINS", "BREWERS", "BLUE JAYS", "GIANTS", "WHITE SOX", "TIGERS", "ROYALS", "PIRATES", "REDS", "ROCKIES", "DIAMONDBACKS", "ATHLETICS", "ANGELS", "RAYS", "MARLINS", "NATIONALS"]]
+NHL_KEYWORDS = [normalizar(k) for k in ["NHL", "HOCKEY", "AVALANCHE", "MAPLE LEAFS", "WILD", "CANADIENS", "CAPITALS", "SENATORS", "DEVILS", "JETS", "PANTHERS", "BLUE JACKETS", "PREDATORS", "ISLANDERS", "SHARKS", "OILERS", "RANGERS", "FLYERS", "CANUCKS", "BRUINS", "LIGHTNING", "STARS", "GOLDEN KNIGHTS", "HURRICANES", "PENGUINS", "BLACKHAWKS", "BLUES", "FLAMES", "KRAKEN", "DUCKS", "COYOTES", "SABRES"]]
 
 SERVER_URL_RE = re.compile(r"https?://streamxhd\.[a-z]+/(live[12]\.php\?stream=[A-Za-z0-9_\-]+)")
 
@@ -117,18 +116,20 @@ async def _scrape_url(url: str) -> List[Dict]:
                 sport_hint = ""
                 tags = art.find_all("span", class_="tag")
                 for tag in tags:
-                    if "Football" in tag.text: sport_hint = "FUTBOL"
-                    elif "Basketball" in tag.text: sport_hint = "NBA"
-                    elif "Hockey" in tag.text: sport_hint = "NHL"
-                    elif "Tennis" in tag.text: sport_hint = "TENIS"
-                    elif "Racing" in tag.text or "Motor" in tag.text: sport_hint = "F1"
+                    tag_txt = tag.text.strip()
+                    if "Football" in tag_txt or "Soccer" in tag_txt: sport_hint = "FUTBOL"
+                    elif "Basketball" in tag_txt: sport_hint = "NBA"
+                    elif "Hockey" in tag_txt: sport_hint = "NHL"
+                    elif "Baseball" in tag_txt: sport_hint = "MLB"
+                    elif "NFL" in tag_txt or "American Football" in tag_txt: sport_hint = "NFL"
+                    elif "Racing" in tag_txt or "Motor" in tag_txt or "Formula" in tag_txt: sport_hint = "F1"
 
                 servidores = []
                 seen = set()
                 for a_tag in art.find_all("button", class_="compact-server-action") + art.find_all("button", class_="server"):
                     stream_url = a_tag.get("data-url") or a_tag.get("data-copy") or a_tag.get("data-target")
                     if stream_url and "iframe" in stream_url:
-                        m = re.search(r"src=\"(https?://[^\"]+)\"", stream_url)
+                        m = re.search(r'src="(https?://[^"]+)"', stream_url)
                         if m: stream_url = m.group(1)
                     
                     if stream_url and "streamxhd" in stream_url:
@@ -180,21 +181,31 @@ def deduplicar_eventos(eventos: List[Dict]) -> List[Dict]:
 def clasificar_evento(titulo: str, torneo: str, sport_hint: str) -> Tuple[str, str]:
     t = normalizar(titulo)
     torneo_upper = normalizar(torneo)
-    
-    if sport_hint == "NHL" or "NHL" in torneo_upper or "HOCKEY" in torneo_upper or any(k in t for k in NHL_KEYWORDS):
-        return "descartar", "NHL"
+    hint_upper = normalizar(sport_hint)
 
-    if sport_hint == "F1" or "F1" in torneo_upper or "MOTOR" in torneo_upper or any(k in t for k in F1_KEYWORDS): return "f1", torneo
-    if sport_hint == "NBA" or "NBA" in torneo_upper or "BASKET" in torneo_upper or any(k in t for k in NBA_KEYWORDS): return "nba", torneo
-    
+    if hint_upper == "F1" or re.search(r"\bF1\b", torneo_upper) or re.search(r"\bF1\b", t) or any(k in t or k in torneo_upper for k in F1_KEYWORDS):
+        return "f1", torneo
+
+    if hint_upper == "NBA" or re.search(r"\bNBA\b", torneo_upper) or re.search(r"\bNBA\b", t) or any(k in t or k in torneo_upper for k in NBA_KEYWORDS):
+        return "nba", torneo
+
+    if hint_upper == "NFL" or re.search(r"\bNFL\b", torneo_upper) or re.search(r"\bNFL\b", t) or any(k in t or k in torneo_upper for k in NFL_KEYWORDS):
+        return "otros", torneo if torneo_upper and torneo_upper != "DEPORTE" else "NFL"
+
+    if hint_upper == "MLB" or re.search(r"\bMLB\b", torneo_upper) or re.search(r"\bMLB\b", t) or any(k in t or k in torneo_upper for k in MLB_KEYWORDS):
+        return "otros", torneo if torneo_upper and torneo_upper != "DEPORTE" else "MLB"
+
+    if hint_upper == "NHL" or re.search(r"\bNHL\b", torneo_upper) or re.search(r"\bNHL\b", t) or any(k in t or k in torneo_upper for k in NHL_KEYWORDS):
+        return "otros", torneo if torneo_upper and torneo_upper != "DEPORTE" else "NHL"
+
     return "futbol", torneo
 
 def clasificar_eventos(eventos: List[Dict]) -> Dict[str, List[Dict]]:
-    clasificados = {"futbol": [], "nba": [], "f1": []}
+    clasificados = {"futbol": [], "nba": [], "f1": [], "otros": []}
     for e in eventos:
         deporte, torneo_final = clasificar_evento(e["titulo"], e.get("torneo", ""), e.get("sport_hint", ""))
-        if deporte == "descartar": continue
         e["torneo"] = torneo_final
+        e["deporte"] = deporte.upper()
         e.pop("sport_hint", None)
         clasificados[deporte].append(e)
     return clasificados
@@ -213,7 +224,6 @@ async def main():
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     if not token: sys.exit(1)
     
-    # ESTO ES LO NUEVO: Lee el repositorio automáticamente desde GitHub Actions
     repo_full = os.environ.get("GITHUB_REPOSITORY", "unrealmatpro/unrealmatpro.github.io")
     user, repo = repo_full.split("/")
     
@@ -226,12 +236,13 @@ async def main():
     clasificados = clasificar_eventos(eventos)
     ahora = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    LOG.info(f"Clasificación → Fútbol={len(clasificados['futbol'])} NBA={len(clasificados['nba'])} F1={len(clasificados['f1'])}")
+    LOG.info(f"Clasificación → Fútbol={len(clasificados['futbol'])} NBA={len(clasificados['nba'])} F1={len(clasificados['f1'])} OTROS={len(clasificados['otros'])}")
 
     for deporte, lista in clasificados.items():
         payload = {"fecha_actualizacion": ahora, "total": len(lista), "eventos": lista}
-        # Aquí usa las variables user y repo que leyó automáticamente
-        subir_github(token, user, repo, f"output/agenda_{deporte}.json", json.dumps(payload, ensure_ascii=False, indent=2))
+        contenido_json = json.dumps(payload, ensure_ascii=False, indent=2)
+        (LOCAL_OUT / f"agenda_{deporte}.json").write_text(contenido_json, encoding="utf-8")
+        subir_github(token, user, repo, f"output/agenda_{deporte}.json", contenido_json)
     
     return 0
 
