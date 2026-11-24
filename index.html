@@ -376,7 +376,9 @@
       div.innerHTML=`<div class="mv-monitor-tag" onclick="event.stopPropagation(); mvFocusSlot(${i})"><i class="fas fa-play-circle"></i> PANTALLA 0${i+1}</div><div id="mv-core-${i}" class="mv-core"><i class="fas fa-tv" style="font-size:40px; margin-bottom:10px;"></i><span style="font-size:12px; font-weight:600; text-align:center; padding:0 10px;">Elige un evento de la lista</span></div><div class="mv-mute-badge" id="mv-mute-${i}" onclick="event.stopPropagation(); mvFocusSlot(${i})"><i class="fas fa-volume-mute"></i> Activar audio</div><a class="mv-goto-blog" id="mv-goto-${i}" href="#" target="_self" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt"></i> Ver en blog</a>`;
       return div;
     }
+    /* E9: validar slots entre 1 y 4 */
     function mvBuildGrid(slots, button){
+      slots = Math.max(1, Math.min(4, parseInt(slots) || 1));
       const mesh=document.getElementById('mv-grid-mesh');
       document.querySelectorAll('.mv-controls .mv-grid-btn').forEach(b=>b.classList.remove('active'));
       if(button) button.classList.add('active');
@@ -424,6 +426,7 @@
       mvApplyMuteStates();
       const next=mvFindFirstEmpty(); if(next!==-1) mvTargetSlotIndex=next;
     }
+    /* E5: sandbox en iframe */
     function mvRenderStream(slotIdx, url, muted){
       const core=document.getElementById('mv-core-'+slotIdx); if(!core) return;
       if(!isValidStreamUrl(url)){ core.innerHTML='<div style="color:#ff004c;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
@@ -432,6 +435,7 @@
       const f=document.createElement('iframe');
       f.src=finalUrl; f.style.cssText='width:100%;height:100%;border:none;';
       f.setAttribute('allowfullscreen','true'); f.setAttribute('webkitallowfullscreen','true'); f.setAttribute('mozallowfullscreen','true');
+      f.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox allow-forms');
       f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture; user-activation';
       f.setAttribute('referrerpolicy','no-referrer-when-downgrade');
       core.appendChild(f);
