@@ -1,13 +1,167 @@
 {
-  "fecha_actualizacion": "2026-11-24T18:59:31Z",
+  "fecha_actualizacion": "2026-11-24T23:49:26Z",
   "total": 22,
   "eventos": [
     {
       "id": "evt_0",
+      "titulo": "Millonarios vs Atlético Bucaramanga",
+      "hora": "16:20",
+      "fecha_completa": "2026-11-24T18:20:00-05:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "WIN SPORTS +",
+          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
+        }
+      ],
+      "torneo": "Liga Colombia",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_1",
+      "titulo": "Barcelona SC vs Independiente del Valle",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-24T19:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "ZAPPING EC",
+          "url": "https://streamxhd.sbs/live1.php?stream=zapping_ec"
+        }
+      ],
+      "torneo": "Liga Ecuador",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_6",
+      "titulo": "América de Cali vs Deportivo Cali",
+      "hora": "18:30",
+      "fecha_completa": "2026-11-24T20:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "WIN SPORTS +",
+          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
+        }
+      ],
+      "torneo": "Liga Colombia",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_7",
+      "titulo": "San Jose Earthquakes vs Houston Dynamo",
+      "hora": "20:00",
+      "fecha_completa": "2026-11-24T22:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "APPLETV1",
+          "url": "https://streamxhd.sbs/live1.php?stream=appletv1"
+        }
+      ],
+      "torneo": "MLS",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_9",
+      "titulo": "México vs Camerún",
+      "hora": "06:30",
+      "fecha_completa": "2026-11-24T08:30:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "TUDNMX",
+          "url": "https://streamxhd.sbs/live1.php?stream=tudnmx"
+        },
+        {
+          "nombre": "CANAL9MX",
+          "url": "https://streamxhd.sbs/live1.php?stream=canal9mx"
+        }
+      ],
+      "torneo": "Copa Mundial Sub-17",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_10",
+      "titulo": "República Dominicana vs Chile",
+      "hora": "07:30",
+      "fecha_completa": "2026-11-24T09:30:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "DSPORTSPLUS",
+          "url": "https://streamxhd.sbs/live1.php?stream=dsportsplus"
+        }
+      ],
+      "torneo": "Copa Mundial Sub-17",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_11",
+      "titulo": "Brasil vs Tanzania",
+      "hora": "08:00",
+      "fecha_completa": "2026-11-24T10:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "SPORTTVBR2",
+          "url": "https://streamxhd.sbs/live1.php?stream=sporttvbr2"
+        }
+      ],
+      "torneo": "Copa Mundial Sub-17",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_12",
+      "titulo": "Honduras vs Colombia",
+      "hora": "08:30",
+      "fecha_completa": "2026-11-24T10:30:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "DSPORTS",
+          "url": "https://streamxhd.sbs/live1.php?stream=dsports"
+        }
+      ],
+      "torneo": "Copa Mundial Sub-17",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_13",
+      "titulo": "Shabab Al Ahli vs Al Qadisiya",
+      "hora": "09:00",
+      "fecha_completa": "2026-11-24T11:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "DISNEY+ 1",
+          "url": "https://streamxhd.sbs/live1.php?stream=disney1"
+        }
+      ],
+      "torneo": "AFC Champions League Elite",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_14",
+      "titulo": "Zenit St. Petersburg vs Krylia Sovetov",
+      "hora": "09:30",
+      "fecha_completa": "2026-11-24T11:30:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "DSPORTSPLUS",
+          "url": "https://streamxhd.sbs/live1.php?stream=dsportsplus"
+        }
+      ],
+      "torneo": "Copa de Rusia",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_15",
       "titulo": "Galatasaray vs Aston Villa",
       "hora": "10:45",
       "fecha_completa": "2026-11-24T12:45:00-05:00",
-      "status": "EN VIVO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "ESPN",
@@ -30,11 +184,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_1",
+      "id": "evt_16",
       "titulo": "Bodø/Glimt vs LASK Linz",
       "hora": "10:45",
       "fecha_completa": "2026-11-24T12:45:00-05:00",
-      "status": "EN VIVO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "ESPN 2 AR",
@@ -53,11 +207,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_2",
+      "id": "evt_17",
       "titulo": "Al Nassr vs Al Sadd",
       "hora": "11:15",
       "fecha_completa": "2026-11-24T13:15:00-05:00",
-      "status": "EN VIVO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "DISNEY+ 4",
@@ -68,11 +222,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_3",
+      "id": "evt_18",
       "titulo": "Feyenoord vs Porto",
       "hora": "13:00",
       "fecha_completa": "2026-11-24T15:00:00-05:00",
-      "status": "PRONTO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "ESPN 7",
@@ -91,11 +245,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_4",
+      "id": "evt_19",
       "titulo": "Como vs AEK Athens",
       "hora": "13:00",
       "fecha_completa": "2026-11-24T15:00:00-05:00",
-      "status": "PRONTO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "ESPN 5",
@@ -110,11 +264,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_5",
+      "id": "evt_20",
       "titulo": "Arsenal vs Borussia Dortmund",
       "hora": "13:00",
       "fecha_completa": "2026-11-24T15:00:00-05:00",
-      "status": "PRONTO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "ESPN 2 AR",
@@ -137,11 +291,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_6",
+      "id": "evt_21",
       "titulo": "Manchester City vs Napoli",
       "hora": "13:00",
       "fecha_completa": "2026-11-24T15:00:00-05:00",
-      "status": "PRONTO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "ESPN AR",
@@ -160,11 +314,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_7",
+      "id": "evt_22",
       "titulo": "RB Leipzig vs Lens",
       "hora": "13:00",
       "fecha_completa": "2026-11-24T15:00:00-05:00",
-      "status": "PRONTO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "ESPN 6",
@@ -179,11 +333,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_8",
+      "id": "evt_23",
       "titulo": "Real Madrid vs PSV",
       "hora": "13:00",
       "fecha_completa": "2026-11-24T15:00:00-05:00",
-      "status": "PRONTO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "ESPN",
@@ -206,11 +360,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_9",
+      "id": "evt_24",
       "titulo": "Slovan Bratislava vs Real Betis",
       "hora": "13:00",
       "fecha_completa": "2026-11-24T15:00:00-05:00",
-      "status": "PRONTO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "ESPN 4",
@@ -225,11 +379,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_10",
+      "id": "evt_25",
       "titulo": "Wolverhampton vs Derby County",
       "hora": "13:00",
       "fecha_completa": "2026-11-24T15:00:00-05:00",
-      "status": "PRONTO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "DISNEY+ 12",
@@ -240,11 +394,11 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_11",
+      "id": "evt_26",
       "titulo": "Chapecoense vs Palmeiras",
       "hora": "14:00",
       "fecha_completa": "2026-11-24T16:00:00-05:00",
-      "status": "PRONTO",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "PREMIERE 1",
@@ -252,160 +406,6 @@
         }
       ],
       "torneo": "Brasileirão",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_12",
-      "titulo": "Millonarios vs Atlético Bucaramanga",
-      "hora": "16:20",
-      "fecha_completa": "2026-11-24T18:20:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "WIN SPORTS +",
-          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
-        }
-      ],
-      "torneo": "Liga Colombia",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_13",
-      "titulo": "Barcelona SC vs Independiente del Valle",
-      "hora": "17:00",
-      "fecha_completa": "2026-11-24T19:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ZAPPING EC",
-          "url": "https://streamxhd.sbs/live1.php?stream=zapping_ec"
-        }
-      ],
-      "torneo": "Liga Ecuador",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_18",
-      "titulo": "América de Cali vs Deportivo Cali",
-      "hora": "18:30",
-      "fecha_completa": "2026-11-24T20:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "WIN SPORTS +",
-          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
-        }
-      ],
-      "torneo": "Liga Colombia",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_19",
-      "titulo": "San Jose Earthquakes vs Houston Dynamo",
-      "hora": "20:00",
-      "fecha_completa": "2026-11-24T22:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "APPLETV1",
-          "url": "https://streamxhd.sbs/live1.php?stream=appletv1"
-        }
-      ],
-      "torneo": "MLS",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_21",
-      "titulo": "México vs Camerún",
-      "hora": "06:30",
-      "fecha_completa": "2026-11-24T08:30:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "TUDNMX",
-          "url": "https://streamxhd.sbs/live1.php?stream=tudnmx"
-        },
-        {
-          "nombre": "CANAL9MX",
-          "url": "https://streamxhd.sbs/live1.php?stream=canal9mx"
-        }
-      ],
-      "torneo": "Copa Mundial Sub-17",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_22",
-      "titulo": "República Dominicana vs Chile",
-      "hora": "07:30",
-      "fecha_completa": "2026-11-24T09:30:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "DSPORTSPLUS",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsportsplus"
-        }
-      ],
-      "torneo": "Copa Mundial Sub-17",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_23",
-      "titulo": "Brasil vs Tanzania",
-      "hora": "08:00",
-      "fecha_completa": "2026-11-24T10:00:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "SPORTTVBR2",
-          "url": "https://streamxhd.sbs/live1.php?stream=sporttvbr2"
-        }
-      ],
-      "torneo": "Copa Mundial Sub-17",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_24",
-      "titulo": "Honduras vs Colombia",
-      "hora": "08:30",
-      "fecha_completa": "2026-11-24T10:30:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "DSPORTS",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsports"
-        }
-      ],
-      "torneo": "Copa Mundial Sub-17",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_25",
-      "titulo": "Shabab Al Ahli vs Al Qadisiya",
-      "hora": "09:00",
-      "fecha_completa": "2026-11-24T11:00:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney1"
-        }
-      ],
-      "torneo": "AFC Champions League Elite",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_26",
-      "titulo": "Zenit St. Petersburg vs Krylia Sovetov",
-      "hora": "09:30",
-      "fecha_completa": "2026-11-24T11:30:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "DSPORTSPLUS",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsportsplus"
-        }
-      ],
-      "torneo": "Copa de Rusia",
       "deporte": "FUTBOL"
     }
   ]
