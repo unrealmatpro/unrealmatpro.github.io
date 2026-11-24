@@ -144,8 +144,18 @@
     const _notificationData = {};
 
     function recargarBlog(btn){ btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
-    function escapeHTML(str){ if(!str) return ''; return str.replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
+    function escapeHTML(str){ if(!str) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
+    function jsonAttr(s){ return escapeHTML(JSON.stringify(s==null?'':s)); }
     function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
+    /* E1: validación robusta de URL */
+    function isValidStreamUrl(url){
+      if(!url || typeof url !== 'string') return false;
+      try{
+        const u = new URL(url);
+        if(u.protocol !== 'https:' && u.protocol !== 'http:') return false;
+        return u.hostname.toLowerCase().startsWith('streamxhd');
+      }catch(e){ return false; }
+    }
     function parseEventDate(e){
       if(e.fecha_completa){ let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d; if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){ let d2=new Date(e.fecha_completa.replace(" ","T")+":00-05:00"); if(!isNaN(d2.getTime())) return d2; } }
       if(e.hora && e.hora!=="00:00"){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
@@ -193,16 +203,23 @@
         if(badge) badge.classList.toggle('visible', !!has && i!==activeSlotIndex);
       }
     }
+    /* E7 + blogUrl: validar targetSlotIndex y guardar blogUrl */
     function loadInTarget(url){
       if(!url) return;
+      if(!isValidStreamUrl(url)){ console.warn('[NBA] URL bloqueada:', url); return; }
+      if(targetSlotIndex < 0 || targetSlotIndex >= getSlotCount()){
+        openInNewSlot(url);
+        return;
+      }
       const isMuted=(targetSlotIndex!==activeSlotIndex);
-      slotData[targetSlotIndex]={url};
+      slotData[targetSlotIndex]={url, blogUrl: location.pathname};
       renderStream(targetSlotIndex, url, isMuted);
       applyMuteStates();
       const next=findFirstEmptySlot(); if(next!==-1) targetSlotIndex=next;
     }
     function openInNewSlot(url){
       if(!url) return;
+      if(!isValidStreamUrl(url)){ console.warn('[NBA] URL bloqueada:', url); return; }
       let slotCount = getSlotCount();
       let free = findFirstEmptySlot();
       const hayReproduccion = slotData.some(s => s && s.url);
@@ -215,21 +232,23 @@
       }
       if(free === -1) return;
       const muted = hayReproduccion;
-      slotData[free] = { url };
+      slotData[free] = { url, blogUrl: location.pathname };
       renderStream(free, url, muted);
       if(!hayReproduccion){ activeSlotIndex = free; targetSlotIndex = free; }
       else { targetSlotIndex = free; }
       applyMuteStates();
     }
+    /* E5: sandbox en iframe */
     function renderStream(slotIdx, url, muted){
       const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
-      if(!url || (!url.startsWith('https://streamxhd') && !url.startsWith('http://streamxhd'))){ core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
+      if(!isValidStreamUrl(url)){ core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
       let finalUrl=url; if(muted){ const sep=url.includes('?')?'&':'?'; finalUrl=url+sep+'mute=1'; }
       const isMobile=/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       core.innerHTML='';
       const f=document.createElement('iframe');
       f.src=finalUrl; f.style.cssText='width:100%;height:100%;border:none;';
       f.setAttribute('allowfullscreen','true'); f.setAttribute('webkitallowfullscreen','true'); f.setAttribute('mozallowfullscreen','true');
+      f.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox allow-forms');
       f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture; user-activation';
       f.setAttribute('referrerpolicy','no-referrer-when-downgrade');
       core.appendChild(f);
@@ -304,13 +323,14 @@
       if(!input){ renderSidebarFeed(datosOriginales); return; }
       renderSidebarFeed(datosOriginales.filter(e=>normalizar(e.titulo||e.summary).includes(input) || normalizar(e.torneo||'').includes(input)));
     }
+    /* E2: jsonAttr en onclick */
     function prepararPartido(index){
       const partido=datosOriginales[index]; if(!partido) return;
       const panel=document.getElementById('alternative-servers-panel'); const list=document.getElementById('alt-servers-list');
       if(partido.servidores && partido.servidores.length){
         list.innerHTML=partido.servidores.map((s,i)=>{
-          const u=escapeHTML(s.url), n=escapeHTML(s.nombre||'Opción '+(i+1));
-          return `<button class="alt-btn" onclick="loadInTarget('${u}')"><i class="fas fa-play"></i> ${n}</button>`;
+          const n=escapeHTML(s.nombre||'Opción '+(i+1));
+          return `<button class="alt-btn" onclick="loadInTarget(${jsonAttr(s.url)})"><i class="fas fa-play"></i> ${n}</button>`;
         }).join('');
       } else list.innerHTML=`<button class="alt-btn" disabled>No hay servidores</button>`;
       panel.style.display='block';
@@ -333,8 +353,8 @@
       mainView.style.height=window.innerWidth<=900?'auto':'calc(100vh - 112px)';
       document.getElementById('exit-cinema-btn').style.display='none';
     }
-
     function checkUpcomingEvents(){
+      if(notifiedEventKeys.size > 500) notifiedEventKeys.clear();
       const now = Date.now();
       const WINDOW_START = -3 * 60 * 1000;
       const WINDOW_END = 10 * 60 * 1000;
@@ -410,7 +430,7 @@
           const agendaLista = datosOriginales && slot0;
           if(agendaLista){
             clearInterval(tryLoad);
-            if(auto){ const url = decodeURIComponent(auto); slotData[0]={url}; renderStream(0,url,false); applyMuteStates(); return; }
+            if(auto){ const url = decodeURIComponent(auto); slotData[0]={url, blogUrl: location.pathname}; renderStream(0,url,false); applyMuteStates(); return; }
             if(eventName){
               const objetivo = normalizar(eventName);
               const idx = datosOriginales.findIndex(e => normalizar(e.titulo||e.summary).includes(objetivo));
