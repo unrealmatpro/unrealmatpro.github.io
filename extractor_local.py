@@ -1,306 +1,239 @@
-import asyncio
-import base64
-import datetime
-import json
-import os
-import re
-import time
-import urllib.parse
-import urllib.request
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import asyncio, base64, json, logging, os, re, sys, unicodedata
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import List, Dict, Tuple
+import requests
+from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
-GITHUB_USER = os.environ.get("GITHUB_USER", "unrealmat-coder")
-GITHUB_REPO = os.environ.get("GITHUB_REPO", "unrealmat-tv")
+BASE_URLS = ["https://streamxhd.com/", "https://streamxhd.st/", "https://streamxhd.click/", "https://streamxhd.sbs/"]
+LOCAL_OUT = Path(__file__).parent / "output_local"
+LOCAL_OUT.mkdir(exist_ok=True)
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+TIMEOUT_MS = 30000
+WAIT_AFTER_LOAD = 5000
 
-BASE_URLS = [
-    "https://streamxhd.sbs",
-]
+CANALES_NOMBRES = {
+    "disney": "DISNEY+", "disney1": "DISNEY+ 1", "disney2": "DISNEY+ 2", "disney3": "DISNEY+ 3", "disney4": "DISNEY+ 4", "disney5": "DISNEY+ 5", "disney6": "DISNEY+ 6", "disney7": "DISNEY+ 7", "disney8": "DISNEY+ 8", "disney9": "DISNEY+ 9", "disney10": "DISNEY+ 10", "disney11": "DISNEY+ 11", "disney12": "DISNEY+ 12", "disney13": "DISNEY+ 13", "disney14": "DISNEY+ 14", "disney15": "DISNEY+ 15", "disney16": "DISNEY+ 16",
+    "espn": "ESPN", "espn2": "ESPN 2", "espn3": "ESPN 3", "espn4": "ESPN 4", "espn5": "ESPN 5", "espn6": "ESPN 6", "espn7": "ESPN 7", "espn2ar": "ESPN 2 AR", "espnar": "ESPN AR", "espnpremium": "ESPN PREMIUM", "espnplus1": "ESPN +", "espnplus2": "ESPN + 2", "espndeportes": "ESPN DEPORTES",
+    "fox1ar": "FOX SPORTS 1 AR", "fox2ar": "FOX SPORTS 2 AR", "fox3ar": "FOX SPORTS 3 AR", "foxone": "FOX ONE", "fox_deportes_usa": "FOX DEPORTES USA",
+    "l1max": "LIGA 1 MAX", "max1": "MAX 1", "max2": "MAX 2", "premiere1": "PREMIERE 1", "premiere2": "PREMIERE 2", "tigo1": "TIGO SPORTS 1", "tudn_usa": "TUDN USA", "winplus": "WIN SPORTS +", "winsports": "WIN SPORTS", "zapping_ec": "ZAPPING EC", "vix1": "VIX 1",
+    "nba": "NBA TV", "nba1": "NBA LEAGUE PASS 1", "nba2": "NBA LEAGUE PASS 2", "nba3": "NBA LEAGUE PASS 3", "nba4": "NBA LEAGUE PASS 4", "nba5": "NBA LEAGUE PASS 5", "nba6": "NBA LEAGUE PASS 6", "nba7": "NBA LEAGUE PASS 7", "nba8": "NBA LEAGUE PASS 8", "nba9": "NBA LEAGUE PASS 9",
+    "amazon1": "PRIME VIDEO 1", "amazon2": "PRIME VIDEO 2", "dsports": "DSPORTS", "daznlaliga": "DAZN LALIGA", "sporttvbr1": "SPORTV 1", "sporttvbr3": "SPORTV 3", "fanatiz1": "FANATIZ 1", "universo": "UNIVERSO", "tntsports": "TNT SPORTS", "laligahypermotion": "LALIGA HYPERMOTION"
+}
 
-OUTPUT_DIR = Path("output")
-
-KEYWORDS_FUTBOL = [
-    "FUTBOL", "FÚTBOL", "SOCCER", "LIGA", "PREMIER", "LA LIGA", "SERIE A",
-    "BUNDESLIGA", "LIGUE 1", "CHAMPIONS", "LIBERTADORES", "SUDAMERICANA",
-    "COPA", "MUNDIAL", "FIFA", "ELIMINATORIAS", "MLS", "EREDIVISIE",
-    "URUGUAY", "ARGENTINA", "BRASIL", "MEXICO", "MÉXICO", "CHILE", "COLOMBIA",
-    "PERU", "PERÚ", "ECUADOR", "PARAGUAY", "PEÑAROL", "NACIONAL", "RIVER",
-    "BOCA", "REAL MADRID", "BARCELONA", "ATLETICO", "ATLÉTICO", "ARSENAL",
-    "LIVERPOOL", "MANCHESTER", "CHELSEA", "CITY", "UNITED", "JUVENTUS",
-    "INTER", "MILAN", "NAPOLI", "BAYERN", "DORTMUND", "PSG", "OPORTO", "PORTO",
-    "BENFICA", "SPORTING", "FLAMENGO", "PALMEIRAS", "SAO PAULO", "BOTAFOGO",
-]
-
-KEYWORDS_NBA = [
-    "NBA", "BASKET", "BÁSQUET", "BALONCESTO", "BASKETBALL", "EUROLIGA",
-    "EUROLEAGUE", "WNBA", "G LEAGUE", "LAKERS", "CELTICS", "WARRIORS",
-    "BUCKS", "NUGGETS", "HEAT", "SUNS", "MAVERICKS", "CLIPPERS", "KNICKS",
-    "76ERS", "SIXERS", "BULLS", "CAVALIERS", "THUNDER", "TIMBERWOLVES",
-    "KINGS", "PELICANS", "PACERS", "MAGIC", "HAWKS", "RAPTORS", "NETS",
-    "BLAZERS", "JAZZ", "SPURS", "ROCKETS", "PISTONS", "HORNETS", "WIZARDS",
-]
-
-KEYWORDS_F1 = [
-    "FORMULA 1", "FÓRMULA 1", "F1", "GRAND PRIX", "GRAN PREMIO", "GP ",
-    "QUALIFYING", "CLASIFICACION", "CLASIFICACIÓN", "QUALY", "PRACTICE",
-    "PRÁCTICA", "FP1", "FP2", "FP3", "SPRINT", "FIA", "MOTOGP", "MOTO GP",
-    "NASCAR", "INDYCAR",
-]
-
-KEYWORDS_OTROS_ESTRICTO = [
-    "NFL", "MLB", "NHL", "BASEBALL", "BÉISBOL", "BEISBOL", "HOCKEY",
-    "FOOTBALL AMERICANO", "AMERICAN FOOTBALL",
-]
-
+LOG = logging.getLogger("extractor")
+LOG.setLevel(logging.INFO)
+sh = logging.StreamHandler()
+sh.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+LOG.addHandler(sh)
 
 def normalizar(texto: str) -> str:
-    if not texto:
-        return ""
-    mapa = str.maketrans("ÁÉÍÓÚÜÑáéíóúüñ", "AEIOUUNAEIOUUN")
-    return re.sub(r"\s+", " ", texto.translate(mapa).upper()).strip()
+    if not texto: return ""
+    return unicodedata.normalize("NFKD", texto).encode("ASCII", "ignore").decode("utf-8").upper().strip()
 
+def clave_dedup(titulo: str, hora: str) -> str:
+    t = re.sub(r"[\-–—_,\.\|]+", " ", normalizar(titulo))
+    t = re.sub(r"\s+", " ", t).strip()
+    return f"{t}__{(hora or '00:00').zfill(5)}"
 
-def clasificar_evento(titulo: str, torneo: str = "") -> str:
-    txt = normalizar(f"{titulo or ''} {torneo or ''}")
-    if not txt:
-        return "descartado"
+F1_KEYWORDS = [normalizar(k) for k in ["F1", "MOTOGP", "MOTO GP", "PRACTICA", "FREE PRACTICE", "CLASIFICACION", "QUALY", "SPRINT", "GRAND PRIX", "GRAN PREMIO", "VERSTAPPEN", "HAMILTON", "LECLERC", "SAINZ", "ALONSO", "PEREZ", "RED BULL", "FERRARI", "MCLAREN", "FP1", "FP2", "FP3", "ON BOARD", "COLAPINTO", "QATAR"]]
+NBA_KEYWORDS = [normalizar(k) for k in ["NBA", "BASKET", "BALONCESTO", "LAKERS", "CELTICS", "BULLS", "HEAT", "WARRIORS", "BUCKS", "SUNS", "MAVERICKS", "KNICKS", "BLAZERS", "NETS", "76ERS", "SIXERS", "NUGGETS", "CLIPPERS", "SPURS", "ROCKETS", "GRIZZLIES", "PELICANS", "THUNDER", "TIMBERWOLVES", "CAVALIERS", "PISTONS", "PACERS", "HORNETS", "WIZARDS", "MAGIC", "HAWKS", "RAPTORS", "KINGS", "JAZZ"]]
+TENIS_KEYWORDS = [normalizar(k) for k in ["ATP", "WTA", "TENIS", "TENNIS", "FRITZ", "ALCARAZ", "DJOKOVIC", "NADAL", "SABALENKA", "MUCHOVA"]]
+BOXEO_KEYWORDS = [normalizar(k) for k in ["BOXEO", "BOXING", "KNOCKOUT", "BXSTRS", "CANELO", "WBC", "WBA", "IBF", "WBO"]]
+NFL_KEYWORDS = [normalizar(k) for k in ["NFL", "RAVENS", "JAGUARS", "CHIEFS", "PATRIOTS", "COWBOYS", "PACKERS", "49ERS", "EAGLES", "STEELERS", "BRONCOS", "VIKINGS", "BILLS"]]
+NHL_KEYWORDS = [normalizar(k) for k in ["NHL", "AVALANCHE", "MAPLE LEAFS", "WILD", "CANADIENS", "CAPITALS", "SENATORS", "DEVILS", "JETS", "PANTHERS", "BLUE JACKETS", "PREDATORS", "ISLANDERS", "SHARKS", "OILERS", "RANGERS", "FLYERS", "CANUCKS"]]
 
-    if re.search(r"\bF1\b|\bFORMULA\s*1\b|\bFÓRMULA\s*1\b", txt) or any(k in txt for k in KEYWORDS_F1):
-        return "f1"
+SERVER_URL_RE = re.compile(r"https?://streamxhd\.[a-z]+/(live[12]\.php\?stream=[A-Za-z0-9_\-]+)")
 
-    if re.search(r"\bNBA\b|\bBASKET\b|\bBÁSQUET\b|\bBALONCESTO\b", txt) or any(k in txt for k in KEYWORDS_NBA):
-        return "nba"
+async def _scrape_url(url: str) -> List[Dict]:
+    eventos: List[Dict] = []
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True, args=["--no-sandbox"])
+        try:
+            context = await browser.new_context(user_agent=UA, locale="es-ES")
+            page = await context.new_page()
+            LOG.info(f"Probando: {url}")
+            await page.goto(url, wait_until="domcontentloaded", timeout=TIMEOUT_MS)
+            await page.wait_for_timeout(WAIT_AFTER_LOAD)
 
-    if re.search(r"\bNFL\b|\bMLB\b|\bNHL\b", txt) or any(k in txt for k in KEYWORDS_OTROS_ESTRICTO):
-        return "otros"
+            soup = BeautifulSoup(await page.content(), "lxml")
+            articles = soup.find_all("article", class_="event")
+            LOG.info(f"Encontrados {len(articles)} partidos válidos en {url}")
 
-    if re.search(r"\bFUTBOL\b|\bFÚTBOL\b|\bSOCCER\b", txt) or any(k in txt for k in KEYWORDS_FUTBOL):
-        return "futbol"
+            for idx, art in enumerate(articles):
+                event_id = art.get("data-event-card")
+                meta_text = ""
+                if event_id:
+                    try:
+                        meta_text = base64.b64decode(event_id).decode('utf-8', errors='ignore')
+                    except Exception:
+                        pass
 
-    return "futbol"
+                h2 = art.find("h2", class_="event-title")
+                titulo = h2.text.strip() if h2 else None
+                if not titulo and meta_text:
+                    partes = meta_text.split('|')
+                    if len(partes) > 0:
+                        titulo = partes[0]
 
+                if not titulo or len(titulo) < 3:
+                    continue
 
-def normalizar_url(url: str) -> str:
-    if not url or not isinstance(url, str):
-        return ""
-    u = url.strip()
-    if u.startswith("//"):
-        u = "https:" + u
-    elif u.startswith("http://"):
-        u = "https://" + u[7:]
-    if not u.startswith("https://"):
-        return ""
-    return u
+                time_div = art.find("div", class_="event-time") or art.find("span", class_="compact-list-time")
+                fecha_completa = None
+                time_str = "00:00"
+                if time_div:
+                    raw_date = time_div.get("data-full-time") or time_div.get("data-time")
+                    if raw_date:
+                        if "T" in raw_date:
+                            fecha_completa = raw_date
+                            if not ("+" in raw_date or "-" in raw_date.split("T")[1]):
+                                fecha_completa += "-05:00"
+                        else:
+                            fecha_completa = raw_date.replace(" ", "T") + ":00-05:00"
+                    
+                    match = re.search(r"(\d{1,2}:\d{2})", time_div.text)
+                    if match:
+                        time_str = match.group(1).zfill(5)
 
+                status_elem = art.find(class_="status") or art.find(class_="compact-list-status")
+                status_text = status_elem.text.strip().upper() if status_elem else "PRONTO"
+                if "VIVO" in status_text: status_text = "EN VIVO"
+                elif "FINAL" in status_text: status_text = "FINALIZADO"
+                elif "PRONTO" in status_text: status_text = "PRONTO"
 
-def cargar_previos(nombre_archivo: str) -> list:
-    ruta = OUTPUT_DIR / nombre_archivo
-    if not ruta.exists():
-        return []
-    try:
-        data = json.loads(ruta.read_text(encoding="utf-8"))
-        if isinstance(data, dict) and isinstance(data.get("eventos"), list):
-            return data["eventos"]
-        if isinstance(data, list):
-            return data
-    except Exception:
-        pass
+                torneo = "DEPORTE"
+                if meta_text:
+                    partes = meta_text.split('|')
+                    if len(partes) >= 4:
+                        torneo = partes[-1]
+                if torneo == "DEPORTE":
+                    league_tag = art.find("span", class_="compact-list-league")
+                    if league_tag: torneo = league_tag.text.strip()
+
+                sport_hint = ""
+                tags = art.find_all("span", class_="tag")
+                for tag in tags:
+                    if "Football" in tag.text: sport_hint = "FUTBOL"
+                    elif "Basketball" in tag.text: sport_hint = "NBA"
+                    elif "Hockey" in tag.text: sport_hint = "NHL"
+                    elif "Tennis" in tag.text: sport_hint = "TENIS"
+                    elif "Racing" in tag.text or "Motor" in tag.text: sport_hint = "F1"
+
+                servidores = []
+                seen = set()
+                for a_tag in art.find_all("button", class_="compact-server-action") + art.find_all("button", class_="server"):
+                    stream_url = a_tag.get("data-url") or a_tag.get("data-copy") or a_tag.get("data-target")
+                    if stream_url and "iframe" in stream_url:
+                        m = re.search(r"src=\"(https?://[^\"]+)\"", stream_url)
+                        if m: stream_url = m.group(1)
+                    
+                    if stream_url and "streamxhd" in stream_url:
+                        match = SERVER_URL_RE.search(stream_url)
+                        if match:
+                            stream_id = match.group(1).split("stream=")[-1].lower()
+                            if stream_url not in seen:
+                                seen.add(stream_url)
+                                servidores.append({"nombre": CANALES_NOMBRES.get(stream_id, stream_id.upper()), "url": stream_url})
+
+                if not servidores: continue
+
+                eventos.append({
+                    "id": f"evt_{idx}", "titulo": titulo, "hora": time_str, "fecha_completa": fecha_completa, 
+                    "status": status_text, "servidores": servidores, "torneo": torneo, "sport_hint": sport_hint
+                })
+            
+            if eventos: return eventos
+            await context.close()
+        except Exception as e:
+            LOG.error(f"Error en {url}: {e}")
+        finally:
+            await browser.close()
+    return eventos
+
+async def obtener_eventos() -> List[Dict]:
+    for url in BASE_URLS:
+        try:
+            eventos = await _scrape_url(url)
+            if eventos: return eventos
+        except Exception as e:
+            LOG.error(f"Fallo total en {url}: {e}")
     return []
 
-
-def guardar_json(nombre_archivo: str, deporte: str, eventos: list) -> str:
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    payload = {
-        "deporte": deporte,
-        "actualizado_utc": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
-        "total": len(eventos),
-        "eventos": eventos,
-    }
-    contenido = json.dumps(payload, ensure_ascii=False, indent=2)
-    (OUTPUT_DIR / nombre_archivo).write_text(contenido, encoding="utf-8")
-    return contenido
-
-
-def subir_github(ruta_repo: str, contenido_str: str, mensaje_commit: str) -> None:
-    if not GITHUB_TOKEN or not GITHUB_USER or not GITHUB_REPO:
-        print(f"[INFO] Sin GITHUB_TOKEN; guardado local en {ruta_repo}")
-        return
-
-    ruta_enc = urllib.parse.quote(ruta_repo.strip("/"))
-    url = f"https://api.github.com/repos/{GITHUB_USER}/{GITHUB_REPO}/contents/{ruta_enc}"
-    headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json",
-        "User-Agent": "UNREALMAT-Scraper/3.0",
-        "X-GitHub-Api-Version": "2022-11-28",
-    }
-
-    sha = None
-    try:
-        req = urllib.request.Request(url, headers=headers, method="GET")
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            sha = json.loads(resp.read().decode("utf-8")).get("sha")
-    except Exception:
-        sha = None
-
-    body = {
-        "message": mensaje_commit,
-        "content": base64.b64encode(contenido_str.encode("utf-8")).decode("ascii"),
-        "branch": "main",
-    }
-    if sha:
-        body["sha"] = sha
-
-    try:
-        req_put = urllib.request.Request(
-            url,
-            data=json.dumps(body).encode("utf-8"),
-            headers={**headers, "Content-Type": "application/json"},
-            method="PUT",
-        )
-        with urllib.request.urlopen(req_put, timeout=20) as resp_put:
-            if resp_put.status in (200, 201):
-                print(f"[OK] Subido a GitHub: {ruta_repo}")
-    except Exception as exc:
-        print(f"[WARN] Error subiendo {ruta_repo}: {exc}")
-
-
-async def extraer_de_url(page, base_url: str) -> list:
-    await page.goto(base_url, wait_until="networkidle", timeout=40000)
-    await page.wait_for_timeout(3000)
-
-    raw = await page.evaluate(
-        """
-        () => {
-            const origin = window.location.origin;
-            const out = [];
-            const seen = new Set();
-
-            // Buscar enlaces internos o de canales que parezcan eventos/transmisiones
-            const links = Array.from(document.querySelectorAll('a[href]'));
-            for (const a of links) {
-                const href = a.href || '';
-                if (!href || href.startsWith('javascript:') || href.endsWith('#')) continue;
-                const parent = a.closest('tr, li, article, .match, .evento, .event, .row, .card, .item, div') || a.parentElement;
-                const textoBloque = ((parent && parent.innerText) || a.innerText || '').trim();
-                if (!textoBloque || textoBloque.length < 4 || textoBloque.length > 600) continue;
-
-                const lineas = textoBloque.split(/\\r?\\n/).map(s => s.trim()).filter(Boolean);
-                const titulo = (a.innerText || '').trim().length >= 4 ? (a.innerText || '').trim() : lineas[0];
-                if (!titulo || titulo.length < 3) continue;
-
-                const clave = `${titulo.toUpperCase()}|${href}`;
-                if (seen.has(clave)) continue;
-                seen.add(clave);
-
-                out.push({
-                    titulo,
-                    bloque: textoBloque,
-                    url: href,
-                    nombreCanal: (a.innerText || a.getAttribute('title') || 'Canal').trim(),
-                    mismoOrigen: href.startsWith(origin)
-                });
-            }
-            return out;
-        }
-        """
-    )
-
-    agrupados_por_evento = {}
-    for item in raw:
-        url_norm = normalizar_url(item.get("url", ""))
-        if not url_norm:
-            continue
-
-        lineas = [l.strip() for l in (item.get("bloque") or "").splitlines() if l.strip()]
-        titulo = (item.get("titulo") or (lineas[0] if lineas else "Evento")).strip()
-        torneo = lineas[1] if len(lineas) > 1 and lineas[1] != titulo else ""
-        hora_m = re.search(r"\b([01]?\d|2[0-3]):[0-5]\d\b", " ".join(lineas))
-        hora = hora_m.group(0) if hora_m else "00:00"
-        if len(hora) == 4:
-            hora = "0" + hora
-
-        clave_ev = re.sub(r"[^A-Z0-9]", "", normalizar(titulo))
-        if not clave_ev:
-            continue
-
-        nombre_srv = (item.get("nombreCanal") or "Opción").strip()
-        if len(nombre_srv) > 28 or normalizar(nombre_srv) == normalizar(titulo):
-            nombre_srv = "Canal"
-
-        if clave_ev not in agrupados_por_evento:
-            agrupados_por_evento[clave_ev] = {
-                "titulo": titulo,
-                "torneo": torneo,
-                "fecha_completa": "",
-                "hora": hora,
-                "status": "EN VIVO",
-                "servidores": [{"nombre": nombre_srv, "url": url_norm}],
-            }
+def deduplicar_eventos(eventos: List[Dict]) -> List[Dict]:
+    dedup: Dict[str, Dict] = {}
+    for e in eventos:
+        clave = clave_dedup(e["titulo"], e["hora"])
+        if clave not in dedup:
+            dedup[clave] = e
         else:
-            srvs = agrupados_por_evento[clave_ev]["servidores"]
-            if not any(s["url"] == url_norm for s in srvs):
-                srvs.append({"nombre": f"Opción {len(srvs) + 1}" if nombre_srv == "Canal" else nombre_srv, "url": url_norm})
+            urls_vistas = {s["url"] for s in dedup[clave]["servidores"]}
+            for srv in e["servidores"]:
+                if srv["url"] not in urls_vistas: dedup[clave]["servidores"].append(srv)
+            if e["status"] == "EN VIVO": dedup[clave]["status"] = "EN VIVO"
+            elif e["status"] == "PRONTO" and dedup[clave]["status"] == "FINALIZADO": dedup[clave]["status"] = "PRONTO"
+    return list(dedup.values())
 
-    return list(agrupados_por_evento.values())
+def clasificar_evento(titulo: str, torneo: str, sport_hint: str) -> Tuple[str, str]:
+    t = normalizar(titulo)
+    torneo_upper = normalizar(torneo)
+    
+    if sport_hint == "NHL" or "NHL" in torneo_upper or "HOCKEY" in torneo_upper or any(k in t for k in NHL_KEYWORDS):
+        return "descartar", "NHL"
 
+    if sport_hint == "F1" or "F1" in torneo_upper or "MOTOR" in torneo_upper or any(k in t for k in F1_KEYWORDS): return "f1", torneo
+    if sport_hint == "NBA" or "NBA" in torneo_upper or "BASKET" in torneo_upper or any(k in t for k in NBA_KEYWORDS): return "nba", torneo
+    
+    return "futbol", torneo
 
-async def recolectar() -> dict:
-    por_deporte = {"futbol": [], "nba": [], "f1": [], "otros": []}
+def clasificar_eventos(eventos: List[Dict]) -> Dict[str, List[Dict]]:
+    clasificados = {"futbol": [], "nba": [], "f1": []}
+    for e in eventos:
+        deporte, torneo_final = clasificar_evento(e["titulo"], e.get("torneo", ""), e.get("sport_hint", ""))
+        if deporte == "descartar": continue
+        e["torneo"] = torneo_final
+        e.pop("sport_hint", None)
+        clasificados[deporte].append(e)
+    return clasificados
 
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-            viewport={"width": 1366, "height": 768},
-        )
-        page = await context.new_page()
+def subir_github(token: str, user: str, repo: str, path_repo: str, contenido: str) -> bool:
+    api = f"https://api.github.com/repos/{user}/{repo}/contents/{path_repo}"
+    headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"}
+    r = requests.get(api, headers=headers, timeout=20)
+    sha = r.json().get("sha") if r.status_code == 200 else None
+    data = {"message": f"chore: update {path_repo}", "content": base64.b64encode(contenido.encode()).decode(), "branch": "main"}
+    if sha: data["sha"] = sha
+    resp = requests.put(api, headers=headers, json=data, timeout=30)
+    return resp.status_code in (200, 201)
 
-        for base_url in BASE_URLS:
-            try:
-                print(f"[SCRAPE] Consultando {base_url} ...")
-                eventos = await extraer_de_url(page, base_url)
-                print(f"[SCRAPE] {len(eventos)} eventos detectados en {base_url}")
-                for ev in eventos:
-                    cat = clasificar_evento(ev.get("titulo", ""), ev.get("torneo", ""))
-                    if cat in por_deporte:
-                        por_deporte[cat].append(ev)
-            except Exception as exc:
-                print(f"[WARN] Error en {base_url}: {exc}")
+async def main():
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if not token: sys.exit(1)
+    
+    # ESTO ES LO NUEVO: Lee el repositorio automáticamente desde GitHub Actions
+    repo_full = os.environ.get("GITHUB_REPOSITORY", "unrealmatpro/unrealmatpro.github.io")
+    user, repo = repo_full.split("/")
+    
+    eventos_crudos = await obtener_eventos()
+    if not eventos_crudos:
+        LOG.error("❌ No se extrajeron eventos válidos.")
+        return 1
 
-        await browser.close()
+    eventos = deduplicar_eventos(eventos_crudos)
+    clasificados = clasificar_eventos(eventos)
+    ahora = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    return por_deporte
+    LOG.info(f"Clasificación → Fútbol={len(clasificados['futbol'])} NBA={len(clasificados['nba'])} F1={len(clasificados['f1'])}")
 
-
-def ejecutar() -> None:
-    inicio = time.time()
-    datos = asyncio.run(recolectar())
-    ts = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-
-    destinos = [
-        ("futbol", "agenda_futbol.json", "FUTBOL"),
-        ("nba", "agenda_nba.json", "NBA"),
-        ("f1", "agenda_f1.json", "F1"),
-    ]
-
-    for clave, archivo, etiqueta in destinos:
-        lista = datos.get(clave, [])
-        if len(lista) == 0:
-            previos = cargar_previos(archivo)
-            if len(previos) > 0:
-                lista = previos
-                print(f"[INFO] {archivo}: 0 nuevos, se mantienen {len(previos)} eventos anteriores")
-
-        contenido = guardar_json(archivo, etiqueta, lista)
-        subir_github(f"output/{archivo}", contenido, f"chore: actualizar {archivo} ({ts})")
-
-    print(
-        f"[RESUMEN] Fútbol: {len(datos['futbol'])} | NBA: {len(datos['nba'])} | "
-        f"F1: {len(datos['f1'])} | Otros: {len(datos['otros'])} | Tiempo: {time.time() - inicio:.1f}s"
-    )
-
+    for deporte, lista in clasificados.items():
+        payload = {"fecha_actualizacion": ahora, "total": len(lista), "eventos": lista}
+        # Aquí usa las variables user y repo que leyó automáticamente
+        subir_github(token, user, repo, f"output/agenda_{deporte}.json", json.dumps(payload, ensure_ascii=False, indent=2))
+    
+    return 0
 
 if __name__ == "__main__":
-    ejecutar()
+    sys.exit(asyncio.run(main()))
