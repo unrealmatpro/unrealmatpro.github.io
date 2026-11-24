@@ -1,7 +1,72 @@
 {
-  "deporte": "futbol",
-  "actualizado_utc": "2026-11-24 13:52:11",
-  "total": 0,
-  "conservado_previo": false,
-  "eventos": []
+  "deporte": "FUTBOL",
+  "actualizado_utc": "2026-11-24 13:57:55",
+  "total": 5,
+  "eventos": [
+    {
+      "titulo": "▶\nEmbed Live Sports\nCENTRO DE EVENTOS",
+      "torneo": "Embed Live Sports",
+      "fecha_completa": "",
+      "hora": "07:57",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "Canal",
+          "url": "https://streamxhd.sbs/"
+        }
+      ]
+    },
+    {
+      "titulo": "Soporte",
+      "torneo": "07:57:55",
+      "fecha_completa": "",
+      "hora": "07:57",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "Canal",
+          "url": "https://t.me/AyudaTVbot"
+        }
+      ]
+    },
+    {
+      "titulo": "streamveri.xyz",
+      "torneo": "DOMINIOS DISPONIBLES",
+      "fecha_completa": "",
+      "hora": "00:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "Canal",
+          "url": "https://streamveri.xyz/"
+        }
+      ]
+    },
+    {
+      "titulo": "VER DOMINIOS DISPONIBLES",
+      "torneo": "VERIFICADOR DE DOMINIOS",
+      "fecha_completa": "",
+      "hora": "00:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "Canal",
+          "url": "https://streamveri.xyz/"
+        }
+      ]
+    },
+    {
+      "titulo": "📺 CANALES 24/7",
+      "torneo": "MANUAL LIVE1",
+      "fecha_completa": "",
+      "hora": "00:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "Canal",
+          "url": "https://streamxhd.sbs/canales/"
+        }
+      ]
+    }
+  ]
 }
