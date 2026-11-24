@@ -76,8 +76,6 @@
     .sport-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; }
     .sport-badge.FUTBOL { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
     .sport-badge.OTROS { background: rgba(217,177,74,0.15); color: #f4d03f; border: 1px solid rgba(217,177,74,0.35); }
-    .sport-badge.NBA { background: rgba(200,16,46,0.15); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.35); }
-    .sport-badge.F1 { background: rgba(225,6,0,0.15); color: #ff5c5c; border: 1px solid rgba(225,6,0,0.35); }
     .um-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
     .um-toast { background: linear-gradient(135deg, #0a1f2e 0%, #050810 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
     .um-toast-header { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--toast-accent); }
@@ -264,7 +262,6 @@
         const targetOrigin = new URL(iframe.src).origin;
         iframe.contentWindow.postMessage({type:'mute',muted:true}, targetOrigin);
         iframe.contentWindow.postMessage('mute', targetOrigin);
-        iframe.contentWindow.postMessage({event:'command',func:'mute',args:[]}, targetOrigin);
       }catch(e){}
     }
 
@@ -289,29 +286,21 @@
     function openInNewSlot(url){
       const safeUrl = sanitizeStreamUrl(url);
       if(!safeUrl) return;
-      let slotCount = getSlotCount();
+      const activeCount = slotData.filter(s => s && s.url).length;
+      const desiredSlots = Math.min(4, Math.max(2, activeCount + 1));
+      const targetBtn = document.getElementById('btn-g' + desiredSlots);
+      buildStadiumGrid(desiredSlots, targetBtn);
+
       let free = findFirstEmptySlot();
-      const hayReproduccion = slotData.some(s => s && s.url);
-
       if(free === -1){
-        if(slotCount === 1) buildStadiumGrid(2, document.getElementById('btn-g2'));
-        else if(slotCount === 2) buildStadiumGrid(3, document.getElementById('btn-g3'));
-        else if(slotCount === 3) buildStadiumGrid(4, document.getElementById('btn-g4'));
-        else {
-          alert('No hay pantallas libres. Cierra una para añadir otro evento.');
-          return;
-        }
-        free = findFirstEmptySlot();
+        free = desiredSlots - 1;
       }
-      if(free === -1) return;
-
-      const muted = hayReproduccion;
+      const hasPrimaryAudio = slotData.some((s, idx) => idx !== free && s && s.url);
       slotData[free] = { url: safeUrl };
-      renderStream(free, safeUrl, muted);
+      renderStream(free, safeUrl, hasPrimaryAudio);
 
-      if(!hayReproduccion){ activeSlotIndex = free; targetSlotIndex = free; }
-      else { targetSlotIndex = free; }
-
+      if(!hasPrimaryAudio){ activeSlotIndex = free; }
+      targetSlotIndex = findFirstEmptySlot() !== -1 ? findFirstEmptySlot() : free;
       applyMuteStates();
     }
 
@@ -362,7 +351,6 @@
                   const origenSport = urls[index].sport;
                   const esFutbolJson = !!urls[index].isPrimaryFutbolJson;
                   const subOtros = detectarSubdeporteOtros(e);
-
                   if(esFutbolJson){
                     e.deporte = subOtros ? 'OTROS' : 'FUTBOL';
                     e.subdeporte = subOtros || 'FUTBOL';
@@ -370,7 +358,6 @@
                     e.deporte = origenSport;
                     e.subdeporte = subOtros || origenSport;
                   }
-
                   if(e.titulo && !e.summary) e.summary=e.titulo;
                   if(e.servidores){
                     e.servidores=e.servidores
@@ -434,15 +421,9 @@
     function filterBySport(sport, element){
       currentSport=sport;
       if(element){ document.querySelectorAll('.sport-tab').forEach(t=>t.classList.remove('active')); element.classList.add('active'); }
-      let filtered=[];
-      if(sport==='FUTBOL'){
-        filtered=allEvents.filter(e=>e.deporte==='FUTBOL');
-      } else if(sport==='OTROS'){
-        filtered=allEvents.filter(e=>e.deporte==='OTROS');
-      } else {
-        filtered=allEvents.filter(e=>e.deporte==='FUTBOL');
-      }
-      filteredEvents=filtered;
+      filteredEvents = sport === 'OTROS'
+        ? allEvents.filter(e=>e.deporte==='OTROS')
+        : allEvents.filter(e=>e.deporte==='FUTBOL');
       renderSidebarFeed(filteredEvents);
     }
 
