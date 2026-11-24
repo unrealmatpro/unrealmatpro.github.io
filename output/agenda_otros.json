@@ -1,0 +1,36 @@
+{
+  "fecha_actualizacion": "2026-11-24T18:59:31Z",
+  "total": 2,
+  "eventos": [
+    {
+      "id": "evt_15",
+      "titulo": "Toros vs Caimanes",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-24T19:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "ESPN 5",
+          "url": "https://streamxhd.sbs/live1.php?stream=espn5"
+        }
+      ],
+      "torneo": "Béisbol Colombiano",
+      "deporte": "OTROS"
+    },
+    {
+      "id": "evt_17",
+      "titulo": "Edmonton Oilers vs Vegas Golden Knights",
+      "hora": "18:00",
+      "fecha_completa": "2026-11-24T20:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "ESPN 3",
+          "url": "https://streamxhd.sbs/live1.php?stream=espn3"
+        }
+      ],
+      "torneo": "NHL",
+      "deporte": "OTROS"
+    }
+  ]
+}
