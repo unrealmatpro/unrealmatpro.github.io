@@ -75,7 +75,9 @@
     #exit-cinema-btn:hover { background: #5d3c82; }
     .sport-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; }
     .sport-badge.FUTBOL { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
-    .sport-badge.OTROS { background: rgba(217,177,74,0.15); color: #f4d03f; border: 1px solid rgba(217,177,74,0.35); }
+    .sport-badge.NBA { background: rgba(200,16,46,0.15); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.35); }
+    .sport-badge.F1 { background: rgba(225,6,0,0.15); color: #ff5c5c; border: 1px solid rgba(225,6,0,0.35); }
+    /* ===== TOASTS DE NOTIFICACIÓN CROSS-BLOG ===== */
     .um-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
     .um-toast { background: linear-gradient(135deg, #0a1f2e 0%, #050810 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
     .um-toast-header { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--toast-accent); }
@@ -144,7 +146,7 @@
       <aside class='stadium-sidebar' id='app-sidebar-stadium'>
         <nav class='sport-tabs'>
           <button class='sport-tab active' onclick='filterBySport("FUTBOL", this)'><i class='fas fa-futbol'></i> FÚTBOL</button>
-          <button class='sport-tab' onclick='filterBySport("OTROS", this)'><i class='fas fa-layer-group'></i> OTROS</button>
+          <button class='sport-tab' onclick='filterBySport("TODOS", this)'><i class='fas fa-globe'></i> TODOS</button>
         </nav>
         <div class='search-container'>
             <i class='fas fa-search search-icon'></i>
@@ -162,10 +164,9 @@
   </div>
 
   <script>
-    let allEvents = []; let otherSportEvents = []; let filteredEvents = []; let currentSport = 'FUTBOL';
+    let allEvents = []; let filteredEvents = []; let currentSport = 'FUTBOL';
     let slotData = []; let activeSlotIndex = 0; let targetSlotIndex = 0;
     const DEPORTE_ACTUAL = 'FUTBOL';
-    const OTROS_DEPORTES = ['NFL', 'MLB', 'NHL'];
     const notifiedEventKeys = new Set();
     const _notificationData = {};
 
@@ -173,10 +174,6 @@
     function escapeHTML(str){ if(!str) return ''; return str.replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
     function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
     function iniciarReloj(){ setInterval(()=>{ document.getElementById('current-time-display').textContent = new Date().toLocaleTimeString('es-ES'); },1000); }
-    function detectarOtroDeporte(ev){
-      const txt = `${normalizar(ev.titulo||ev.summary||'')} ${normalizar(ev.torneo||ev.leagueName||'')}`;
-      return OTROS_DEPORTES.find(dep => new RegExp(`\\b${dep}\\b`).test(txt)) || null;
-    }
     function parseEventDate(e){
       if(e.fecha_completa){ let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d; if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){ let d2=new Date(e.fecha_completa.replace(" ","T")+":00-05:00"); if(!isNaN(d2.getTime())) return d2; } }
       if(e.hora && e.hora!=="00:00"){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
@@ -197,4 +194,306 @@
       if(button) button.classList.add('active-grid');
       if(slots===1){ mesh.style.gridTemplateColumns='1fr'; mesh.style.gridTemplateRows='1fr'; }
       if(slots===2){ mesh.style.gridTemplateColumns='1fr 1fr'; mesh.style.gridTemplateRows='1fr'; }
-      if(slots===3){ mesh.style.grid
+      if(slots===3){ mesh.style.gridTemplateColumns='1fr 1fr 1fr'; mesh.style.gridTemplateRows='1fr'; }
+      if(slots===4){ mesh.style.gridTemplateColumns='1fr 1fr'; mesh.style.gridTemplateRows='1fr 1fr'; }
+      const current=mesh.children.length;
+      if(slots>current){ for(let i=current;i<slots;i++) mesh.appendChild(createSlotElement(i)); }
+      else if(slots<current){ for(let i=current-1;i>=slots;i--){ mesh.removeChild(mesh.children[i]); slotData[i]=null; } if(activeSlotIndex>=slots) activeSlotIndex=0; if(targetSlotIndex>=slots) targetSlotIndex=0; }
+      const empty=findFirstEmptySlot(); if(empty!==-1) targetSlotIndex=empty;
+      applyMuteStates();
+    }
+    function focusSlot(i){
+      if(i===activeSlotIndex) return;
+      const prev=activeSlotIndex; activeSlotIndex=i; targetSlotIndex=i;
+      muteIframeWithoutReload(prev);
+      if(slotData[i] && slotData[i].url) renderStream(i, slotData[i].url, false);
+      applyMuteStates();
+    }
+    function muteIframeWithoutReload(slotIdx){
+      const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
+      const iframe=core.querySelector('iframe'); if(!iframe) return;
+      try{ iframe.contentWindow.postMessage({type:'mute',muted:true},'*'); iframe.contentWindow.postMessage('mute','*'); iframe.contentWindow.postMessage({event:'command',func:'mute',args:[]},'*'); }catch(e){}
+    }
+    function applyMuteStates(){
+      for(let i=0;i<getSlotCount();i++){
+        const m=document.getElementById('stadium-slot-'+i); if(m) m.classList.toggle('focus-pitch', i===activeSlotIndex);
+        const badge=document.getElementById('mute-badge-'+i); const has=slotData[i]&&slotData[i].url;
+        if(badge) badge.classList.toggle('visible', !!has && i!==activeSlotIndex);
+      }
+    }
+    function loadInTarget(url){
+      if(!url) return;
+      const isMuted=(targetSlotIndex!==activeSlotIndex);
+      slotData[targetSlotIndex]={url};
+      renderStream(targetSlotIndex, url, isMuted);
+      applyMuteStates();
+      const next=findFirstEmptySlot(); if(next!==-1) targetSlotIndex=next;
+    }
+    /* ✅ NUEVO: abrir en nueva pantalla auto-expandiendo grid 1→2→3→4 */
+    function openInNewSlot(url){
+      if(!url) return;
+      let slotCount = getSlotCount();
+      let free = findFirstEmptySlot();
+      const hayReproduccion = slotData.some(s => s && s.url);
+
+      if(free === -1){
+        if(slotCount === 1) buildStadiumGrid(2, document.getElementById('btn-g2'));
+        else if(slotCount === 2) buildStadiumGrid(3, document.getElementById('btn-g3'));
+        else if(slotCount === 3) buildStadiumGrid(4, document.getElementById('btn-g4'));
+        else {
+          alert('No hay pantallas libres. Cierra una para añadir otro evento.');
+          return;
+        }
+        free = findFirstEmptySlot();
+      }
+      if(free === -1) return;
+
+      const muted = hayReproduccion; // primer stream con audio, los demás muteados
+      slotData[free] = { url };
+      renderStream(free, url, muted);
+
+      if(!hayReproduccion){ activeSlotIndex = free; targetSlotIndex = free; }
+      else { targetSlotIndex = free; }
+
+      applyMuteStates();
+    }
+    function renderStream(slotIdx, url, muted){
+      const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
+      if(!url || (!url.startsWith('https://streamxhd') && !url.startsWith('http://streamxhd'))){ core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
+      let finalUrl=url; if(muted){ const sep=url.includes('?')?'&':'?'; finalUrl=url+sep+'mute=1'; }
+      const isMobile=/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      core.innerHTML='';
+      const f=document.createElement('iframe');
+      f.src=finalUrl; f.style.cssText='width:100%;height:100%;border:none;';
+      f.setAttribute('allowfullscreen','true'); f.setAttribute('webkitallowfullscreen','true'); f.setAttribute('mozallowfullscreen','true');
+      f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture; user-activation';
+      f.setAttribute('referrerpolicy','no-referrer-when-downgrade');
+      core.appendChild(f);
+      if(isMobile){
+        const ov=document.createElement('div'); ov.style.cssText='position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#ffcc00;padding:8px 15px;border-radius:6px;font-size:10px;font-weight:bold;text-align:center;width:90%;max-width:400px;z-index:99999;border:1px solid #ffcc00;pointer-events:none;';
+        ov.innerHTML='⚠️ Si el video no carga, activa el <b>bloqueador de ventanas emergentes</b>.';
+        core.appendChild(ov);
+      }
+    }
+    async function cargarAgenda(){
+      const baseUrl="../output/";
+      const urls=[
+        { sport:"FUTBOL", url:`${baseUrl}agenda_futbol.json?v=${Date.now()}` },
+        { sport:"NBA", url:`${baseUrl}agenda_nba.json?v=${Date.now()}` },
+        { sport:"F1", url:`${baseUrl}agenda_f1.json?v=${Date.now()}` }
+      ];
+      try{
+        const responses=await Promise.all(urls.map(u=>fetch(u.url).catch(()=>null)));
+        let rawEvents=[];
+        await Promise.all(responses.map((res,index)=>{
+          if(res && res.ok){
+            return res.json().then(data=>{
+              const lista=data.eventos||data;
+              if(Array.isArray(lista)){
+                lista.forEach(e=>{
+                  e.deporte=urls[index].sport;
+                  if(e.titulo && !e.summary) e.summary=e.titulo;
+                  if(e.servidores){ e.servidores=e.servidores.map(s=>({ nombre: s.nombre||s.stream||'Opción', url: s.url||s.live1_url||'' })); }
+                  rawEvents.push(e);
+                });
+              }
+            }).catch(()=>{});
+          }
+          return null;
+        }));
+        const ahora=new Date();
+        rawEvents.forEach(e=>{ e.eventDateObj=parseEventDate(e); });
+        allEvents=rawEvents.filter(e=>{ if(!e.eventDateObj) return true; const diffHours=(ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60); return diffHours<=2.5; });
+        allEvents.sort((a,b)=>{ if(!a.eventDateObj) return 1; if(!b.eventDateObj) return -1; return a.eventDateObj.getTime()-b.eventDateObj.getTime(); });
+        filterBySport(currentSport, document.querySelector('.sport-tab.active'));
+        actualizarTicker();
+        checkUpcomingEvents(); // ✅ revisar notificaciones al cargar
+      }catch(e){
+        console.error("Error cargando agenda:", e);
+        document.getElementById('stadium-feed-target').innerHTML='<div style="padding:20px;text-align:center;color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> Error al conectar con el servidor.</div>';
+      }
+    }
+    function renderSidebarFeed(events){
+      const box=document.getElementById('stadium-feed-target');
+      if(!events||events.length===0){ box.innerHTML='<div style="padding:20px;opacity:.5;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No hay eventos disponibles ahora.</div>'; return; }
+      box.innerHTML=events.map(e=>{
+        const globalIndex=allEvents.indexOf(e);
+        const safeTitle=escapeHTML(e.summary||e.titulo);
+        const safeLeague=escapeHTML(e.leagueName||e.torneo||"DEPORTE");
+        const deporte=e.deporte||'FUTBOL';
+        let safeTime='Por confirmar';
+        if(e.eventDateObj) safeTime=e.eventDateObj.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+        const status=getDynamicStatus(e.eventDateObj, e.status);
+        const numOpciones=e.servidores?e.servidores.length:0;
+        let bt, bs;
+        if(status==='FINALIZADO'){ bt='FINALIZADO'; bs='background:rgba(139,163,181,0.2);color:#8ba3b5;border:1px solid rgba(139,163,181,0.4);'; }
+        else if(status==='EN VIVO'){ bt='EN VIVO'; bs='background:rgba(255,59,48,0.2);color:#ff3b30;border:1px solid #ff3b30;'; }
+        else { bt='PRÓXIMO'; bs='background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid #38bdf8;'; }
+        const op=status==='FINALIZADO'?'opacity:.65;':'';
+        return `<div class="stadium-card" onclick="prepararPartido(${globalIndex})" style="${op}">
+          <div class="card-top"><span class="card-league">${safeLeague}<span class="sport-badge ${deporte}">${deporte}</span></span><span class="card-live" style="${bs}">${bt}</span></div>
+          <div class="card-title">${safeTitle}</div>
+          <div class="card-bottom"><span><i class="fas fa-clock"></i> ${safeTime}</span><span><i class="fas fa-satellite-dish"></i> ${numOpciones} Opciones</span></div>
+        </div>`;
+      }).join('');
+    }
+    function filterBySport(sport, element){
+      currentSport=sport;
+      if(element){ document.querySelectorAll('.sport-tab').forEach(t=>t.classList.remove('active')); element.classList.add('active'); }
+      let filtered=allEvents;
+      if(sport!=='TODOS') filtered=allEvents.filter(e=>e.deporte===sport);
+      filteredEvents=filtered;
+      renderSidebarFeed(filteredEvents);
+    }
+    function filtrarBusqueda(){
+      const input=normalizar(document.getElementById('search-input').value);
+      let baseList=currentSport==='TODOS'?allEvents:allEvents.filter(e=>e.deporte===currentSport);
+      if(!input){ renderSidebarFeed(baseList); return; }
+      const filtrados=baseList.filter(e=>normalizar(e.summary).includes(input)||normalizar(e.leagueName||e.torneo||"").includes(input));
+      renderSidebarFeed(filtrados);
+    }
+    function prepararPartido(index){
+      const partido=allEvents[index]; if(!partido) return;
+      const panel=document.getElementById('alternative-servers-panel'); const list=document.getElementById('alt-servers-list');
+      if(partido.servidores && partido.servidores.length){
+        list.innerHTML=partido.servidores.map((s,i)=>{
+          const n=escapeHTML(s.nombre||'Opción '+(i+1)); const u=escapeHTML(s.url);
+          return `<button class="alt-btn" onclick="loadInTarget('${u}')"><i class="fas fa-play"></i> ${n}</button>`;
+        }).join('');
+      } else list.innerHTML=`<button class="alt-btn" disabled>No hay servidores</button>`;
+      panel.style.display='block';
+      if(partido.servidores && partido.servidores.length) loadInTarget(partido.servidores[0].url);
+      if(window.innerWidth<=900) window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function enableCinemaMode(){
+      document.getElementById('app-header-stadium').style.display='none';
+      document.getElementById('app-sidebar-stadium').style.display='none';
+      document.getElementById('app-ticker-stadium').style.display='none';
+      document.getElementById('alternative-servers-panel').style.display='none';
+      const mainView=document.getElementById('app-body-stadium');
+      mainView.style.gridTemplateColumns='1fr'; mainView.style.height='100vh';
+      document.getElementById('exit-cinema-btn').style.display='block';
+    }
+    function disableCinemaMode(){
+      document.getElementById('app-header-stadium').style.display='flex';
+      document.getElementById('app-sidebar-stadium').style.display='flex';
+      document.getElementById('app-ticker-stadium').style.display='flex';
+      const mainView=document.getElementById('app-body-stadium');
+      mainView.style.gridTemplateColumns=window.innerWidth<=900?'1fr':'1fr 420px';
+      mainView.style.height=window.innerWidth<=900?'auto':'calc(100vh - 114px)';
+      document.getElementById('exit-cinema-btn').style.display='none';
+    }
+    function actualizarTicker(){
+      const track=document.getElementById('stadium-ticker-track'); if(!track) return;
+      if(allEvents.length===0){ track.innerHTML='<div class="ticker-node">No hay eventos programados...</div>'; return; }
+      let html='';
+      allEvents.slice(0,10).forEach(e=>{
+        let safeTime='Por confirmar';
+        if(e.eventDateObj) safeTime=e.eventDateObj.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+        html+=`<div class="ticker-node"><span style="color:var(--gold);margin-right:8px;"><i class="fas fa-circle"></i></span> ${escapeHTML(e.summary)} <span style="color:var(--text-soft);margin-left:8px;">(${safeTime})</span></div>`;
+      });
+      track.innerHTML=html+html;
+    }
+    /* ✅ SISTEMA DE NOTIFICACIONES CROSS-BLOG */
+    function checkUpcomingEvents(){
+      const now = Date.now();
+      const WINDOW_START = -3 * 60 * 1000;
+      const WINDOW_END = 10 * 60 * 1000;
+      const eventsList = allEvents || [];
+
+      for(const e of eventsList){
+        if(e.deporte === DEPORTE_ACTUAL) continue;
+        if(!e.eventDateObj) continue;
+        const t = e.eventDateObj.getTime();
+        if(t < now + WINDOW_START) continue;
+        if(t > now + WINDOW_END) continue;
+        if(!e.servidores || e.servidores.length === 0) continue;
+        const url = e.servidores[0].url;
+        if(!url) continue;
+        const yaCargado = slotData.some(s => s && s.url === url);
+        if(yaCargado) continue;
+        const key = e.deporte + '|' + normalizar(e.titulo||e.summary) + '|' + t;
+        if(notifiedEventKeys.has(key)) continue;
+        notifiedEventKeys.add(key);
+        showNotification(e);
+      }
+    }
+    function showNotification(e){
+      const container = document.getElementById('um-toast-container');
+      if(!container) return;
+      const now = Date.now();
+      const startsIn = e.eventDateObj.getTime() - now;
+      const isLive = startsIn <= 0;
+      const timeLabel = isLive ? 'EN VIVO ahora' : (startsIn < 60000 ? 'Comienza en menos de 1 min' : `Comienza en ${Math.ceil(startsIn/60000)} min`);
+      const sportIcon = e.deporte === 'FUTBOL' ? '⚽' : e.deporte === 'NBA' ? '🏀' : e.deporte === 'F1' ? '🏎️' : '📺';
+      const sportName = e.deporte === 'FUTBOL' ? 'Fútbol' : e.deporte === 'NBA' ? 'NBA' : e.deporte === 'F1' ? 'F1' : e.deporte;
+      const id = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+      _notificationData[id] = { url: e.servidores[0].url };
+      const title = e.titulo || e.summary || 'Evento';
+      const torneo = e.torneo || '';
+
+      const toast = document.createElement('div');
+      toast.className = 'um-toast';
+      toast.id = id;
+      toast.innerHTML = `
+        <div class="um-toast-header">
+          <span class="um-toast-icon">${sportIcon}</span>
+          <span>${sportName}${torneo ? ' · ' + escapeHTML(torneo) : ''}</span>
+        </div>
+        <div class="um-toast-title">${escapeHTML(title)}</div>
+        <div class="um-toast-meta">${timeLabel}</div>
+        <div class="um-toast-actions">
+          <button class="um-toast-btn watch" onclick="openFromNotification('${id}')">
+            <i class="fas fa-plus"></i> Ver en nueva pantalla
+          </button>
+          <button class="um-toast-btn dismiss" onclick="dismissNotification('${id}')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>`;
+      container.appendChild(toast);
+      setTimeout(() => { dismissNotification(id); }, 25000);
+    }
+    function openFromNotification(toastId){
+      const data = _notificationData[toastId];
+      if(data && data.url) openInNewSlot(data.url);
+      dismissNotification(toastId);
+      delete _notificationData[toastId];
+    }
+    function dismissNotification(toastId){
+      const t = document.getElementById(toastId);
+      if(t){ t.style.animation = 'toastSlideOut 0.3s ease'; setTimeout(() => t.remove(), 300); }
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+      buildStadiumGrid(1, document.getElementById('btn-g1'));
+      iniciarReloj();
+      cargarAgenda();
+      setInterval(checkUpcomingEvents, 60000);
+
+      // ===== DEEP-LINK DESDE EL HUB =====
+      (function handleDeepLink(){
+        const params = new URLSearchParams(location.search);
+        const auto = params.get('auto');
+        const eventName = params.get('event');
+        if(!auto && !eventName) return;
+        let intentos = 0;
+        const tryLoad = setInterval(()=>{
+          intentos++;
+          const slot0 = document.getElementById('stadium-core-0');
+          const agendaLista = allEvents && slot0;
+          if(agendaLista){
+            clearInterval(tryLoad);
+            if(auto){ const url = decodeURIComponent(auto); slotData[0]={url}; renderStream(0,url,false); applyMuteStates(); return; }
+            if(eventName){
+              const objetivo = normalizar(eventName);
+              const idx = allEvents.findIndex(e => normalizar(e.summary || e.titulo).includes(objetivo));
+              if(idx !== -1) prepararPartido(idx);
+            }
+          }
+          if(intentos > 75) clearInterval(tryLoad);
+        }, 200);
+      })();
+    });
+  </script>
+</body>
+</html>
