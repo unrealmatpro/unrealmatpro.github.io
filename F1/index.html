@@ -162,8 +162,17 @@
     const _notificationData = {};
 
     function recargarBlog(btn){ btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
-    function escapeHTML(str){ if(!str) return ''; return str.replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
+    function escapeHTML(str){ if(!str) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
+    function jsonAttr(s){ return escapeHTML(JSON.stringify(s==null?'':s)); }
     function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
+    function isValidStreamUrl(url){
+      if(!url || typeof url !== 'string') return false;
+      try{
+        const u = new URL(url);
+        if(u.protocol !== 'https:' && u.protocol !== 'http:') return false;
+        return u.hostname.toLowerCase().startsWith('streamxhd');
+      }catch(e){ return false; }
+    }
     function parseEventDate(e){
       if(e.fecha_completa){ let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d; if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){ let d2=new Date(e.fecha_completa.replace(" ","T")+":00-05:00"); if(!isNaN(d2.getTime())) return d2; } }
       if(e.hora && e.hora!=="00:00"){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
@@ -213,14 +222,20 @@
     }
     function loadInTarget(url){
       if(!url) return;
+      if(!isValidStreamUrl(url)){ console.warn('[F1] URL bloqueada:', url); return; }
+      if(targetSlotIndex < 0 || targetSlotIndex >= getSlotCount()){
+        openInNewSlot(url);
+        return;
+      }
       const isMuted=(targetSlotIndex!==activeSlotIndex);
-      slotData[targetSlotIndex]={url};
+      slotData[targetSlotIndex]={url, blogUrl: location.pathname};
       renderStream(targetSlotIndex, url, isMuted);
       applyMuteStates();
       const next=findFirstEmptySlot(); if(next!==-1) targetSlotIndex=next;
     }
     function openInNewSlot(url){
       if(!url) return;
+      if(!isValidStreamUrl(url)){ console.warn('[F1] URL bloqueada:', url); return; }
       let slotCount = getSlotCount();
       let free = findFirstEmptySlot();
       const hayReproduccion = slotData.some(s => s && s.url);
@@ -233,7 +248,7 @@
       }
       if(free === -1) return;
       const muted = hayReproduccion;
-      slotData[free] = { url };
+      slotData[free] = { url, blogUrl: location.pathname };
       renderStream(free, url, muted);
       if(!hayReproduccion){ activeSlotIndex = free; targetSlotIndex = free; }
       else { targetSlotIndex = free; }
@@ -241,7 +256,7 @@
     }
     function renderStream(slotIdx, url, muted){
       const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
-      if(!url || (!url.startsWith('https://streamxhd') && !url.startsWith('http://streamxhd'))){ core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
+      if(!isValidStreamUrl(url)){ core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
       let finalUrl=url; if(muted){ const sep=url.includes('?')?'&':'?'; finalUrl=url+sep+'mute=1'; }
       const isMobile=/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       core.innerHTML='';
@@ -318,7 +333,8 @@
     function renderSidebarFeed(events){
       const box=document.getElementById('stadium-feed-target');
       if(!events||events.length===0){ box.innerHTML='<div style="padding:20px;opacity:.5;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No hay sesiones disponibles.</div>'; return; }
-      box.innerHTML=events.map((e,idx)=>{
+      box.innerHTML=events.map(e=>{
+        const globalIndex = datosOriginales.indexOf(e);
         const num=e.servidores?e.servidores.length:0;
         const deporte=e.deporte||'F1';
         let safeTime='Por confirmar';
@@ -329,7 +345,7 @@
         else if(status==='EN VIVO'){ bt='EN VIVO'; bs='background:rgba(225,6,0,0.2);color:#e10600;border:1px solid #e10600;'; }
         else { bt='PRÓXIMO'; bs='background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid #38bdf8;'; }
         const op=status==='FINALIZADO'?'opacity:.65;':'';
-        return `<div class="stadium-card" onclick="prepararPartido(${idx})" style="${op}">
+        return `<div class="stadium-card" onclick="prepararPartido(${globalIndex})" style="${op}">
           <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||deporte)}<span class="sport-badge ${deporte}">${deporte}</span></span><span class="card-live" style="${bs}">${bt}</span></div>
           <div class="card-title">${escapeHTML(e.titulo||e.summary)}</div>
           <div class="card-bottom"><span><i class="fas fa-clock"></i> ${safeTime}</span><span><i class="fas fa-satellite-dish"></i> ${num>0?num+' Canales':'Sin señal aún'}</span></div>
@@ -344,6 +360,7 @@
     function prepararPartido(index){
       const partido=datosOriginales[index]; if(!partido) return;
       if(!partido.servidores || partido.servidores.length===0){
+        if(targetSlotIndex < 0 || targetSlotIndex >= getSlotCount()) targetSlotIndex = 0;
         const t=document.getElementById('stadium-core-'+targetSlotIndex);
         if(t) t.innerHTML='<div style="color:#fff;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;"><i class="fas fa-hourglass-half" style="font-size:40px;color:var(--f1-red);margin-bottom:15px;"></i><h3 style="margin-bottom:10px;">Señal aún no publicada</h3><p style="font-size:12px;color:#999;max-width:300px;">La sesión está agendada, pero los canales aún no están disponibles.</p></div>';
         document.getElementById('alternative-servers-panel').style.display='none';
@@ -351,8 +368,8 @@
       }
       const panel=document.getElementById('alternative-servers-panel'); const list=document.getElementById('alt-servers-list');
       list.innerHTML=partido.servidores.map((s,i)=>{
-        const u=escapeHTML(s.url), n=escapeHTML(s.nombre||'Opción '+(i+1));
-        return `<button class="alt-btn" onclick="loadInTarget('${u}')"><i class="fas fa-play"></i> ${n}</button>`;
+        const n=escapeHTML(s.nombre||'Opción '+(i+1));
+        return `<button class="alt-btn" onclick="loadInTarget(${jsonAttr(s.url)})"><i class="fas fa-play"></i> ${n}</button>`;
       }).join('');
       panel.style.display='block';
       loadInTarget(partido.servidores[0].url);
@@ -376,6 +393,7 @@
     }
 
     function checkUpcomingEvents(){
+      if(notifiedEventKeys.size > 500) notifiedEventKeys.clear();
       const now = Date.now();
       const WINDOW_START = -3 * 60 * 1000;
       const WINDOW_END = 10 * 60 * 1000;
@@ -451,7 +469,11 @@
           const agendaLista = datosOriginales && slot0;
           if(agendaLista){
             clearInterval(tryLoad);
-            if(auto){ const url = decodeURIComponent(auto); slotData[0]={url}; renderStream(0,url,false); applyMuteStates(); return; }
+            if(auto){
+              const url = decodeURIComponent(auto);
+              if(isValidStreamUrl(url)){ slotData[0]={url, blogUrl: location.pathname}; renderStream(0,url,false); applyMuteStates(); }
+              return;
+            }
             if(eventName){
               const objetivo = normalizar(eventName);
               const idx = datosOriginales.findIndex(e => normalizar(e.titulo||e.summary).includes(objetivo));
