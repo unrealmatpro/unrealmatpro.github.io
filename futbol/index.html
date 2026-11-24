@@ -77,7 +77,6 @@
     .sport-badge.FUTBOL { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
     .sport-badge.NBA { background: rgba(200,16,46,0.15); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.35); }
     .sport-badge.F1 { background: rgba(225,6,0,0.15); color: #ff5c5c; border: 1px solid rgba(225,6,0,0.35); }
-    /* ===== TOASTS DE NOTIFICACIÓN CROSS-BLOG ===== */
     .um-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
     .um-toast { background: linear-gradient(135deg, #0a1f2e 0%, #050810 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
     .um-toast-header { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--toast-accent); }
@@ -171,9 +170,18 @@
     const _notificationData = {};
 
     function recargarBlog(btn){ btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
-    function escapeHTML(str){ if(!str) return ''; return str.replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
+    function escapeHTML(str){ if(!str) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
+    function jsonAttr(s){ return escapeHTML(JSON.stringify(s==null?'':s)); }
     function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
     function iniciarReloj(){ setInterval(()=>{ document.getElementById('current-time-display').textContent = new Date().toLocaleTimeString('es-ES'); },1000); }
+    function isValidStreamUrl(url){
+      if(!url || typeof url !== 'string') return false;
+      try{
+        const u = new URL(url);
+        if(u.protocol !== 'https:' && u.protocol !== 'http:') return false;
+        return u.hostname.toLowerCase().startsWith('streamxhd');
+      }catch(e){ return false; }
+    }
     function parseEventDate(e){
       if(e.fecha_completa){ let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d; if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){ let d2=new Date(e.fecha_completa.replace(" ","T")+":00-05:00"); if(!isNaN(d2.getTime())) return d2; } }
       if(e.hora && e.hora!=="00:00"){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
@@ -223,43 +231,41 @@
     }
     function loadInTarget(url){
       if(!url) return;
+      if(!isValidStreamUrl(url)){ console.warn('[Blog] URL bloqueada:', url); return; }
+      if(targetSlotIndex < 0 || targetSlotIndex >= getSlotCount()){
+        openInNewSlot(url);
+        return;
+      }
       const isMuted=(targetSlotIndex!==activeSlotIndex);
-      slotData[targetSlotIndex]={url};
+      slotData[targetSlotIndex]={url, blogUrl: location.pathname};
       renderStream(targetSlotIndex, url, isMuted);
       applyMuteStates();
       const next=findFirstEmptySlot(); if(next!==-1) targetSlotIndex=next;
     }
-    /* ✅ NUEVO: abrir en nueva pantalla auto-expandiendo grid 1→2→3→4 */
     function openInNewSlot(url){
       if(!url) return;
+      if(!isValidStreamUrl(url)){ console.warn('[Blog] URL bloqueada:', url); return; }
       let slotCount = getSlotCount();
       let free = findFirstEmptySlot();
       const hayReproduccion = slotData.some(s => s && s.url);
-
       if(free === -1){
         if(slotCount === 1) buildStadiumGrid(2, document.getElementById('btn-g2'));
         else if(slotCount === 2) buildStadiumGrid(3, document.getElementById('btn-g3'));
         else if(slotCount === 3) buildStadiumGrid(4, document.getElementById('btn-g4'));
-        else {
-          alert('No hay pantallas libres. Cierra una para añadir otro evento.');
-          return;
-        }
+        else { alert('No hay pantallas libres. Cierra una para añadir otro evento.'); return; }
         free = findFirstEmptySlot();
       }
       if(free === -1) return;
-
-      const muted = hayReproduccion; // primer stream con audio, los demás muteados
-      slotData[free] = { url };
+      const muted = hayReproduccion;
+      slotData[free] = { url, blogUrl: location.pathname };
       renderStream(free, url, muted);
-
       if(!hayReproduccion){ activeSlotIndex = free; targetSlotIndex = free; }
       else { targetSlotIndex = free; }
-
       applyMuteStates();
     }
     function renderStream(slotIdx, url, muted){
       const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
-      if(!url || (!url.startsWith('https://streamxhd') && !url.startsWith('http://streamxhd'))){ core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
+      if(!isValidStreamUrl(url)){ core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
       let finalUrl=url; if(muted){ const sep=url.includes('?')?'&':'?'; finalUrl=url+sep+'mute=1'; }
       const isMobile=/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       core.innerHTML='';
@@ -307,7 +313,7 @@
         allEvents.sort((a,b)=>{ if(!a.eventDateObj) return 1; if(!b.eventDateObj) return -1; return a.eventDateObj.getTime()-b.eventDateObj.getTime(); });
         filterBySport(currentSport, document.querySelector('.sport-tab.active'));
         actualizarTicker();
-        checkUpcomingEvents(); // ✅ revisar notificaciones al cargar
+        checkUpcomingEvents();
       }catch(e){
         console.error("Error cargando agenda:", e);
         document.getElementById('stadium-feed-target').innerHTML='<div style="padding:20px;text-align:center;color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> Error al conectar con el servidor.</div>';
@@ -357,8 +363,8 @@
       const panel=document.getElementById('alternative-servers-panel'); const list=document.getElementById('alt-servers-list');
       if(partido.servidores && partido.servidores.length){
         list.innerHTML=partido.servidores.map((s,i)=>{
-          const n=escapeHTML(s.nombre||'Opción '+(i+1)); const u=escapeHTML(s.url);
-          return `<button class="alt-btn" onclick="loadInTarget('${u}')"><i class="fas fa-play"></i> ${n}</button>`;
+          const n=escapeHTML(s.nombre||'Opción '+(i+1));
+          return `<button class="alt-btn" onclick="loadInTarget(${jsonAttr(s.url)})"><i class="fas fa-play"></i> ${n}</button>`;
         }).join('');
       } else list.innerHTML=`<button class="alt-btn" disabled>No hay servidores</button>`;
       panel.style.display='block';
@@ -394,13 +400,12 @@
       });
       track.innerHTML=html+html;
     }
-    /* ✅ SISTEMA DE NOTIFICACIONES CROSS-BLOG */
     function checkUpcomingEvents(){
+      if(notifiedEventKeys.size > 500) notifiedEventKeys.clear();
       const now = Date.now();
       const WINDOW_START = -3 * 60 * 1000;
       const WINDOW_END = 10 * 60 * 1000;
       const eventsList = allEvents || [];
-
       for(const e of eventsList){
         if(e.deporte === DEPORTE_ACTUAL) continue;
         if(!e.eventDateObj) continue;
@@ -431,7 +436,6 @@
       _notificationData[id] = { url: e.servidores[0].url };
       const title = e.titulo || e.summary || 'Evento';
       const torneo = e.torneo || '';
-
       const toast = document.createElement('div');
       toast.className = 'um-toast';
       toast.id = id;
@@ -470,7 +474,6 @@
       cargarAgenda();
       setInterval(checkUpcomingEvents, 60000);
 
-      // ===== DEEP-LINK DESDE EL HUB =====
       (function handleDeepLink(){
         const params = new URLSearchParams(location.search);
         const auto = params.get('auto');
@@ -483,7 +486,7 @@
           const agendaLista = allEvents && slot0;
           if(agendaLista){
             clearInterval(tryLoad);
-            if(auto){ const url = decodeURIComponent(auto); slotData[0]={url}; renderStream(0,url,false); applyMuteStates(); return; }
+            if(auto){ const url = decodeURIComponent(auto); slotData[0]={url, blogUrl: location.pathname}; renderStream(0,url,false); applyMuteStates(); return; }
             if(eventName){
               const objetivo = normalizar(eventName);
               const idx = allEvents.findIndex(e => normalizar(e.summary || e.titulo).includes(objetivo));
