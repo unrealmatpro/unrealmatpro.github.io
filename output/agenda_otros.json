@@ -1,12 +1,57 @@
 {
-  "fecha_actualizacion": "2026-11-24T23:49:26Z",
-  "total": 2,
+  "fecha_actualizacion": "2026-11-25T23:30:52Z",
+  "total": 5,
   "eventos": [
     {
-      "id": "evt_3",
-      "titulo": "Toros vs Caimanes",
+      "id": "evt_6",
+      "titulo": "Tampa Bay Lightning vs Carolina Hurricanes",
       "hora": "17:00",
-      "fecha_completa": "2026-11-24T19:00:00-05:00",
+      "fecha_completa": "2026-11-25T19:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "ESPN 4",
+          "url": "https://streamxhd.sbs/live1.php?stream=espn4"
+        }
+      ],
+      "torneo": "17:00 TA VS CA NHL NHL Tampa Bay Lightning vs Carolina Hurricanes PRONTO",
+      "deporte": "OTROS"
+    },
+    {
+      "id": "evt_20",
+      "titulo": "Austria vs España",
+      "hora": "09:00",
+      "fecha_completa": "2026-11-26T11:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "VER AQUÍ",
+          "url": "https://streamxhd.sbs/live1.php?stream=dsports2"
+        }
+      ],
+      "torneo": "Copa Davis",
+      "deporte": "OTROS"
+    },
+    {
+      "id": "evt_39",
+      "titulo": "Detroit Lions vs Chicago Bears",
+      "hora": "11:00",
+      "fecha_completa": "2026-11-26T13:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "VER AQUÍ",
+          "url": "https://streamxhd.sbs/live1.php?stream=disney19"
+        }
+      ],
+      "torneo": "11:00 DE VS CH NFL NFL Detroit Lions vs Chicago Bears PRONTO",
+      "deporte": "OTROS"
+    },
+    {
+      "id": "evt_58",
+      "titulo": "Dallas Cowboys vs Philadelphia Eagles",
+      "hora": "15:00",
+      "fecha_completa": "2026-11-26T17:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
@@ -14,22 +59,22 @@
           "url": "https://streamxhd.sbs/live1.php?stream=espn5"
         }
       ],
-      "torneo": "Béisbol Colombiano",
+      "torneo": "NFL",
       "deporte": "OTROS"
     },
     {
-      "id": "evt_5",
-      "titulo": "Edmonton Oilers vs Vegas Golden Knights",
+      "id": "evt_65",
+      "titulo": "Buffalo Bills vs Kansas City Chiefs",
       "hora": "18:00",
-      "fecha_completa": "2026-11-24T20:00:00-05:00",
+      "fecha_completa": "2026-11-26T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "ESPN 3",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn3"
+          "nombre": "ESPN 5",
+          "url": "https://streamxhd.sbs/live1.php?stream=espn5"
         }
       ],
-      "torneo": "NHL",
+      "torneo": "NFL",
       "deporte": "OTROS"
     }
   ]
