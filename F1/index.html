@@ -3,7 +3,7 @@
 <head>
   <meta charset='UTF-8'/>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' name='viewport'/>
-  <title>F1 Hub | UNREALMAT PRO</title>
+  <title>F1 Hub | UNREALMAT PRO+</title>
   <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
   <link href='https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap' rel='stylesheet'/>
 
@@ -68,9 +68,10 @@
     .card-bottom { display: flex; justify-content: space-between; color: var(--text-soft); font-size: 11px; }
     #exit-cinema-btn { position: fixed; bottom: 24px; right: 24px; background: var(--f1-red); color: white; border: none; padding: 14px 22px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; z-index: 99999; display: none; box-shadow: 0 6px 20px rgba(0,0,0,0.7); }
     .sport-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; }
-    .sport-badge.FUTBOL { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
-    .sport-badge.NBA { background: rgba(200,16,46,0.15); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.35); }
     .sport-badge.F1 { background: rgba(225,6,0,0.15); color: #ff5c5c; border: 1px solid rgba(225,6,0,0.35); }
+    .source-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 8px; font-weight: 800; padding: 2px 5px; border-radius: 3px; margin-left: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .source-badge.json { background: rgba(0,255,136,0.1); color: #00ff88; border: 1px solid rgba(0,255,136,0.3); }
+    .source-badge.calendar { background: rgba(244,208,63,0.1); color: #f4d03f; border: 1px solid rgba(244,208,63,0.3); }
     .um-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
     .um-toast { background: linear-gradient(135deg, #1a0000 0%, #050505 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
     .um-toast-header { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--toast-accent); }
@@ -223,10 +224,7 @@
     function loadInTarget(url){
       if(!url) return;
       if(!isValidStreamUrl(url)){ console.warn('[F1] URL bloqueada:', url); return; }
-      if(targetSlotIndex < 0 || targetSlotIndex >= getSlotCount()){
-        openInNewSlot(url);
-        return;
-      }
+      if(targetSlotIndex < 0 || targetSlotIndex >= getSlotCount()){ openInNewSlot(url); return; }
       const isMuted=(targetSlotIndex!==activeSlotIndex);
       slotData[targetSlotIndex]={url, blogUrl: location.pathname};
       renderStream(targetSlotIndex, url, isMuted);
@@ -263,6 +261,7 @@
       const f=document.createElement('iframe');
       f.src=finalUrl; f.style.cssText='width:100%;height:100%;border:none;';
       f.setAttribute('allowfullscreen','true'); f.setAttribute('webkitallowfullscreen','true'); f.setAttribute('mozallowfullscreen','true');
+      f.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox allow-forms');
       f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture; user-activation';
       f.setAttribute('referrerpolicy','no-referrer-when-downgrade');
       core.appendChild(f);
@@ -273,56 +272,86 @@
       }
     }
 
+    /* ⚠️ CAMBIO: F1 = JSON + Calendar con MERGE INTELIGENTE */
     async function cargarAgenda(){
-      const baseUrl="../output/";
-      const urls=[
-        { sport:"FUTBOL", url:`${baseUrl}agenda_futbol.json?v=${Date.now()}` },
-        { sport:"NBA", url:`${baseUrl}agenda_nba.json?v=${Date.now()}` },
-        { sport:"F1", url:`${baseUrl}agenda_f1.json?v=${Date.now()}` }
-      ];
       try{
-        const responses=await Promise.all(urls.map(u=>fetch(u.url).catch(()=>null)));
-        let rawEvents=[];
-        await Promise.all(responses.map((res,index)=>{
-          if(res && res.ok){
-            return res.json().then(data=>{
-              const lista=data.eventos||data;
-              if(Array.isArray(lista)){
-                lista.forEach(e=>{
-                  e.deporte=urls[index].sport;
-                  if(e.titulo && !e.summary) e.summary=e.titulo;
-                  if(e.servidores){ e.servidores=e.servidores.map(s=>({ nombre: s.nombre||s.stream||'Opción', url: s.url||s.live1_url||'' })); }
-                  rawEvents.push(e);
-                });
-              }
-            }).catch(()=>{});
+        // 1. Cargar JSON de F1 (prioridad: tiene URLs de stream)
+        let jsonEvents = [];
+        try{
+          const res = await fetch(`../output/agenda_f1.json?v=${Date.now()}`);
+          if(res.ok){
+            const data = await res.json();
+            jsonEvents = (data.eventos || []).map(e => {
+              e.source = 'json';
+              if(e.titulo && !e.summary) e.summary = e.titulo;
+              if(e.servidores) e.servidores = e.servidores.map(s => ({ nombre: s.nombre||'Opción', url: s.url||'' }));
+              e.eventDateObj = parseEventDate(e);
+              return e;
+            });
           }
-          return null;
-        }));
+        }catch(err){ console.warn('[F1] JSON falló:', err); }
+
+        // 2. Cargar Calendar de Google (fallback para eventos no publicados aún)
+        let calEvents = [];
         try{
           const tMin = new Date(Date.now()-2.5*60*60*1000).toISOString();
           const calRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CAL_ID)}/events?key=${API_KEY}&timeMin=${tMin}&maxResults=15&singleEvents=true&orderBy=startTime`);
           if(calRes.ok){
             const calData = await calRes.json();
-            (calData.items||[]).forEach(ev=>{
+            (calData.items||[]).forEach(ev => {
               const raw = ev.start.dateTime || (ev.start.date + 'T00:00:00');
-              rawEvents.push({ titulo: ev.summary||'Sesión F1', torneo: 'CALENDARIO F1', deporte: 'F1', eventDateObj: new Date(raw), servidores: [], isCalendar: true });
+              const dateObj = new Date(raw);
+              calEvents.push({
+                titulo: ev.summary||'Sesión F1',
+                torneo: 'CALENDARIO F1',
+                deporte: 'F1',
+                source: 'calendar',
+                eventDateObj: dateObj,
+                servidores: [],
+                isCalendar: true
+              });
             });
           }
-        }catch(err){}
+        }catch(err){ console.warn('[F1] Calendar falló:', err); }
+
+        // 3. MERGE INTELIGENTE: JSON tiene prioridad, Calendar solo si NO hay match (±30 min + título similar)
+        const merged = [...jsonEvents];
+        calEvents.forEach(calEv => {
+          if(!calEv.eventDateObj) return;
+          const calNorm = normalizar(calEv.titulo).replace(/[^A-Z0-9]/g, '');
+          const isDuplicate = jsonEvents.some(j => {
+            if(!j.eventDateObj) return false;
+            const jNorm = normalizar(j.titulo||'').replace(/[^A-Z0-9]/g, '');
+            // Match por: título similar (>=60% chars comunes) O mismo GP + misma sesión + hora ±30min
+            const timeDiff = Math.abs(j.eventDateObj.getTime() - calEv.eventDateObj.getTime());
+            if(timeDiff > 30*60*1000) return false;
+            // Coincidencia de tokens clave
+            const tokens = ['gp', 'fp1', 'fp2', 'fp3', 'sprint', 'quali', 'race', 'practice', 'clasificacion'];
+            const calTokens = tokens.filter(t => calNorm.includes(t));
+            const jTokens = tokens.filter(t => jNorm.includes(t));
+            const sharedTokens = calTokens.filter(t => jTokens.includes(t));
+            if(sharedTokens.length > 0) return true;
+            // Fallback: comparar primeras 8 letras del primer token del GP
+            const calFirst = calNorm.substring(0, 8);
+            const jFirst = jNorm.substring(0, 8);
+            return calFirst && jFirst && (calNorm.includes(jFirst) || jNorm.includes(calFirst));
+          });
+          if(!isDuplicate) merged.push(calEv);
+        });
 
         const ahora = new Date();
-        rawEvents.forEach(e => { if(!e.eventDateObj) e.eventDateObj = parseEventDate(e); });
-        let filtrados = rawEvents.filter(e => { if(!e.eventDateObj) return true; const diffHours = (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60); return diffHours <= 2.5; });
-        filtrados.sort((a,b) => { if(!a.eventDateObj) return 1; if(!b.eventDateObj) return -1; return a.eventDateObj.getTime()-b.eventDateObj.getTime(); });
-
-        const map = new Map();
-        filtrados.forEach(e => {
-          const k = normalizar(e.titulo).replace(/[^A-Z0-9]/g,'') + '|' + e.deporte;
-          if(!map.has(k)) map.set(k, e);
-          else { const ex = map.get(k); if(ex.servidores.length === 0 && e.servidores.length > 0) map.set(k, e); }
+        merged.forEach(e => { if(!e.eventDateObj) e.eventDateObj = parseEventDate(e); });
+        let filtrados = merged.filter(e => {
+          if(!e.eventDateObj) return true;
+          const diffHours = (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60);
+          return diffHours <= 2.5;
         });
-        datosOriginales = Array.from(map.values());
+        filtrados.sort((a,b) => {
+          if(!a.eventDateObj) return 1;
+          if(!b.eventDateObj) return -1;
+          return a.eventDateObj.getTime()-b.eventDateObj.getTime();
+        });
+        datosOriginales = filtrados;
         renderSidebarFeed(datosOriginales);
         checkUpcomingEvents();
       }catch(e){
@@ -333,10 +362,8 @@
     function renderSidebarFeed(events){
       const box=document.getElementById('stadium-feed-target');
       if(!events||events.length===0){ box.innerHTML='<div style="padding:20px;opacity:.5;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No hay sesiones disponibles.</div>'; return; }
-      box.innerHTML=events.map(e=>{
-        const globalIndex = datosOriginales.indexOf(e);
+      box.innerHTML=events.map((e,idx)=>{
         const num=e.servidores?e.servidores.length:0;
-        const deporte=e.deporte||'F1';
         let safeTime='Por confirmar';
         if(e.eventDateObj){ const f=e.eventDateObj.toLocaleDateString([],{day:'2-digit',month:'2-digit'}); const h=e.eventDateObj.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); safeTime=`${f} · ${h}`; }
         const status=getDynamicStatus(e.eventDateObj, e.status);
@@ -345,8 +372,11 @@
         else if(status==='EN VIVO'){ bt='EN VIVO'; bs='background:rgba(225,6,0,0.2);color:#e10600;border:1px solid #e10600;'; }
         else { bt='PRÓXIMO'; bs='background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid #38bdf8;'; }
         const op=status==='FINALIZADO'?'opacity:.65;':'';
-        return `<div class="stadium-card" onclick="prepararPartido(${globalIndex})" style="${op}">
-          <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||deporte)}<span class="sport-badge ${deporte}">${deporte}</span></span><span class="card-live" style="${bs}">${bt}</span></div>
+        const sourceBadge = e.source === 'json'
+          ? '<span class="source-badge json"><i class="fas fa-check"></i> SEÑAL</span>'
+          : '<span class="source-badge calendar"><i class="fas fa-calendar"></i> CALENDARIO</span>';
+        return `<div class="stadium-card" onclick="prepararPartido(${idx})" style="${op}">
+          <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||'F1')}<span class="sport-badge F1">F1</span>${sourceBadge}</span><span class="card-live" style="${bs}">${bt}</span></div>
           <div class="card-title">${escapeHTML(e.titulo||e.summary)}</div>
           <div class="card-bottom"><span><i class="fas fa-clock"></i> ${safeTime}</span><span><i class="fas fa-satellite-dish"></i> ${num>0?num+' Canales':'Sin señal aún'}</span></div>
         </div>`;
@@ -469,11 +499,7 @@
           const agendaLista = datosOriginales && slot0;
           if(agendaLista){
             clearInterval(tryLoad);
-            if(auto){
-              const url = decodeURIComponent(auto);
-              if(isValidStreamUrl(url)){ slotData[0]={url, blogUrl: location.pathname}; renderStream(0,url,false); applyMuteStates(); }
-              return;
-            }
+            if(auto){ const url = decodeURIComponent(auto); slotData[0]={url, blogUrl: location.pathname}; renderStream(0,url,false); applyMuteStates(); return; }
             if(eventName){
               const objetivo = normalizar(eventName);
               const idx = datosOriginales.findIndex(e => normalizar(e.titulo||e.summary).includes(objetivo));
