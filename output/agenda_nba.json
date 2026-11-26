@@ -1,13 +1,13 @@
 {
-  "fecha_actualizacion": "2026-11-26T16:10:56Z",
+  "fecha_actualizacion": "2026-11-26T23:36:56Z",
   "total": 3,
   "eventos": [
     {
-      "id": "evt_41",
+      "id": "evt_1",
       "titulo": "Uruguay vs Canadá",
-      "hora": "16:10",
+      "hora": "14:10",
       "fecha_completa": "2026-11-26T17:10:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "DSPORTS2",
@@ -19,9 +19,9 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_45",
+      "id": "evt_5",
       "titulo": "Argentina vs Bahamas",
-      "hora": "18:40",
+      "hora": "16:40",
       "fecha_completa": "2026-11-26T19:40:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -35,9 +35,9 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_48",
+      "id": "evt_8",
       "titulo": "Panamá vs Puerto Rico",
-      "hora": "19:40",
+      "hora": "17:40",
       "fecha_completa": "2026-11-26T20:40:00-05:00",
       "status": "PRONTO",
       "servidores": [

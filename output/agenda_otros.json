@@ -1,29 +1,13 @@
 {
-  "fecha_actualizacion": "2026-11-26T16:10:56Z",
-  "total": 3,
+  "fecha_actualizacion": "2026-11-26T23:36:56Z",
+  "total": 2,
   "eventos": [
     {
-      "id": "evt_21",
-      "titulo": "Detroit Lions vs Chicago Bears",
-      "hora": "12:00",
-      "fecha_completa": "2026-11-26T13:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY19",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney19"
-        }
-      ],
-      "torneo": "NFL",
-      "source": "json",
-      "deporte": "OTROS"
-    },
-    {
-      "id": "evt_40",
+      "id": "evt_0",
       "titulo": "Dallas Cowboys vs Philadelphia Eagles",
-      "hora": "16:00",
+      "hora": "14:00",
       "fecha_completa": "2026-11-26T17:00:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "ESPN 5",
@@ -35,9 +19,9 @@
       "deporte": "OTROS"
     },
     {
-      "id": "evt_47",
+      "id": "evt_7",
       "titulo": "Buffalo Bills vs Kansas City Chiefs",
-      "hora": "19:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-26T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [

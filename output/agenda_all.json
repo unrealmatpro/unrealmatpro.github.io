@@ -1,779 +1,30 @@
 {
-  "fecha_actualizacion": "2026-11-26T16:10:56Z",
-  "total": 51,
+  "fecha_actualizacion": "2026-11-26T23:36:56Z",
+  "total": 10,
   "eventos": [
     {
-      "id": "evt_50",
-      "titulo": "Uzbekistán vs Italia",
-      "hora": "08:00",
-      "fecha_completa": "2026-11-26T09:00:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "DSPORTSPLUS",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsportsplus"
-        }
-      ],
-      "torneo": "Copa Mundial Sub-17",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
       "id": "evt_0",
-      "titulo": "Marruecos vs España",
-      "hora": "09:00",
-      "fecha_completa": "2026-11-26T10:00:00-05:00",
+      "titulo": "Dallas Cowboys vs Philadelphia Eagles",
+      "hora": "14:00",
+      "fecha_completa": "2026-11-26T17:00:00-05:00",
       "status": "EN VIVO",
       "servidores": [
         {
-          "nombre": "DSPORTS",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsports"
-        },
-        {
-          "nombre": "TUDNMX",
-          "url": "https://streamxhd.sbs/live1.php?stream=tudnmx"
+          "nombre": "ESPN 5",
+          "url": "https://streamxhd.sbs/live1.php?stream=espn5"
         }
       ],
-      "torneo": "Copa Mundial Sub-17",
+      "torneo": "NFL",
       "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
+      "deporte": "OTROS",
+      "deporte_upper": "OTROS"
     },
     {
       "id": "evt_1",
-      "titulo": "Kairat vs Mjällby",
-      "hora": "09:30",
-      "fecha_completa": "2026-11-26T10:30:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney1"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_2",
-      "titulo": "Austria vs España",
-      "hora": "10:00",
-      "fecha_completa": "2026-11-26T11:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "DSPORTS2",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsports2"
-        }
-      ],
-      "torneo": "Copa Davis",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_3",
-      "titulo": "Dynamo Moskva vs Fakel Voronezh",
-      "hora": "10:30",
-      "fecha_completa": "2026-11-26T11:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DSPORTSPLUS",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsportsplus"
-        }
-      ],
-      "torneo": "Copa de Rusia",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_4",
-      "titulo": "Ajax vs Thun",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 10",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney10"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_5",
-      "titulo": "Brighton & Hove Albion vs CSU Craiova",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 11",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney11"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_6",
-      "titulo": "Hearts vs Monaco",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 12",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney12"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_7",
-      "titulo": "Iberia 1999 vs Getafe",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 13",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney13"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_8",
-      "titulo": "Paphos vs Midtjylland",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 14",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney14"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_9",
-      "titulo": "Brann vs AGF",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 15",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney15"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_10",
-      "titulo": "Jablonec vs Lugano",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 16",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney16"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_11",
-      "titulo": "Kauno Žalgiris vs Riga",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY17",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney17"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_12",
-      "titulo": "Egnatia Rrogozhinë vs Lincoln Red Imps",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY18",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney18"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_13",
-      "titulo": "Olympiakos Piraeus vs Milan",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 2",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn2"
-        },
-        {
-          "nombre": "DISNEY+ 2",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney2"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_14",
-      "titulo": "Viktoria Plzeň vs Benfica",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn"
-        },
-        {
-          "nombre": "DISNEY+ 3",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney3"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_15",
-      "titulo": "Celta de Vigo vs AFC Bournemouth",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 4",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn4"
-        },
-        {
-          "nombre": "DISNEY+ 4",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney4"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_16",
-      "titulo": "Dinamo Zagreb vs Bayer Leverkusen",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 3",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn3"
-        },
-        {
-          "nombre": "DISNEY+ 5",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney5"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_17",
-      "titulo": "Olympique Marseille vs Levski Sofia",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 5",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn5"
-        },
-        {
-          "nombre": "DISNEY+ 6",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney6"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_18",
-      "titulo": "RB Salzburg vs Ararat-Armenia",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 7",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn7"
-        },
-        {
-          "nombre": "DISNEY+ 7",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney7"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_19",
-      "titulo": "Beşiktaş vs Hapoel Be'er Sheva",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 8",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney8"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_20",
-      "titulo": "Union Saint-Gilloise vs Lech Poznań",
-      "hora": "11:45",
-      "fecha_completa": "2026-11-26T12:45:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 9",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney9"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_21",
-      "titulo": "Detroit Lions vs Chicago Bears",
-      "hora": "12:00",
-      "fecha_completa": "2026-11-26T13:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY19",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney19"
-        }
-      ],
-      "torneo": "NFL",
-      "source": "json",
-      "deporte": "OTROS",
-      "deporte_upper": "OTROS"
-    },
-    {
-      "id": "evt_22",
-      "titulo": "Borac Banja Luka vs Atalanta",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY30",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney30"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_23",
-      "titulo": "Freiburg vs Twente",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney1"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_24",
-      "titulo": "Sporting Braga vs KuPS",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 2",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney2"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_25",
-      "titulo": "CSKA Sofia vs Trabzonspor",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 3",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney3"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_26",
-      "titulo": "Nordsjælland vs Panathinaikos",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 4",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney4"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_27",
-      "titulo": "Gent vs Crvena Zvezda",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 5",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney5"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_28",
-      "titulo": "Inter Club d'Escaldes vs København",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 6",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney6"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_29",
-      "titulo": "Hajduk Split vs Sint-Truiden",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY+ 7",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney7"
-        }
-      ],
-      "torneo": "UEFA Conference League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_30",
-      "titulo": "Juventus vs Omonia Nicosia",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn"
-        },
-        {
-          "nombre": "DISNEY20",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney20"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_31",
-      "titulo": "Crystal Palace vs Real Sociedad",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 2",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn2"
-        },
-        {
-          "nombre": "DISNEY21",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney21"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_32",
-      "titulo": "Olympique Lyonnais vs Lillestrøm",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 3",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn3"
-        },
-        {
-          "nombre": "DISNEY22",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney22"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_33",
-      "titulo": "Sunderland vs Jagiellonia Białystok",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 4",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn4"
-        },
-        {
-          "nombre": "DISNEY23",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney23"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_34",
-      "titulo": "Torreense vs Celtic",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY24",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney24"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_35",
-      "titulo": "Sparta Praha vs AZ",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 5",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn5"
-        },
-        {
-          "nombre": "DISNEY25",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney25"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_36",
-      "titulo": "NEC vs Rennes",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 7",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn7"
-        },
-        {
-          "nombre": "DISNEY26",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney26"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_37",
-      "titulo": "Hoffenheim vs Sturm Graz",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY27",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney27"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_38",
-      "titulo": "OFI vs Anderlecht",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY28",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney28"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_39",
-      "titulo": "Ferencváros vs Celje",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "DISNEY29",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney29"
-        }
-      ],
-      "torneo": "UEFA Europa League",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_40",
-      "titulo": "Dallas Cowboys vs Philadelphia Eagles",
-      "hora": "16:00",
-      "fecha_completa": "2026-11-26T17:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 5",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn5"
-        }
-      ],
-      "torneo": "NFL",
-      "source": "json",
-      "deporte": "OTROS",
-      "deporte_upper": "OTROS"
-    },
-    {
-      "id": "evt_41",
       "titulo": "Uruguay vs Canadá",
-      "hora": "16:10",
+      "hora": "14:10",
       "fecha_completa": "2026-11-26T17:10:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "DSPORTS2",
@@ -786,11 +37,11 @@
       "deporte_upper": "NBA"
     },
     {
-      "id": "evt_42",
+      "id": "evt_2",
       "titulo": "Cerro Porteño vs Libertad",
-      "hora": "16:30",
+      "hora": "14:30",
       "fecha_completa": "2026-11-26T17:30:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "TIGO SPORTS 1",
@@ -803,11 +54,11 @@
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_43",
+      "id": "evt_3",
       "titulo": "São Paulo vs Remo",
-      "hora": "17:00",
+      "hora": "15:00",
       "fecha_completa": "2026-11-26T18:00:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "PREMIERE 1",
@@ -820,9 +71,9 @@
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_44",
+      "id": "evt_4",
       "titulo": "Montevideo City Torque vs Nacional",
-      "hora": "18:30",
+      "hora": "16:30",
       "fecha_completa": "2026-11-26T19:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -837,9 +88,9 @@
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_45",
+      "id": "evt_5",
       "titulo": "Argentina vs Bahamas",
-      "hora": "18:40",
+      "hora": "16:40",
       "fecha_completa": "2026-11-26T19:40:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -854,9 +105,9 @@
       "deporte_upper": "NBA"
     },
     {
-      "id": "evt_46",
+      "id": "evt_6",
       "titulo": "Pachuca vs Guadalajara",
-      "hora": "19:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-26T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -875,9 +126,9 @@
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_47",
+      "id": "evt_7",
       "titulo": "Buffalo Bills vs Kansas City Chiefs",
-      "hora": "19:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-26T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -892,9 +143,9 @@
       "deporte_upper": "OTROS"
     },
     {
-      "id": "evt_48",
+      "id": "evt_8",
       "titulo": "Panamá vs Puerto Rico",
-      "hora": "19:40",
+      "hora": "17:40",
       "fecha_completa": "2026-11-26T20:40:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -909,9 +160,9 @@
       "deporte_upper": "NBA"
     },
     {
-      "id": "evt_49",
+      "id": "evt_9",
       "titulo": "León vs Cruz Azul",
-      "hora": "21:10",
+      "hora": "19:10",
       "fecha_completa": "2026-11-26T22:10:00-05:00",
       "status": "PRONTO",
       "servidores": [
