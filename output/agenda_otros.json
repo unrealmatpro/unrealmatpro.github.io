@@ -1,24 +1,9 @@
 {
-  "fecha_actualizacion": "2026-11-25T23:30:52Z",
+  "fecha_actualizacion": "2026-11-26T12:00:24Z",
   "total": 5,
   "eventos": [
     {
-      "id": "evt_6",
-      "titulo": "Tampa Bay Lightning vs Carolina Hurricanes",
-      "hora": "17:00",
-      "fecha_completa": "2026-11-25T19:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN 4",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn4"
-        }
-      ],
-      "torneo": "17:00 TA VS CA NHL NHL Tampa Bay Lightning vs Carolina Hurricanes PRONTO",
-      "deporte": "OTROS"
-    },
-    {
-      "id": "evt_20",
+      "id": "evt_3",
       "titulo": "Austria vs España",
       "hora": "09:00",
       "fecha_completa": "2026-11-26T11:00:00-05:00",
@@ -33,7 +18,7 @@
       "deporte": "OTROS"
     },
     {
-      "id": "evt_39",
+      "id": "evt_22",
       "titulo": "Detroit Lions vs Chicago Bears",
       "hora": "11:00",
       "fecha_completa": "2026-11-26T13:00:00-05:00",
@@ -48,7 +33,7 @@
       "deporte": "OTROS"
     },
     {
-      "id": "evt_58",
+      "id": "evt_41",
       "titulo": "Dallas Cowboys vs Philadelphia Eagles",
       "hora": "15:00",
       "fecha_completa": "2026-11-26T17:00:00-05:00",
@@ -63,7 +48,7 @@
       "deporte": "OTROS"
     },
     {
-      "id": "evt_65",
+      "id": "evt_48",
       "titulo": "Buffalo Bills vs Kansas City Chiefs",
       "hora": "18:00",
       "fecha_completa": "2026-11-26T20:00:00-05:00",
@@ -75,6 +60,21 @@
         }
       ],
       "torneo": "NFL",
+      "deporte": "OTROS"
+    },
+    {
+      "id": "evt_56",
+      "titulo": "Tampa Bay Lightning vs Carolina Hurricanes",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-25T19:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "ESPN 4",
+          "url": "https://streamxhd.sbs/live1.php?stream=espn4"
+        }
+      ],
+      "torneo": "17:00 TA VS CA NHL NHL Tampa Bay Lightning vs Carolina Hurricanes FINALIZADO",
       "deporte": "OTROS"
     }
   ]
