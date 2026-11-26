@@ -3,78 +3,85 @@
 <head>
   <meta charset='UTF-8'/>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' name='viewport'/>
-  <title>NBA LIVE | UNREALMAT PRO+</title>
+  <title>F1 Hub | UNREALMAT PRO</title>
   <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
-  <link href='https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@900&family=Outfit:wght@400;700&family=JetBrains+Mono:wght@700&display=swap' rel='stylesheet'/>
+  <link href='https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap' rel='stylesheet'/>
 
   <style>
-    :root { --nba-blue:#1d428a; --nba-red:#c8102e; --nba-gold:#fdb927; --bg-arena:#02040a; --text-main:#ffffff; --text-soft:#8892b0; --toast-accent:#ff5c7c; }
+    :root { --f1-red:#e10600; --carbon-black:#0a0a0a; --surface-dark:rgba(20,20,20,0.9); --text-main:#f5f5f7; --text-soft:#999; --toast-accent:#ff5c5c; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: var(--bg-arena); color: var(--text-main); font-family: 'Outfit', sans-serif; overflow: hidden; width: 100vw; height: 100vh; background-image: radial-gradient(circle at 50% -10%, rgba(29, 66, 138, 0.4) 0%, transparent 60%); }
+    body { background-color: var(--carbon-black); color: var(--text-main); font-family: 'Outfit', sans-serif; overflow: hidden; width: 100vw; height: 100vh; }
     .stadium-app { width: 100%; height: 100vh; display: flex; flex-direction: column; }
-    header { height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: rgba(0,0,0,0.95); border-bottom: 2px solid var(--nba-blue); z-index: 100; flex-shrink: 0; }
+    header { min-height: 65px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; gap: 15px; background: rgba(5,5,5,0.85); border-bottom: 2px solid var(--f1-red); z-index: 100; flex-shrink: 0; }
     .brand-box { display: flex; align-items: center; gap: 20px; }
-    .brand-box h1 { font-family: 'Big Shoulders Display'; font-size: 28px; letter-spacing: 2px; text-transform: uppercase; }
-    .brand-box h1 span { color: var(--nba-red); }
-    .btn-return, .btn-refresh { font-family: 'Big Shoulders Display'; font-size: 14px; color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); padding: 6px 15px; border-radius: 2px; transition: 0.3s; background: transparent; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-    .btn-return:hover, .btn-refresh:hover { background: #fff; color: #000; }
+    .brand-box h1 { font-weight: 900; font-size: 24px; letter-spacing: -1px; text-transform: uppercase; }
+    .brand-box h1 span { color: var(--f1-red); }
+    .btn-return, .btn-refresh { font-size: 12px; font-weight: bold; color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 4px; transition: 0.3s; background: transparent; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-return:hover, .btn-refresh:hover { background: var(--f1-red); border-color: var(--f1-red); color: #fff; }
     .btn-refresh i { transition: transform 0.5s ease; }
     .btn-refresh.spinning i { transform: rotate(360deg); }
     .stadium-controls { display: flex; gap: 10px; align-items: center; }
-    .grid-btn { height: 38px; padding: 0 14px; border: none; background: #111a2e; color: #a0b5a9; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 8px; font-family: 'Outfit', sans-serif; }
-    .active-grid { background: var(--nba-red); color: white; }
+    .grid-btn { height: 38px; padding: 0 14px; border: none; background: #1a1a1a; color: #ccc; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 8px; }
+    .active-grid { background: var(--f1-red); color: white; }
     .cinema-btn { background: #2d132c; color: #ff7b89; border: 1px solid #801336; }
-    .stadium-main { flex: 1; display: grid; grid-template-columns: 1fr 420px; overflow: hidden; height: calc(100vh - 112px); }
+    .top-ticker-container { flex: 1; min-width: 200px; height: 35px; background: rgba(255,255,255,0.05); display: flex; align-items: center; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; border-left: 3px solid var(--f1-red); border-radius: 4px; }
+    .ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; }
+    .ticker-move { display: inline-block; white-space: nowrap; padding-right: 100%; animation: f1Ticker 30s linear infinite; }
+    @keyframes f1Ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+    .stadium-main { flex: 1; display: grid; grid-template-columns: 1fr 420px; overflow: hidden; height: calc(100vh - 67px); }
     .stadium-player-zone { display: flex; flex-direction: column; background: #000; height: 100%; width: 100%; min-height: 0; }
     .video-wrapper { width: 100%; flex: 1; min-height: 0; position: relative; }
     #stadium-grid-mesh { width: 100%; height: 100%; display: grid; gap: 10px; }
     .stadium-monitor { background: #000; overflow: hidden; position: relative; border: 2px solid rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; }
-    .stadium-monitor.focus-pitch { border-color: var(--nba-red); box-shadow: inset 0 0 20px rgba(200,16,46,0.15); }
-    .monitor-tag { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.85); padding: 5px 12px; border-radius: 4px; font-size: 10px; font-weight: 700; color: #fff; border-left: 3px solid var(--nba-blue); z-index: 10; cursor: pointer; }
+    .stadium-monitor.focus-pitch { border-color: var(--f1-red); box-shadow: inset 0 0 20px rgba(225,6,0,0.15); }
+    .monitor-tag { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.85); padding: 5px 12px; border-radius: 4px; font-size: 10px; font-weight: 700; color: #fff; border-left: 3px solid var(--f1-red); z-index: 10; cursor: pointer; }
     .stadium-core { width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #555; }
-    .mute-badge { position: absolute; top: 42px; right: 8px; background: rgba(200,16,46,0.92); color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 50; display: none; align-items: center; gap: 5px; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); }
+    .mute-badge { position: absolute; top: 42px; right: 8px; background: rgba(225,6,0,0.92); color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; z-index: 50; display: none; align-items: center; gap: 5px; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); }
     .mute-badge.visible { display: flex; }
     .mute-badge:hover { background: rgba(255,50,0,0.98); }
-    #alternative-servers-panel { display: none; padding: 15px; background: #05050a; border-bottom: 2px solid rgba(255,255,255,0.05); flex-shrink: 0; max-height: 120px; overflow-y: auto; }
-    .alt-servers-title { color: var(--nba-gold); font-size: 12px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; font-family: 'JetBrains Mono'; }
+    #alternative-servers-panel { display: none; padding: 15px; background: #111; border-bottom: 2px solid rgba(255,255,255,0.05); flex-shrink: 0; max-height: 120px; overflow-y: auto; }
+    .alt-servers-title { color: var(--f1-red); font-size: 12px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
     .alt-servers-list { display: flex; flex-wrap: wrap; gap: 8px; }
     .alt-btn { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 700; transition: 0.2s; }
-    .alt-btn:hover { background: var(--nba-red); border-color: var(--nba-red); }
-    .stadium-sidebar { background: #05050a; border-left: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+    .alt-btn:hover { background: var(--f1-red); border-color: var(--f1-red); }
+    .stadium-sidebar { background: var(--surface-dark); border-left: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+    .hero-match { padding: 20px; border-bottom: 2px solid rgba(225,6,0,0.2); background: linear-gradient(135deg, #1a0000 0%, #050505 100%); border-left: 4px solid var(--f1-red); flex-shrink: 0; }
+    .hero-label { color: var(--f1-red); font-size: 10px; font-family: 'JetBrains Mono'; margin-bottom: 6px; }
+    .hero-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; text-transform: uppercase; }
+    .hero-time { font-size: 24px; font-family: 'JetBrains Mono'; color: #fff; font-weight: bold; }
     .tab-navigation { display: flex; background: rgba(0, 0, 0, 0.4); border-bottom: 1px solid rgba(255, 255, 255, 0.05); flex-shrink: 0; }
     .tab-link { flex: 1; padding: 14px; background: transparent; border: none; color: var(--text-soft); font-weight: 700; font-size: 12px; text-align: center; text-transform: uppercase; }
-    .search-container { padding: 12px; background: #02040a; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; flex-shrink: 0; }
-    .search-input { width: 100%; background: #111a2e; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 10px 10px 35px; border-radius: 4px; font-family: 'Outfit', sans-serif; font-size: 13px; outline: none; transition: border 0.2s; }
-    .search-input:focus { border-color: var(--nba-red); }
+    .search-container { padding: 12px; background: #050505; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; flex-shrink: 0; }
+    .search-input { width: 100%; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 10px 10px 35px; border-radius: 4px; font-family: 'Outfit', sans-serif; font-size: 13px; outline: none; transition: border 0.2s; }
+    .search-input:focus { border-color: var(--f1-red); }
     .search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); color: var(--text-soft); }
     .tab-content { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-height: 0; }
     .tab-content::-webkit-scrollbar { width: 6px; }
-    .tab-content::-webkit-scrollbar-track { background: #02040a; }
-    .tab-content::-webkit-scrollbar-thumb { background: var(--nba-blue); border-radius: 3px; }
-    .tab-content::-webkit-scrollbar-thumb:hover { background: var(--nba-red); }
-    .stadium-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; padding: 12px; cursor: pointer; transition: 0.2s; position: relative; border-left: 3px solid var(--nba-blue); flex-shrink: 0; }
-    .stadium-card:hover { background: rgba(255,255,255,0.07); border-left-color: var(--nba-red); }
+    .tab-content::-webkit-scrollbar-track { background: #050505; }
+    .tab-content::-webkit-scrollbar-thumb { background: var(--f1-red); border-radius: 3px; }
+    .stadium-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+    .stadium-card:hover { background: rgba(225,6,0,0.15); border-color: var(--f1-red); transform: translateX(3px); }
     .card-top { display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center; }
-    .card-league { color: var(--nba-gold); font-size: 10px; font-family: 'JetBrains Mono'; text-transform: uppercase; display: flex; align-items: center; flex-wrap: wrap; }
+    .card-league { color: var(--f1-red); font-size: 10px; font-family: 'JetBrains Mono'; text-transform: uppercase; display: flex; align-items: center; flex-wrap: wrap; }
     .card-live { font-size: 9px; font-family: 'JetBrains Mono'; font-weight: bold; padding: 2px 6px; border-radius: 2px; }
-    .card-title { font-size: 15px; font-family: 'Big Shoulders Display'; font-weight: bold; margin-bottom: 8px; }
+    .card-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
     .card-bottom { display: flex; justify-content: space-between; color: var(--text-soft); font-size: 11px; }
-    #exit-cinema-btn { position: fixed; bottom: 24px; right: 24px; background: var(--nba-red); color: white; border: none; padding: 14px 22px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; z-index: 99999; display: none; box-shadow: 0 6px 20px rgba(0,0,0,0.7); }
+    #exit-cinema-btn { position: fixed; bottom: 24px; right: 24px; background: var(--f1-red); color: white; border: none; padding: 14px 22px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; z-index: 99999; display: none; box-shadow: 0 6px 20px rgba(0,0,0,0.7); }
     .sport-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; }
     .sport-badge.FUTBOL { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
     .sport-badge.NBA { background: rgba(200,16,46,0.15); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.35); }
     .sport-badge.F1 { background: rgba(225,6,0,0.15); color: #ff5c5c; border: 1px solid rgba(225,6,0,0.35); }
-    .um-toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
-    .um-toast { background: linear-gradient(135deg, #1a0a0e 0%, #050208 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
+    .um-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
+    .um-toast { background: linear-gradient(135deg, #1a0000 0%, #050505 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
     .um-toast-header { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--toast-accent); }
     .um-toast-icon { font-size: 16px; }
     .um-toast-title { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.3; }
-    .um-toast-meta { font-size: 11px; color: #8892b0; font-family: 'JetBrains Mono', monospace; }
+    .um-toast-meta { font-size: 11px; color: #999; font-family: 'JetBrains Mono', monospace; }
     .um-toast-actions { display: flex; gap: 8px; margin-top: 4px; }
     .um-toast-btn { flex: 1; padding: 8px 10px; border-radius: 5px; font-size: 11px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; font-family: 'Outfit', sans-serif; }
     .um-toast-btn.watch { background: var(--toast-accent); color: #000; }
     .um-toast-btn.watch:hover { opacity: 0.85; }
-    .um-toast-btn.dismiss { background: transparent; color: #8892b0; border: 1px solid rgba(255,255,255,0.2); flex: 0 0 auto; padding: 8px 12px; }
+    .um-toast-btn.dismiss { background: transparent; color: #999; border: 1px solid rgba(255,255,255,0.2); flex: 0 0 auto; padding: 8px 12px; }
     .um-toast-btn.dismiss:hover { color: #fff; border-color: #fff; }
     @keyframes toastSlideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes toastSlideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
@@ -82,11 +89,12 @@
       body { overflow-y: auto; }
       .stadium-app { height: auto; min-height: 100vh; }
       header { flex-direction: column; height: auto; padding: 12px; gap: 12px; }
+      .top-ticker-container { width: 100%; }
       .stadium-controls { width: 100%; justify-content: space-between; flex-wrap: wrap; }
       .grid-btn { flex: 1; justify-content: center; padding: 0 5px; min-width: 55px; }
       .stadium-main { grid-template-columns: 1fr; height: auto; overflow: visible; }
       .video-wrapper { aspect-ratio: 16/9; flex: none; height: auto; min-height: auto; }
-      .stadium-sidebar { border-left: none; border-top: 2px solid var(--nba-red); height: auto; overflow: visible; }
+      .stadium-sidebar { border-left: none; border-top: 2px solid var(--f1-red); height: auto; overflow: visible; }
       .tab-content { overflow-y: visible; height: auto; max-height: none; }
       .um-toast-container { bottom: 10px; right: 10px; left: 10px; max-width: none; }
     }
@@ -99,9 +107,12 @@
   <div class='stadium-app' id='stadium-app-wrapper'>
     <header>
       <div class='brand-box'>
-        <h1>UNREALMAT<span>NBA</span></h1>
+        <h1>UNREALMAT <span>F1</span></h1>
         <a class='btn-return' href='/'>WEB PRINCIPAL</a>
         <button class='btn-refresh' onclick='recargarBlog(this)'><i class='fas fa-sync-alt'></i> ACTUALIZAR</button>
+      </div>
+      <div class='top-ticker-container'>
+        <div class='ticker-wrap'><div class='ticker-move'>UNREALMAT F1 | SEÑALES DE VIDEO EN VIVO | TRANSMISIÓN DE SESIONES Y GRANDES PREMIOS EN DIRECTO</div></div>
       </div>
       <div class='stadium-controls'>
         <button class='grid-btn active-grid' id='btn-g1' onclick='buildStadiumGrid(1,this)'><i class='fas fa-tv'></i> 1 TV</button>
@@ -122,13 +133,18 @@
       </section>
 
       <aside class='stadium-sidebar' id='app-sidebar-stadium'>
-        <nav class='tab-navigation'><button class='tab-link active-tab'>Agenda de Partidos</button></nav>
+        <div class='hero-match'>
+          <div class='hero-label'><i class='fas fa-flag-checkered'></i> F1 EN VIVO</div>
+          <div class='hero-title'>Sesiones del Día</div>
+          <div class='hero-time'>ONLINE</div>
+        </div>
+        <nav class='tab-navigation'><button class='tab-link active-tab'>Agenda de F1</button></nav>
         <div class='search-container'>
             <i class='fas fa-search search-icon'></i>
-            <input class='search-input' id='search-input' onkeyup='filtrarBusqueda()' placeholder='Buscar equipo NBA...' type='text'/>
+            <input class='search-input' id='search-input' onkeyup='filtrarBusqueda()' placeholder='Buscar GP o sesión...' type='text'/>
         </div>
         <div class='tab-content' id='panel-agenda-content'>
-          <div id='stadium-feed-target'><div style='padding:20px; text-align:center; opacity:0.6;'><i class='fas fa-circle-notch fa-spin'></i> Buscando partidos...</div></div>
+          <div id='stadium-feed-target'><div style='padding:20px; text-align:center; opacity:0.6;'><i class='fas fa-circle-notch fa-spin'></i> Sincronizando sesiones...</div></div>
         </div>
       </aside>
     </main>
@@ -139,7 +155,9 @@
     let slotData = [];
     let activeSlotIndex = 0;
     let targetSlotIndex = 0;
-    const DEPORTE_ACTUAL = 'NBA';
+    const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
+    const CAL_ID = "i3vhcidiluqakvb92ue0hl3nmg@group.calendar.google.com";
+    const DEPORTE_ACTUAL = 'F1';
     const notifiedEventKeys = new Set();
     const _notificationData = {};
 
@@ -147,7 +165,6 @@
     function escapeHTML(str){ if(!str) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
     function jsonAttr(s){ return escapeHTML(JSON.stringify(s==null?'':s)); }
     function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
-    /* E1: validación robusta de URL */
     function isValidStreamUrl(url){
       if(!url || typeof url !== 'string') return false;
       try{
@@ -167,7 +184,7 @@
 
     function createSlotElement(i){
       const div=document.createElement('div'); div.className='stadium-monitor'+(i===0?' focus-pitch':''); div.id='stadium-slot-'+i; div.onclick=()=>focusSlot(i);
-      div.innerHTML=`<div class="monitor-tag" onclick="event.stopPropagation(); focusSlot(${i})"><i class="fas fa-play-circle"></i> TV 0${i+1}</div><div id="stadium-core-${i}" class="stadium-core"><i class="fas fa-tv" style="font-size:40px; margin-bottom:10px;"></i><span style="font-size:12px; font-weight:600; text-align:center; padding:0 10px;">Selecciona un partido</span></div><div class="mute-badge" id="mute-badge-${i}" onclick="event.stopPropagation(); focusSlot(${i})"><i class="fas fa-volume-mute"></i> Activar audio</div>`;
+      div.innerHTML=`<div class="monitor-tag" onclick="event.stopPropagation(); focusSlot(${i})"><i class="fas fa-play-circle"></i> TV 0${i+1}</div><div id="stadium-core-${i}" class="stadium-core"><i class="fas fa-tv" style="font-size:40px; margin-bottom:10px;"></i><span style="font-size:12px; font-weight:600; text-align:center; padding:0 10px;">Selecciona una sesión</span></div><div class="mute-badge" id="mute-badge-${i}" onclick="event.stopPropagation(); focusSlot(${i})"><i class="fas fa-volume-mute"></i> Activar audio</div>`;
       return div;
     }
     function buildStadiumGrid(slots, button){
@@ -203,10 +220,9 @@
         if(badge) badge.classList.toggle('visible', !!has && i!==activeSlotIndex);
       }
     }
-    /* E7 + blogUrl: validar targetSlotIndex y guardar blogUrl */
     function loadInTarget(url){
       if(!url) return;
-      if(!isValidStreamUrl(url)){ console.warn('[NBA] URL bloqueada:', url); return; }
+      if(!isValidStreamUrl(url)){ console.warn('[F1] URL bloqueada:', url); return; }
       if(targetSlotIndex < 0 || targetSlotIndex >= getSlotCount()){
         openInNewSlot(url);
         return;
@@ -219,7 +235,7 @@
     }
     function openInNewSlot(url){
       if(!url) return;
-      if(!isValidStreamUrl(url)){ console.warn('[NBA] URL bloqueada:', url); return; }
+      if(!isValidStreamUrl(url)){ console.warn('[F1] URL bloqueada:', url); return; }
       let slotCount = getSlotCount();
       let free = findFirstEmptySlot();
       const hayReproduccion = slotData.some(s => s && s.url);
@@ -238,7 +254,6 @@
       else { targetSlotIndex = free; }
       applyMuteStates();
     }
-    /* E5: sandbox en iframe */
     function renderStream(slotIdx, url, muted){
       const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
       if(!isValidStreamUrl(url)){ core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
@@ -285,74 +300,98 @@
           }
           return null;
         }));
-        const ahora=new Date();
-        rawEvents.forEach(e=>{ e.eventDateObj=parseEventDate(e); });
-        let filtrados=rawEvents.filter(e=>{ if(!e.eventDateObj) return true; const diffHours=(ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60); return diffHours<=2.5; });
-        filtrados.sort((a,b)=>{ if(!a.eventDateObj) return 1; if(!b.eventDateObj) return -1; return a.eventDateObj.getTime()-b.eventDateObj.getTime(); });
-        datosOriginales=filtrados;
+        try{
+          const tMin = new Date(Date.now()-2.5*60*60*1000).toISOString();
+          const calRes = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CAL_ID)}/events?key=${API_KEY}&timeMin=${tMin}&maxResults=15&singleEvents=true&orderBy=startTime`);
+          if(calRes.ok){
+            const calData = await calRes.json();
+            (calData.items||[]).forEach(ev=>{
+              const raw = ev.start.dateTime || (ev.start.date + 'T00:00:00');
+              rawEvents.push({ titulo: ev.summary||'Sesión F1', torneo: 'CALENDARIO F1', deporte: 'F1', eventDateObj: new Date(raw), servidores: [], isCalendar: true });
+            });
+          }
+        }catch(err){}
+
+        const ahora = new Date();
+        rawEvents.forEach(e => { if(!e.eventDateObj) e.eventDateObj = parseEventDate(e); });
+        let filtrados = rawEvents.filter(e => { if(!e.eventDateObj) return true; const diffHours = (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60); return diffHours <= 2.5; });
+        filtrados.sort((a,b) => { if(!a.eventDateObj) return 1; if(!b.eventDateObj) return -1; return a.eventDateObj.getTime()-b.eventDateObj.getTime(); });
+
+        const map = new Map();
+        filtrados.forEach(e => {
+          const k = normalizar(e.titulo).replace(/[^A-Z0-9]/g,'') + '|' + e.deporte;
+          if(!map.has(k)) map.set(k, e);
+          else { const ex = map.get(k); if(ex.servidores.length === 0 && e.servidores.length > 0) map.set(k, e); }
+        });
+        datosOriginales = Array.from(map.values());
         renderSidebarFeed(datosOriginales);
         checkUpcomingEvents();
       }catch(e){
         console.error(e);
-        document.getElementById('stadium-feed-target').innerHTML='<div style="padding:20px;opacity:.5;text-align:center;color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> No hay partidos en este momento.</div>';
+        document.getElementById('stadium-feed-target').innerHTML='<div style="padding:20px;opacity:.5;text-align:center;color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> No se pudo cargar la agenda.</div>';
       }
     }
     function renderSidebarFeed(events){
       const box=document.getElementById('stadium-feed-target');
-      if(!events||events.length===0){ box.innerHTML='<div style="padding:20px;opacity:.5;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No se encontraron eventos.</div>'; return; }
+      if(!events||events.length===0){ box.innerHTML='<div style="padding:20px;opacity:.5;text-align:center;"><i class="fas fa-calendar-times" style="font-size:24px;margin-bottom:10px;"></i><br>No hay sesiones disponibles.</div>'; return; }
       box.innerHTML=events.map((e,idx)=>{
         const num=e.servidores?e.servidores.length:0;
-        const deporte=e.deporte||'NBA';
+        const deporte=e.deporte||'F1';
         let safeTime='Por confirmar';
-        if(e.eventDateObj) safeTime=e.eventDateObj.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+        if(e.eventDateObj){ const f=e.eventDateObj.toLocaleDateString([],{day:'2-digit',month:'2-digit'}); const h=e.eventDateObj.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); safeTime=`${f} · ${h}`; }
         const status=getDynamicStatus(e.eventDateObj, e.status);
         let bt, bs;
         if(status==='FINALIZADO'){ bt='FINALIZADO'; bs='background:rgba(139,163,181,0.2);color:#8ba3b5;border:1px solid rgba(139,163,181,0.4);'; }
-        else if(status==='EN VIVO'){ bt='EN VIVO'; bs='background:rgba(200,16,46,0.2);color:#c8102e;border:1px solid #c8102e;'; }
+        else if(status==='EN VIVO'){ bt='EN VIVO'; bs='background:rgba(225,6,0,0.2);color:#e10600;border:1px solid #e10600;'; }
         else { bt='PRÓXIMO'; bs='background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid #38bdf8;'; }
         const op=status==='FINALIZADO'?'opacity:.65;':'';
         return `<div class="stadium-card" onclick="prepararPartido(${idx})" style="${op}">
           <div class="card-top"><span class="card-league">${escapeHTML(e.torneo||deporte)}<span class="sport-badge ${deporte}">${deporte}</span></span><span class="card-live" style="${bs}">${bt}</span></div>
           <div class="card-title">${escapeHTML(e.titulo||e.summary)}</div>
-          <div class="card-bottom"><span><i class="fas fa-clock"></i> ${safeTime}</span><span><i class="fas fa-satellite-dish"></i> ${num} Canales</span></div>
+          <div class="card-bottom"><span><i class="fas fa-clock"></i> ${safeTime}</span><span><i class="fas fa-satellite-dish"></i> ${num>0?num+' Canales':'Sin señal aún'}</span></div>
         </div>`;
       }).join('');
     }
     function filtrarBusqueda(){
-      const input=normalizar(document.getElementById('search-input').value);
-      if(!input){ renderSidebarFeed(datosOriginales); return; }
-      renderSidebarFeed(datosOriginales.filter(e=>normalizar(e.titulo||e.summary).includes(input) || normalizar(e.torneo||'').includes(input)));
+      const inp=normalizar(document.getElementById('search-input').value);
+      if(!inp){ renderSidebarFeed(datosOriginales); return; }
+      renderSidebarFeed(datosOriginales.filter(e => normalizar(e.titulo||e.summary).includes(inp) || normalizar(e.torneo||'F1').includes(inp)));
     }
-    /* E2: jsonAttr en onclick */
     function prepararPartido(index){
       const partido=datosOriginales[index]; if(!partido) return;
+      if(!partido.servidores || partido.servidores.length===0){
+        if(targetSlotIndex < 0 || targetSlotIndex >= getSlotCount()) targetSlotIndex = 0;
+        const t=document.getElementById('stadium-core-'+targetSlotIndex);
+        if(t) t.innerHTML='<div style="color:#fff;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;"><i class="fas fa-hourglass-half" style="font-size:40px;color:var(--f1-red);margin-bottom:15px;"></i><h3 style="margin-bottom:10px;">Señal aún no publicada</h3><p style="font-size:12px;color:#999;max-width:300px;">La sesión está agendada, pero los canales aún no están disponibles.</p></div>';
+        document.getElementById('alternative-servers-panel').style.display='none';
+        return;
+      }
       const panel=document.getElementById('alternative-servers-panel'); const list=document.getElementById('alt-servers-list');
-      if(partido.servidores && partido.servidores.length){
-        list.innerHTML=partido.servidores.map((s,i)=>{
-          const n=escapeHTML(s.nombre||'Opción '+(i+1));
-          return `<button class="alt-btn" onclick="loadInTarget(${jsonAttr(s.url)})"><i class="fas fa-play"></i> ${n}</button>`;
-        }).join('');
-      } else list.innerHTML=`<button class="alt-btn" disabled>No hay servidores</button>`;
+      list.innerHTML=partido.servidores.map((s,i)=>{
+        const n=escapeHTML(s.nombre||'Opción '+(i+1));
+        return `<button class="alt-btn" onclick="loadInTarget(${jsonAttr(s.url)})"><i class="fas fa-play"></i> ${n}</button>`;
+      }).join('');
       panel.style.display='block';
-      if(partido.servidores && partido.servidores.length) loadInTarget(partido.servidores[0].url);
-      if(window.innerWidth<=900) window.scrollTo({top:0,behavior:'smooth'});
+      loadInTarget(partido.servidores[0].url);
+      if(window.innerWidth<=900) window.scrollTo({ top:0, behavior:'smooth' });
     }
     function enableCinemaMode(){
       document.querySelector('header').style.display='none';
       document.getElementById('app-sidebar-stadium').style.display='none';
       document.getElementById('alternative-servers-panel').style.display='none';
-      const mainView=document.getElementById('app-body-stadium');
-      mainView.style.gridTemplateColumns='1fr'; mainView.style.height='100vh';
+      const m=document.getElementById('app-body-stadium');
+      m.style.gridTemplateColumns='1fr'; m.style.height='100vh';
       document.getElementById('exit-cinema-btn').style.display='block';
     }
     function disableCinemaMode(){
       document.querySelector('header').style.display='flex';
       document.getElementById('app-sidebar-stadium').style.display='flex';
-      const mainView=document.getElementById('app-body-stadium');
-      mainView.style.gridTemplateColumns=window.innerWidth<=900?'1fr':'1fr 420px';
-      mainView.style.height=window.innerWidth<=900?'auto':'calc(100vh - 112px)';
+      const m=document.getElementById('app-body-stadium');
+      m.style.gridTemplateColumns=window.innerWidth<=900?'1fr':'1fr 420px';
+      m.style.height=window.innerWidth<=900?'auto':'calc(100vh - 67px)';
       document.getElementById('exit-cinema-btn').style.display='none';
     }
+
     function checkUpcomingEvents(){
       if(notifiedEventKeys.size > 500) notifiedEventKeys.clear();
       const now = Date.now();
