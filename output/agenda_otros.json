@@ -1,41 +1,27 @@
 {
-  "fecha_actualizacion": "2026-11-26T12:00:24Z",
-  "total": 5,
+  "fecha_actualizacion": "2026-11-26T16:10:56Z",
+  "total": 3,
   "eventos": [
     {
-      "id": "evt_3",
-      "titulo": "Austria vs España",
-      "hora": "09:00",
-      "fecha_completa": "2026-11-26T11:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "VER AQUÍ",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsports2"
-        }
-      ],
-      "torneo": "Copa Davis",
-      "deporte": "OTROS"
-    },
-    {
-      "id": "evt_22",
+      "id": "evt_21",
       "titulo": "Detroit Lions vs Chicago Bears",
-      "hora": "11:00",
+      "hora": "12:00",
       "fecha_completa": "2026-11-26T13:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "VER AQUÍ",
+          "nombre": "DISNEY19",
           "url": "https://streamxhd.sbs/live1.php?stream=disney19"
         }
       ],
-      "torneo": "11:00 DE VS CH NFL NFL Detroit Lions vs Chicago Bears PRONTO",
+      "torneo": "NFL",
+      "source": "json",
       "deporte": "OTROS"
     },
     {
-      "id": "evt_41",
+      "id": "evt_40",
       "titulo": "Dallas Cowboys vs Philadelphia Eagles",
-      "hora": "15:00",
+      "hora": "16:00",
       "fecha_completa": "2026-11-26T17:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -45,12 +31,13 @@
         }
       ],
       "torneo": "NFL",
+      "source": "json",
       "deporte": "OTROS"
     },
     {
-      "id": "evt_48",
+      "id": "evt_47",
       "titulo": "Buffalo Bills vs Kansas City Chiefs",
-      "hora": "18:00",
+      "hora": "19:00",
       "fecha_completa": "2026-11-26T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
@@ -60,21 +47,7 @@
         }
       ],
       "torneo": "NFL",
-      "deporte": "OTROS"
-    },
-    {
-      "id": "evt_56",
-      "titulo": "Tampa Bay Lightning vs Carolina Hurricanes",
-      "hora": "17:00",
-      "fecha_completa": "2026-11-25T19:00:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "ESPN 4",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn4"
-        }
-      ],
-      "torneo": "17:00 TA VS CA NHL NHL Tampa Bay Lightning vs Carolina Hurricanes FINALIZADO",
+      "source": "json",
       "deporte": "OTROS"
     }
   ]
