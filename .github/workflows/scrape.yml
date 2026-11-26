@@ -33,13 +33,9 @@ jobs:
         run: python -m playwright install --with-deps chromium
 
       - name: Run scraper de deportes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python extractor_local.py
 
       - name: Run scraper de wrestling
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python extractor_wrestling.py
 
       - name: Commit output
