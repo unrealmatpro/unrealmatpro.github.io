@@ -73,10 +73,6 @@
     @keyframes tickerMove { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     #exit-cinema-btn { position: fixed; bottom: 24px; right: 24px; background: #7928ca; color: white; border: none; padding: 14px 22px; border-radius: 50px; font-size: 12px; font-weight: 800; cursor: pointer; z-index: 99999; display: none; box-shadow: 0 6px 20px rgba(0,0,0,0.7); transition: 0.2s; }
     #exit-cinema-btn:hover { background: #5d3c82; }
-    .sport-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; }
-    .sport-badge.FUTBOL { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.35); }
-    .sport-badge.NBA { background: rgba(200,16,46,0.15); color: #ff5c7c; border: 1px solid rgba(200,16,46,0.35); }
-    .sport-badge.F1 { background: rgba(225,6,0,0.15); color: #ff5c5c; border: 1px solid rgba(225,6,0,0.35); }
     .um-toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 99998; display: flex; flex-direction: column; gap: 10px; max-width: 340px; }
     .um-toast { background: linear-gradient(135deg, #0a1f2e 0%, #050810 100%); border: 1px solid var(--toast-accent); border-left: 4px solid var(--toast-accent); border-radius: 8px; padding: 14px 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 10px; animation: toastSlideIn 0.3s ease; }
     .um-toast-header { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--toast-accent); }
@@ -145,7 +141,6 @@
       <aside class='stadium-sidebar' id='app-sidebar-stadium'>
         <nav class='sport-tabs'>
           <button class='sport-tab active' onclick='filterBySport("FUTBOL", this)'><i class='fas fa-futbol'></i> FÚTBOL</button>
-          <button class='sport-tab' onclick='filterBySport("TODOS", this)'><i class='fas fa-globe'></i> TODOS</button>
         </nav>
         <div class='search-container'>
             <i class='fas fa-search search-icon'></i>
@@ -229,13 +224,11 @@
         if(badge) badge.classList.toggle('visible', !!has && i!==activeSlotIndex);
       }
     }
-    /* E7: validar targetSlotIndex */
     function loadInTarget(url){
       if(!url) return;
-      if(!isValidStreamUrl(url)){ console.warn('[Blog] URL bloqueada:', url); return; }
+      if(!isValidStreamUrl(url)){ console.warn('[Fútbol] URL bloqueada:', url); return; }
       if(targetSlotIndex < 0 || targetSlotIndex >= getSlotCount()){
-        openInNewSlot(url);
-        return;
+        openInNewSlot(url); return;
       }
       const isMuted=(targetSlotIndex!==activeSlotIndex);
       slotData[targetSlotIndex]={url, blogUrl: location.pathname};
@@ -245,7 +238,7 @@
     }
     function openInNewSlot(url){
       if(!url) return;
-      if(!isValidStreamUrl(url)){ console.warn('[Blog] URL bloqueada:', url); return; }
+      if(!isValidStreamUrl(url)){ console.warn('[Fútbol] URL bloqueada:', url); return; }
       let slotCount = getSlotCount();
       let free = findFirstEmptySlot();
       const hayReproduccion = slotData.some(s => s && s.url);
@@ -264,7 +257,6 @@
       else { targetSlotIndex = free; }
       applyMuteStates();
     }
-    /* E5: sandbox */
     function renderStream(slotIdx, url, muted){
       const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
       if(!isValidStreamUrl(url)){ core.innerHTML='<div style="color:#ff3b30;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
@@ -284,37 +276,33 @@
         core.appendChild(ov);
       }
     }
+
+    /* ⚠️ CAMBIO: solo carga agenda_futbol.json */
     async function cargarAgenda(){
-      const baseUrl="../output/";
-      const urls=[
-        { sport:"FUTBOL", url:`${baseUrl}agenda_futbol.json?v=${Date.now()}` },
-        { sport:"NBA", url:`${baseUrl}agenda_nba.json?v=${Date.now()}` },
-        { sport:"F1", url:`${baseUrl}agenda_f1.json?v=${Date.now()}` }
-      ];
       try{
-        const responses=await Promise.all(urls.map(u=>fetch(u.url).catch(()=>null)));
-        let rawEvents=[];
-        await Promise.all(responses.map((res,index)=>{
-          if(res && res.ok){
-            return res.json().then(data=>{
-              const lista=data.eventos||data;
-              if(Array.isArray(lista)){
-                lista.forEach(e=>{
-                  e.deporte=urls[index].sport;
-                  if(e.titulo && !e.summary) e.summary=e.titulo;
-                  if(e.servidores){ e.servidores=e.servidores.map(s=>({ nombre: s.nombre||s.stream||'Opción', url: s.url||s.live1_url||'' })); }
-                  rawEvents.push(e);
-                });
-              }
-            }).catch(()=>{});
-          }
-          return null;
-        }));
-        const ahora=new Date();
-        rawEvents.forEach(e=>{ e.eventDateObj=parseEventDate(e); });
-        allEvents=rawEvents.filter(e=>{ if(!e.eventDateObj) return true; const diffHours=(ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60); return diffHours<=2.5; });
-        allEvents.sort((a,b)=>{ if(!a.eventDateObj) return 1; if(!b.eventDateObj) return -1; return a.eventDateObj.getTime()-b.eventDateObj.getTime(); });
-        filterBySport(currentSport, document.querySelector('.sport-tab.active'));
+        const res = await fetch(`../output/agenda_futbol.json?v=${Date.now()}`);
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const lista = data.eventos || [];
+        const ahora = new Date();
+        lista.forEach(e => {
+          e.deporte = 'FUTBOL';
+          if(e.titulo && !e.summary) e.summary = e.titulo;
+          if(e.servidores) e.servidores = e.servidores.map(s => ({ nombre: s.nombre||'Opción', url: s.url||'' }));
+          e.eventDateObj = parseEventDate(e);
+        });
+        allEvents = lista.filter(e => {
+          if(!e.eventDateObj) return true;
+          const diffHours = (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60);
+          return diffHours <= 2.5;
+        });
+        allEvents.sort((a,b) => {
+          if(!a.eventDateObj) return 1;
+          if(!b.eventDateObj) return -1;
+          return a.eventDateObj.getTime() - b.eventDateObj.getTime();
+        });
+        filteredEvents = allEvents;
+        renderSidebarFeed(filteredEvents);
         actualizarTicker();
         checkUpcomingEvents();
       }catch(e){
@@ -328,8 +316,8 @@
       box.innerHTML=events.map(e=>{
         const globalIndex=allEvents.indexOf(e);
         const safeTitle=escapeHTML(e.summary||e.titulo);
-        const safeLeague=escapeHTML(e.leagueName||e.torneo||"DEPORTE");
-        const deporte=e.deporte||'FUTBOL';
+        const safeLeague=escapeHTML(e.leagueName||e.torneo||"FÚTBOL");
+        const deporte='FUTBOL';
         let safeTime='Por confirmar';
         if(e.eventDateObj) safeTime=e.eventDateObj.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
         const status=getDynamicStatus(e.eventDateObj, e.status);
@@ -340,7 +328,7 @@
         else { bt='PRÓXIMO'; bs='background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid #38bdf8;'; }
         const op=status==='FINALIZADO'?'opacity:.65;':'';
         return `<div class="stadium-card" onclick="prepararPartido(${globalIndex})" style="${op}">
-          <div class="card-top"><span class="card-league">${safeLeague}<span class="sport-badge ${deporte}">${deporte}</span></span><span class="card-live" style="${bs}">${bt}</span></div>
+          <div class="card-top"><span class="card-league">${safeLeague}</span><span class="card-live" style="${bs}">${bt}</span></div>
           <div class="card-title">${safeTitle}</div>
           <div class="card-bottom"><span><i class="fas fa-clock"></i> ${safeTime}</span><span><i class="fas fa-satellite-dish"></i> ${numOpciones} Opciones</span></div>
         </div>`;
@@ -349,17 +337,13 @@
     function filterBySport(sport, element){
       currentSport=sport;
       if(element){ document.querySelectorAll('.sport-tab').forEach(t=>t.classList.remove('active')); element.classList.add('active'); }
-      let filtered=allEvents;
-      if(sport!=='TODOS') filtered=allEvents.filter(e=>e.deporte===sport);
-      filteredEvents=filtered;
+      filteredEvents=allEvents;
       renderSidebarFeed(filteredEvents);
     }
     function filtrarBusqueda(){
       const input=normalizar(document.getElementById('search-input').value);
-      let baseList=currentSport==='TODOS'?allEvents:allEvents.filter(e=>e.deporte===currentSport);
-      if(!input){ renderSidebarFeed(baseList); return; }
-      const filtrados=baseList.filter(e=>normalizar(e.summary).includes(input)||normalizar(e.leagueName||e.torneo||"").includes(input));
-      renderSidebarFeed(filtrados);
+      if(!input){ renderSidebarFeed(allEvents); return; }
+      renderSidebarFeed(allEvents.filter(e=>normalizar(e.summary).includes(input)||normalizar(e.torneo||"").includes(input)));
     }
     function prepararPartido(index){
       const partido=allEvents[index]; if(!partido) return;
@@ -440,22 +424,14 @@
       const title = e.titulo || e.summary || 'Evento';
       const torneo = e.torneo || '';
       const toast = document.createElement('div');
-      toast.className = 'um-toast';
-      toast.id = id;
+      toast.className = 'um-toast'; toast.id = id;
       toast.innerHTML = `
-        <div class="um-toast-header">
-          <span class="um-toast-icon">${sportIcon}</span>
-          <span>${sportName}${torneo ? ' · ' + escapeHTML(torneo) : ''}</span>
-        </div>
+        <div class="um-toast-header"><span class="um-toast-icon">${sportIcon}</span><span>${sportName}${torneo ? ' · ' + escapeHTML(torneo) : ''}</span></div>
         <div class="um-toast-title">${escapeHTML(title)}</div>
         <div class="um-toast-meta">${timeLabel}</div>
         <div class="um-toast-actions">
-          <button class="um-toast-btn watch" onclick="openFromNotification('${id}')">
-            <i class="fas fa-plus"></i> Ver en nueva pantalla
-          </button>
-          <button class="um-toast-btn dismiss" onclick="dismissNotification('${id}')">
-            <i class="fas fa-times"></i>
-          </button>
+          <button class="um-toast-btn watch" onclick="openFromNotification('${id}')"><i class="fas fa-plus"></i> Ver en nueva pantalla</button>
+          <button class="um-toast-btn dismiss" onclick="dismissNotification('${id}')"><i class="fas fa-times"></i></button>
         </div>`;
       container.appendChild(toast);
       setTimeout(() => { dismissNotification(id); }, 25000);
