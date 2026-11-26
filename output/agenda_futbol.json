@@ -1,158 +1,9 @@
 {
-  "fecha_actualizacion": "2026-11-25T23:30:52Z",
+  "fecha_actualizacion": "2026-11-26T12:00:24Z",
   "total": 51,
   "eventos": [
     {
-      "id": "evt_1",
-      "titulo": "Atlético Mineiro vs Corinthians",
-      "hora": "16:00",
-      "fecha_completa": "2026-11-25T18:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "LIGA 1 MAX",
-          "url": "https://streamxhd.sbs/live1.php?stream=l1max"
-        },
-        {
-          "nombre": "VER AQUÍ",
-          "url": "https://streamxhd.sbs/live1.php?stream=liga1"
-        },
-        {
-          "nombre": "PREMIERE 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=premiere1"
-        }
-      ],
-      "torneo": "16:00 AT VS CO BR BRA Brasileirão Atlético Mineiro vs Corinthians EN VIVO",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_2",
-      "titulo": "Santa Fe vs Once Caldas",
-      "hora": "16:20",
-      "fecha_completa": "2026-11-25T18:20:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "WIN SPORTS +",
-          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
-        },
-        {
-          "nombre": "WIN SPORTS",
-          "url": "https://streamxhd.sbs/live1.php?stream=winsports"
-        }
-      ],
-      "torneo": "Liga Colombia",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_3",
-      "titulo": "Boca Juniors vs Independiente Rivadavia",
-      "hora": "17:00",
-      "fecha_completa": "2026-11-25T19:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ESPN PREMIUM",
-          "url": "https://streamxhd.sbs/live1.php?stream=espnpremium"
-        },
-        {
-          "nombre": "DISNEY+ 11",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney11"
-        },
-        {
-          "nombre": "ESPN 5",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn5"
-        },
-        {
-          "nombre": "FOX DEPORTES USA",
-          "url": "https://streamxhd.sbs/live1.php?stream=fox_deportes_usa"
-        }
-      ],
-      "torneo": "17:00 BO VS IN AR AR Liga Profesional Boca Juniors vs Independiente Rivadavia PRONTO",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_4",
-      "titulo": "Barcelona SC vs Independiente del Valle",
-      "hora": "17:00",
-      "fecha_completa": "2026-11-25T19:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "ZAPPING EC",
-          "url": "https://streamxhd.sbs/live1.php?stream=zapping_ec"
-        }
-      ],
-      "torneo": "Liga Ecuador",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_9",
-      "titulo": "Toluca vs Atlas",
-      "hora": "18:00",
-      "fecha_completa": "2026-11-25T20:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "TUDNMX",
-          "url": "https://streamxhd.sbs/live1.php?stream=tudnmx"
-        },
-        {
-          "nombre": "VER AQUÍ",
-          "url": "https://streamxhd.sbs/live1.php?stream=canal5mx"
-        },
-        {
-          "nombre": "VER AQUÍ",
-          "url": "https://streamxhd.sbs/live1.php?stream=azteca7"
-        },
-        {
-          "nombre": "TUDN USA",
-          "url": "https://streamxhd.sbs/live1.php?stream=tudn_usa"
-        }
-      ],
-      "torneo": "18:00 TO VS AT LIGAMX Liga MX Toluca vs Atlas PRONTO",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_12",
-      "titulo": "Atlético Nacional vs Medellín",
-      "hora": "18:30",
-      "fecha_completa": "2026-11-25T20:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "WIN SPORTS +",
-          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
-        }
-      ],
-      "torneo": "Liga Colombia",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_14",
-      "titulo": "Monterrey vs América",
-      "hora": "20:00",
-      "fecha_completa": "2026-11-25T22:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "TUDNMX",
-          "url": "https://streamxhd.sbs/live1.php?stream=tudnmx"
-        },
-        {
-          "nombre": "VER AQUÍ",
-          "url": "https://streamxhd.sbs/live1.php?stream=canal5mx"
-        },
-        {
-          "nombre": "TUDN USA",
-          "url": "https://streamxhd.sbs/live1.php?stream=tudn_usa"
-        }
-      ],
-      "torneo": "20:00 MO VS AM LIGAMX Liga MX Monterrey vs América PRONTO",
-      "deporte": "FUTBOL"
-    },
-    {
-      "id": "evt_17",
+      "id": "evt_0",
       "titulo": "Uzbekistán vs Italia",
       "hora": "07:00",
       "fecha_completa": "2026-11-26T09:00:00-05:00",
@@ -167,7 +18,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_18",
+      "id": "evt_1",
       "titulo": "Marruecos vs España",
       "hora": "08:00",
       "fecha_completa": "2026-11-26T10:00:00-05:00",
@@ -186,7 +37,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_19",
+      "id": "evt_2",
       "titulo": "Kairat vs Mjällby",
       "hora": "08:30",
       "fecha_completa": "2026-11-26T10:30:00-05:00",
@@ -201,7 +52,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_21",
+      "id": "evt_4",
       "titulo": "Dynamo Moskva vs Fakel Voronezh",
       "hora": "09:30",
       "fecha_completa": "2026-11-26T11:30:00-05:00",
@@ -216,7 +67,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_22",
+      "id": "evt_5",
       "titulo": "Ajax vs Thun",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -231,7 +82,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_23",
+      "id": "evt_6",
       "titulo": "Brighton & Hove Albion vs CSU Craiova",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -246,7 +97,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_24",
+      "id": "evt_7",
       "titulo": "Hearts vs Monaco",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -261,7 +112,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_25",
+      "id": "evt_8",
       "titulo": "Iberia 1999 vs Getafe",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -276,7 +127,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_26",
+      "id": "evt_9",
       "titulo": "Paphos vs Midtjylland",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -291,7 +142,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_27",
+      "id": "evt_10",
       "titulo": "Brann vs AGF",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -306,7 +157,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_28",
+      "id": "evt_11",
       "titulo": "Jablonec vs Lugano",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -321,7 +172,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_29",
+      "id": "evt_12",
       "titulo": "Kauno Žalgiris vs Riga",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -336,7 +187,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_30",
+      "id": "evt_13",
       "titulo": "Egnatia Rrogozhinë vs Lincoln Red Imps",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -351,7 +202,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_31",
+      "id": "evt_14",
       "titulo": "Olympiakos Piraeus vs Milan",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -370,7 +221,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_32",
+      "id": "evt_15",
       "titulo": "Viktoria Plzeň vs Benfica",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -389,7 +240,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_33",
+      "id": "evt_16",
       "titulo": "Celta de Vigo vs AFC Bournemouth",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -408,7 +259,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_34",
+      "id": "evt_17",
       "titulo": "Dinamo Zagreb vs Bayer Leverkusen",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -427,7 +278,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_35",
+      "id": "evt_18",
       "titulo": "Olympique Marseille vs Levski Sofia",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -446,7 +297,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_36",
+      "id": "evt_19",
       "titulo": "RB Salzburg vs Ararat-Armenia",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -465,7 +316,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_37",
+      "id": "evt_20",
       "titulo": "Beşiktaş vs Hapoel Be'er Sheva",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -480,7 +331,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_38",
+      "id": "evt_21",
       "titulo": "Union Saint-Gilloise vs Lech Poznań",
       "hora": "10:45",
       "fecha_completa": "2026-11-26T12:45:00-05:00",
@@ -495,7 +346,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_40",
+      "id": "evt_23",
       "titulo": "Borac Banja Luka vs Atalanta",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -510,7 +361,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_41",
+      "id": "evt_24",
       "titulo": "Freiburg vs Twente",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -525,7 +376,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_42",
+      "id": "evt_25",
       "titulo": "Sporting Braga vs KuPS",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -540,7 +391,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_43",
+      "id": "evt_26",
       "titulo": "CSKA Sofia vs Trabzonspor",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -555,7 +406,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_44",
+      "id": "evt_27",
       "titulo": "Nordsjælland vs Panathinaikos",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -570,7 +421,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_45",
+      "id": "evt_28",
       "titulo": "Gent vs Crvena Zvezda",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -585,7 +436,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_46",
+      "id": "evt_29",
       "titulo": "Inter Club d'Escaldes vs København",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -600,7 +451,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_47",
+      "id": "evt_30",
       "titulo": "Hajduk Split vs Sint-Truiden",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -615,7 +466,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_48",
+      "id": "evt_31",
       "titulo": "Juventus vs Omonia Nicosia",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -634,7 +485,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_49",
+      "id": "evt_32",
       "titulo": "Crystal Palace vs Real Sociedad",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -653,7 +504,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_50",
+      "id": "evt_33",
       "titulo": "Olympique Lyonnais vs Lillestrøm",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -672,7 +523,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_51",
+      "id": "evt_34",
       "titulo": "Sunderland vs Jagiellonia Białystok",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -691,7 +542,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_52",
+      "id": "evt_35",
       "titulo": "Torreense vs Celtic",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -706,7 +557,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_53",
+      "id": "evt_36",
       "titulo": "Sparta Praha vs AZ",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -725,7 +576,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_54",
+      "id": "evt_37",
       "titulo": "NEC vs Rennes",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -744,7 +595,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_55",
+      "id": "evt_38",
       "titulo": "Hoffenheim vs Sturm Graz",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -759,7 +610,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_56",
+      "id": "evt_39",
       "titulo": "OFI vs Anderlecht",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -774,7 +625,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_57",
+      "id": "evt_40",
       "titulo": "Ferencváros vs Celje",
       "hora": "13:00",
       "fecha_completa": "2026-11-26T15:00:00-05:00",
@@ -789,7 +640,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_60",
+      "id": "evt_43",
       "titulo": "Cerro Porteño vs Libertad",
       "hora": "15:30",
       "fecha_completa": "2026-11-26T17:30:00-05:00",
@@ -804,7 +655,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_61",
+      "id": "evt_44",
       "titulo": "São Paulo vs Remo",
       "hora": "16:00",
       "fecha_completa": "2026-11-26T18:00:00-05:00",
@@ -819,7 +670,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_62",
+      "id": "evt_45",
       "titulo": "Montevideo City Torque vs Nacional",
       "hora": "17:30",
       "fecha_completa": "2026-11-26T19:30:00-05:00",
@@ -834,7 +685,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_64",
+      "id": "evt_47",
       "titulo": "Pachuca vs Guadalajara",
       "hora": "18:00",
       "fecha_completa": "2026-11-26T20:00:00-05:00",
@@ -853,7 +704,7 @@
       "deporte": "FUTBOL"
     },
     {
-      "id": "evt_67",
+      "id": "evt_50",
       "titulo": "León vs Cruz Azul",
       "hora": "20:10",
       "fecha_completa": "2026-11-26T22:10:00-05:00",
@@ -869,6 +720,155 @@
         }
       ],
       "torneo": "20:10 LE VS CR LIGAMX Liga MX León vs Cruz Azul PRONTO",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_52",
+      "titulo": "Atlético Mineiro vs Corinthians",
+      "hora": "16:00",
+      "fecha_completa": "2026-11-25T18:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "LIGA 1 MAX",
+          "url": "https://streamxhd.sbs/live1.php?stream=l1max"
+        },
+        {
+          "nombre": "VER AQUÍ",
+          "url": "https://streamxhd.sbs/live1.php?stream=liga1"
+        },
+        {
+          "nombre": "PREMIERE 1",
+          "url": "https://streamxhd.sbs/live1.php?stream=premiere1"
+        }
+      ],
+      "torneo": "16:00 AT VS CO BR BRA Brasileirão Atlético Mineiro vs Corinthians FINALIZADO",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_53",
+      "titulo": "Santa Fe vs Once Caldas",
+      "hora": "16:20",
+      "fecha_completa": "2026-11-25T18:20:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "WIN SPORTS +",
+          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
+        },
+        {
+          "nombre": "WIN SPORTS",
+          "url": "https://streamxhd.sbs/live1.php?stream=winsports"
+        }
+      ],
+      "torneo": "Liga Colombia",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_54",
+      "titulo": "Boca Juniors vs Independiente Rivadavia",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-25T19:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "ESPN PREMIUM",
+          "url": "https://streamxhd.sbs/live1.php?stream=espnpremium"
+        },
+        {
+          "nombre": "DISNEY+ 11",
+          "url": "https://streamxhd.sbs/live1.php?stream=disney11"
+        },
+        {
+          "nombre": "ESPN 5",
+          "url": "https://streamxhd.sbs/live1.php?stream=espn5"
+        },
+        {
+          "nombre": "FOX DEPORTES USA",
+          "url": "https://streamxhd.sbs/live1.php?stream=fox_deportes_usa"
+        }
+      ],
+      "torneo": "17:00 BO VS IN AR AR Liga Profesional Boca Juniors vs Independiente Rivadavia FINALIZADO",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_59",
+      "titulo": "Toluca vs Atlas",
+      "hora": "18:00",
+      "fecha_completa": "2026-11-25T20:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "TUDNMX",
+          "url": "https://streamxhd.sbs/live1.php?stream=tudnmx"
+        },
+        {
+          "nombre": "VER AQUÍ",
+          "url": "https://streamxhd.sbs/live1.php?stream=canal5mx"
+        },
+        {
+          "nombre": "VER AQUÍ",
+          "url": "https://streamxhd.sbs/live1.php?stream=azteca7"
+        },
+        {
+          "nombre": "TUDN USA",
+          "url": "https://streamxhd.sbs/live1.php?stream=tudn_usa"
+        }
+      ],
+      "torneo": "18:00 TO VS AT LIGAMX Liga MX Toluca vs Atlas FINALIZADO",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_62",
+      "titulo": "Barcelona SC vs Independiente del Valle",
+      "hora": "18:05",
+      "fecha_completa": "2026-11-25T20:05:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "ZAPPING EC",
+          "url": "https://streamxhd.sbs/live1.php?stream=zapping_ec"
+        }
+      ],
+      "torneo": "Liga Ecuador",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_63",
+      "titulo": "Atlético Nacional vs Medellín",
+      "hora": "18:30",
+      "fecha_completa": "2026-11-25T20:30:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "WIN SPORTS +",
+          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
+        }
+      ],
+      "torneo": "Liga Colombia",
+      "deporte": "FUTBOL"
+    },
+    {
+      "id": "evt_65",
+      "titulo": "Monterrey vs América",
+      "hora": "20:00",
+      "fecha_completa": "2026-11-25T22:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "TUDNMX",
+          "url": "https://streamxhd.sbs/live1.php?stream=tudnmx"
+        },
+        {
+          "nombre": "VER AQUÍ",
+          "url": "https://streamxhd.sbs/live1.php?stream=canal5mx"
+        },
+        {
+          "nombre": "TUDN USA",
+          "url": "https://streamxhd.sbs/live1.php?stream=tudn_usa"
+        }
+      ],
+      "torneo": "20:00 MO VS AM LIGAMX Liga MX Monterrey vs América FINALIZADO",
       "deporte": "FUTBOL"
     }
   ]
