@@ -6,7 +6,7 @@
   <meta content='#020d08' name='theme-color'/>
   <title>UNREALMAT PRO+ | Central de Deportes</title>
 
-  <meta content='Agenda deportiva en vivo: FIFA 2026, Fútbol, NBA, F1 y Wrestling. Sigue los eventos de UNREALMAT PRO+ en tiempo real.' name='description'/>
+  <meta content='Agenda deportiva en vivo: FIFA 2026, Fútbol, NBA, F1 y Otros deportes. Sigue los eventos de UNREALMAT PRO+ en tiempo real.' name='description'/>
   <link href='https://fonts.googleapis.com' rel='preconnect'/>
   <link crossorigin='' href='https://fonts.gstatic.com' rel='preconnect'/>
   <link href='https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&family=JetBrains+Mono:wght@400;700;800&display=swap' rel='stylesheet'/>
@@ -144,7 +144,7 @@
     <section class='hero-header-v2'>
       <div class='hero-badge'>En Vivo y En Directo</div>
       <h1 class='hero-title'>Central de <span>Deportes</span></h1>
-      <p class='hero-subtitle'>FIFA 2026 &#183; NBA &#183; F1 &#183; WRESTLING</p>
+      <p class='hero-subtitle'>FIFA 2026 &#183; NBA &#183; F1 &#183; OTROS</p>
     </section>
 
     <section class='live-section' id='live-section'>
@@ -177,12 +177,12 @@
         </div>
         <div class='card-info-v4'><h3>FORMULA 1</h3><small class='card-next'>Cargando&#8230;</small></div>
       </a>
-      <a class='card-v4' href='/wrestling/' data-sport='WRESTLING'>
+      <a class='card-v4' href='/otros/' data-sport='OTROS'>
         <div class='card-media-v4'>
-          <img alt='Wrestling News' src='https://i.ytimg.com/vi/C4NFvTvi1MY/hq720.jpg'/>
+          <img alt='Otros Deportes' src='https://i.ytimg.com/vi/C4NFvTvi1MY/hq720.jpg'/>
           <div class='card-live-badge'><span class='dot'></span> EN VIVO</div>
         </div>
-        <div class='card-info-v4'><h3>WRESTLING</h3><small class='card-next'>Cargando&#8230;</small></div>
+        <div class='card-info-v4'><h3>OTROS DEPORTES</h3><small class='card-next'>Cargando&#8230;</small></div>
       </a>
     </main>
   </div>
@@ -232,18 +232,19 @@
       jsonSources: [
         { sportKey: 'FUTBOL', label: 'Fútbol', blogUrl: '/futbol/', jsonUrl: './output/agenda_futbol.json' },
         { sportKey: 'NBA',    label: 'NBA',    blogUrl: '/nba/',    jsonUrl: './output/agenda_nba.json' },
-        { sportKey: 'F1',     label: 'F1',     blogUrl: '/F1/',     jsonUrl: './output/agenda_f1.json' }
+        { sportKey: 'F1',     label: 'F1',     blogUrl: '/F1/',     jsonUrl: './output/agenda_f1.json' },
+        { sportKey: 'OTROS',  label: 'Otros',  blogUrl: '/otros/',  jsonUrl: './output/agenda_otros.json' }
       ],
       calendars: [
-        { sportKey: 'WRESTLING', label: 'WWE',  id: 'a070eeba37995e97cff5a176f99d4ed9e90b671a0a9e9e22e5eb370312c54e62@group.calendar.google.com', timeOffset: 3600000, blogUrl: '/wrestling/' },
-        { sportKey: 'WRESTLING', label: 'AEW',  id: '0827b95e8b37fd9559f457c39aa6733daaaa4ffe4833d2a27917ed65eb01d052@group.calendar.google.com', timeOffset: 3600000, blogUrl: '/wrestling/' },
-        { sportKey: 'WRESTLING', label: 'TNA',  id: '727b20f12dcf43bd661017bafba52fd7a8ad706a2ebe48afa6a5f4b391b71490@group.calendar.google.com', timeOffset: 3600000, blogUrl: '/wrestling/' },
-        { sportKey: 'WRESTLING', label: 'NJPW', id: 'n6l35ni6rcbffi1m4m5g5ocnh4@group.calendar.google.com', timeOffset: 3600000, blogUrl: '/wrestling/' },
-        { sportKey: 'F1',        label: 'F1',   id: 'i3vhcidiluqakvb92ue0hl3nmg@group.calendar.google.com', timeOffset: 0, blogUrl: '/F1/' }
+        { sportKey: 'OTROS', label: 'WWE',  id: 'a070eeba37995e97cff5a176f99d4ed9e90b671a0a9e9e22e5eb370312c54e62@group.calendar.google.com', timeOffset: 3600000, blogUrl: '/otros/' },
+        { sportKey: 'OTROS', label: 'AEW',  id: '0827b95e8b37fd9559f457c39aa6733daaaa4ffe4833d2a27917ed65eb01d052@group.calendar.google.com', timeOffset: 3600000, blogUrl: '/otros/' },
+        { sportKey: 'OTROS', label: 'TNA',  id: '727b20f12dcf43bd661017bafba52fd7a8ad706a2ebe48afa6a5f4b391b71490@group.calendar.google.com', timeOffset: 3600000, blogUrl: '/otros/' },
+        { sportKey: 'OTROS', label: 'NJPW', id: 'n6l35ni6rcbffi1m4m5g5ocnh4@group.calendar.google.com', timeOffset: 3600000, blogUrl: '/otros/' },
+        { sportKey: 'F1',    label: 'F1',   id: 'i3vhcidiluqakvb92ue0hl3nmg@group.calendar.google.com', timeOffset: 0, blogUrl: '/F1/' }
       ]
     };
-    const SPORT_LABELS = { FUTBOL: 'Fútbol', NBA: 'NBA', F1: 'F1', WRESTLING: 'Wrestling' };
-    const CACHE_KEY = 'um_events_v14';
+    const SPORT_LABELS = { FUTBOL: 'Fútbol', NBA: 'NBA', F1: 'F1', OTROS: 'Otros Deportes' };
+    const CACHE_KEY = 'um_events_v15';
     const CACHE_TTL = 10 * 60 * 1000;
     const HORAS_LIMITE_MS = 2.5 * 60 * 60 * 1000;
     let cachedPool = [];
@@ -376,7 +377,6 @@
       div.innerHTML=`<div class="mv-monitor-tag" onclick="event.stopPropagation(); mvFocusSlot(${i})"><i class="fas fa-play-circle"></i> PANTALLA 0${i+1}</div><div id="mv-core-${i}" class="mv-core"><i class="fas fa-tv" style="font-size:40px; margin-bottom:10px;"></i><span style="font-size:12px; font-weight:600; text-align:center; padding:0 10px;">Elige un evento de la lista</span></div><div class="mv-mute-badge" id="mv-mute-${i}" onclick="event.stopPropagation(); mvFocusSlot(${i})"><i class="fas fa-volume-mute"></i> Activar audio</div><a class="mv-goto-blog" id="mv-goto-${i}" href="#" target="_self" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt"></i> Ver en blog</a>`;
       return div;
     }
-    /* E9: validar slots entre 1 y 4 */
     function mvBuildGrid(slots, button){
       slots = Math.max(1, Math.min(4, parseInt(slots) || 1));
       const mesh=document.getElementById('mv-grid-mesh');
@@ -426,7 +426,6 @@
       mvApplyMuteStates();
       const next=mvFindFirstEmpty(); if(next!==-1) mvTargetSlotIndex=next;
     }
-    /* E5: sandbox en iframe */
     function mvRenderStream(slotIdx, url, muted){
       const core=document.getElementById('mv-core-'+slotIdx); if(!core) return;
       if(!isValidStreamUrl(url)){ core.innerHTML='<div style="color:#ff004c;padding:20px;text-align:center;"><i class="fas fa-shield-alt" style="font-size:30px;margin-bottom:10px;"></i><br>URL bloqueada.</div>'; return; }
