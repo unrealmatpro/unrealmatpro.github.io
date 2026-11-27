@@ -159,8 +159,10 @@
     const API_KEY = "AIzaSyAX5ciAJoCdwnz4PGrvVXG2KlKJlrACVgM";
     const CAL_ID = "i3vhcidiluqakvb92ue0hl3nmg@group.calendar.google.com";
     const DEPORTE_ACTUAL = 'F1';
-    const notifiedEventKeys = new Set();
+    /* E4: Map con timestamps para no spamear y limpiar antiguos */
+    const notifiedEventKeys = new Map();
     const _notificationData = {};
+    let isExpandingGrid = false; /* E6 */
 
     function recargarBlog(btn){ btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
     function escapeHTML(str){ if(!str) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
@@ -231,26 +233,30 @@
       applyMuteStates();
       const next=findFirstEmptySlot(); if(next!==-1) targetSlotIndex=next;
     }
+    /* E6: flag anti race-condition */
     function openInNewSlot(url){
-      if(!url) return;
+      if(!url || isExpandingGrid) return;
       if(!isValidStreamUrl(url)){ console.warn('[F1] URL bloqueada:', url); return; }
-      let slotCount = getSlotCount();
-      let free = findFirstEmptySlot();
-      const hayReproduccion = slotData.some(s => s && s.url);
-      if(free === -1){
-        if(slotCount === 1) buildStadiumGrid(2, document.getElementById('btn-g2'));
-        else if(slotCount === 2) buildStadiumGrid(3, document.getElementById('btn-g3'));
-        else if(slotCount === 3) buildStadiumGrid(4, document.getElementById('btn-g4'));
-        else { alert('No hay pantallas libres. Cierra una para añadir otro evento.'); return; }
-        free = findFirstEmptySlot();
-      }
-      if(free === -1) return;
-      const muted = hayReproduccion;
-      slotData[free] = { url, blogUrl: location.pathname };
-      renderStream(free, url, muted);
-      if(!hayReproduccion){ activeSlotIndex = free; targetSlotIndex = free; }
-      else { targetSlotIndex = free; }
-      applyMuteStates();
+      isExpandingGrid = true;
+      try{
+        let slotCount = getSlotCount();
+        let free = findFirstEmptySlot();
+        const hayReproduccion = slotData.some(s => s && s.url);
+        if(free === -1){
+          if(slotCount === 1) buildStadiumGrid(2, document.getElementById('btn-g2'));
+          else if(slotCount === 2) buildStadiumGrid(3, document.getElementById('btn-g3'));
+          else if(slotCount === 3) buildStadiumGrid(4, document.getElementById('btn-g4'));
+          else { alert('No hay pantallas libres. Cierra una para añadir otro evento.'); return; }
+          free = findFirstEmptySlot();
+        }
+        if(free === -1) return;
+        const muted = hayReproduccion;
+        slotData[free] = { url, blogUrl: location.pathname };
+        renderStream(free, url, muted);
+        if(!hayReproduccion){ activeSlotIndex = free; targetSlotIndex = free; }
+        else { targetSlotIndex = free; }
+        applyMuteStates();
+      }finally{ isExpandingGrid = false; }
     }
     function renderStream(slotIdx, url, muted){
       const core=document.getElementById('stadium-core-'+slotIdx); if(!core) return;
@@ -272,10 +278,10 @@
       }
     }
 
-    /* ⚠️ CAMBIO: F1 = JSON + Calendar con MERGE INTELIGENTE */
+    /* 🔥 REGLA DE ORO F1: si hay JSON de F1, ocultar Calendar. Si no hay, mostrar Calendar */
     async function cargarAgenda(){
       try{
-        // 1. Cargar JSON de F1 (prioridad: tiene URLs de stream)
+        // 1. JSON de F1 (prioridad)
         let jsonEvents = [];
         try{
           const res = await fetch(`../output/agenda_f1.json?v=${Date.now()}`);
@@ -291,7 +297,7 @@
           }
         }catch(err){ console.warn('[F1] JSON falló:', err); }
 
-        // 2. Cargar Calendar de Google (fallback para eventos no publicados aún)
+        // 2. Calendar de Google
         let calEvents = [];
         try{
           const tMin = new Date(Date.now()-2.5*60*60*1000).toISOString();
@@ -300,13 +306,12 @@
             const calData = await calRes.json();
             (calData.items||[]).forEach(ev => {
               const raw = ev.start.dateTime || (ev.start.date + 'T00:00:00');
-              const dateObj = new Date(raw);
               calEvents.push({
                 titulo: ev.summary||'Sesión F1',
                 torneo: 'CALENDARIO F1',
                 deporte: 'F1',
                 source: 'calendar',
-                eventDateObj: dateObj,
+                eventDateObj: new Date(raw),
                 servidores: [],
                 isCalendar: true
               });
@@ -314,30 +319,17 @@
           }
         }catch(err){ console.warn('[F1] Calendar falló:', err); }
 
-        // 3. MERGE INTELIGENTE: JSON tiene prioridad, Calendar solo si NO hay match (±30 min + título similar)
-        const merged = [...jsonEvents];
-        calEvents.forEach(calEv => {
-          if(!calEv.eventDateObj) return;
-          const calNorm = normalizar(calEv.titulo).replace(/[^A-Z0-9]/g, '');
-          const isDuplicate = jsonEvents.some(j => {
-            if(!j.eventDateObj) return false;
-            const jNorm = normalizar(j.titulo||'').replace(/[^A-Z0-9]/g, '');
-            // Match por: título similar (>=60% chars comunes) O mismo GP + misma sesión + hora ±30min
-            const timeDiff = Math.abs(j.eventDateObj.getTime() - calEv.eventDateObj.getTime());
-            if(timeDiff > 30*60*1000) return false;
-            // Coincidencia de tokens clave
-            const tokens = ['gp', 'fp1', 'fp2', 'fp3', 'sprint', 'quali', 'race', 'practice', 'clasificacion'];
-            const calTokens = tokens.filter(t => calNorm.includes(t));
-            const jTokens = tokens.filter(t => jNorm.includes(t));
-            const sharedTokens = calTokens.filter(t => jTokens.includes(t));
-            if(sharedTokens.length > 0) return true;
-            // Fallback: comparar primeras 8 letras del primer token del GP
-            const calFirst = calNorm.substring(0, 8);
-            const jFirst = jNorm.substring(0, 8);
-            return calFirst && jFirst && (calNorm.includes(jFirst) || jNorm.includes(calFirst));
-          });
-          if(!isDuplicate) merged.push(calEv);
-        });
+        // 3. REGLA DE ORO:
+        //    - Si hay eventos JSON → usar SOLO JSON (ocultar Calendar)
+        //    - Si NO hay JSON → usar Calendar (fallback)
+        let merged;
+        if(jsonEvents.length > 0){
+          merged = jsonEvents; // solo scrapeados
+          console.info(`[F1] ${jsonEvents.length} sesiones scrapeadas. Calendar oculto.`);
+        } else {
+          merged = calEvents; // fallback
+          console.info(`[F1] Sin señales en streamxhd. Mostrando ${calEvents.length} del Calendar.`);
+        }
 
         const ahora = new Date();
         merged.forEach(e => { if(!e.eventDateObj) e.eventDateObj = parseEventDate(e); });
@@ -422,9 +414,13 @@
       document.getElementById('exit-cinema-btn').style.display='none';
     }
 
+    /* E4: Map con limpieza por antigüedad */
     function checkUpcomingEvents(){
-      if(notifiedEventKeys.size > 500) notifiedEventKeys.clear();
       const now = Date.now();
+      const cutoff = now - 24*60*60*1000;
+      if(notifiedEventKeys.size > 500){
+        for(const [k, ts] of notifiedEventKeys){ if(ts < cutoff) notifiedEventKeys.delete(k); }
+      }
       const WINDOW_START = -3 * 60 * 1000;
       const WINDOW_END = 10 * 60 * 1000;
       const eventsList = datosOriginales || [];
@@ -441,7 +437,7 @@
         if(yaCargado) continue;
         const key = e.deporte + '|' + normalizar(e.titulo||e.summary) + '|' + t;
         if(notifiedEventKeys.has(key)) continue;
-        notifiedEventKeys.add(key);
+        notifiedEventKeys.set(key, now);
         showNotification(e);
       }
     }
