@@ -170,7 +170,7 @@
     const SPORT_LABELS = { FUTBOL: 'Fútbol', NBA: 'NBA', F1: 'F1', OTROS: 'Otros Deportes' };
     const CACHE_KEY = 'um_events_v16';
     const CACHE_TTL = 10 * 60 * 1000;
-    const HORAS_LIMITE_MS = 2.5 * 60 * 60 * 1000;
+    const HORAS_LIMITE_MS = 2 * 60 * 60 * 1000;
     let cachedPool = [];
 
     function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
