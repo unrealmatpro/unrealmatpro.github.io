@@ -1,33 +1,17 @@
 {
-  "fecha_actualizacion": "2026-11-26T23:36:56Z",
-  "total": 2,
+  "fecha_actualizacion": "2026-11-27T11:52:55Z",
+  "total": 1,
   "eventos": [
     {
-      "id": "evt_0",
-      "titulo": "Dallas Cowboys vs Philadelphia Eagles",
-      "hora": "14:00",
-      "fecha_completa": "2026-11-26T17:00:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "ESPN 5",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn5"
-        }
-      ],
-      "torneo": "NFL",
-      "source": "json",
-      "deporte": "OTROS"
-    },
-    {
-      "id": "evt_7",
-      "titulo": "Buffalo Bills vs Kansas City Chiefs",
-      "hora": "17:00",
-      "fecha_completa": "2026-11-26T20:00:00-05:00",
+      "id": "evt_25",
+      "titulo": "Pittsburgh Steelers vs Denver Broncos",
+      "hora": "12:00",
+      "fecha_completa": "2026-11-27T15:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "ESPN 5",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn5"
+          "nombre": "PRIME VIDEO 1",
+          "url": "https://streamxhd.sbs/live1.php?stream=amazon1"
         }
       ],
       "torneo": "NFL",
