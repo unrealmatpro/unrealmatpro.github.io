@@ -166,7 +166,7 @@
     if(e.hora && e.hora!=="00:00"){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
     return null;
   }
-  function getDynamicStatus(date, orig){ if(!date) return orig||"PRÓXIMO"; const diff=(new Date().getTime()-date.getTime())/(1000*60*60); if(diff<0) return "PRÓXIMO"; if(diff<=2.5) return "EN VIVO"; return "FINALIZADO"; }
+  function getDynamicStatus(date, orig){ if(!date) return orig||"PRÓXIMO"; const diff=(new Date().getTime()-date.getTime())/(1000*60*60); if(diff<0) return "PRÓXIMO"; if(diff<=2) return "EN VIVO"; return "FINALIZADO"; }
   function getSlotCount(){ return document.querySelectorAll('.stadium-monitor').length; }
   function findFirstEmptySlot(){ for(let i=0;i<getSlotCount();i++){ if(!slotData[i]||!slotData[i].url) return i; } return -1; }
 
@@ -286,7 +286,7 @@
       datosOriginales = lista.filter(e => {
         if(!e.eventDateObj) return true;
         const diffHours = (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60);
-        return diffHours <= 2.5;
+        return diffHours <= 2;
       });
       datosOriginales.sort((a,b) => {
         if(!a.eventDateObj) return 1;
