@@ -1,13 +1,13 @@
 {
-  "fecha_actualizacion": "2026-11-27T11:52:55Z",
-  "total": 15,
+  "fecha_actualizacion": "2026-11-27T23:18:56Z",
+  "total": 14,
   "eventos": [
     {
-      "id": "evt_28",
+      "id": "evt_1",
       "titulo": "Chile vs México",
       "hora": "14:40",
       "fecha_completa": "2026-11-27T17:40:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "DSPORTSPLUS",
@@ -19,11 +19,11 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_31",
+      "id": "evt_4",
       "titulo": "Brasil vs Estados Unidos",
       "hora": "15:10",
       "fecha_completa": "2026-11-27T18:10:00-05:00",
-      "status": "PRONTO",
+      "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "DSPORTS2",
@@ -35,7 +35,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_34",
+      "id": "evt_7",
       "titulo": "New York Knicks vs Miami Heat",
       "hora": "16:00",
       "fecha_completa": "2026-11-27T19:00:00-05:00",
@@ -55,7 +55,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_35",
+      "id": "evt_8",
       "titulo": "Indiana Pacers vs Philadelphia 76ers",
       "hora": "16:30",
       "fecha_completa": "2026-11-27T19:30:00-05:00",
@@ -71,7 +71,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_36",
+      "id": "evt_9",
       "titulo": "Toronto Raptors vs Brooklyn Nets",
       "hora": "16:30",
       "fecha_completa": "2026-11-27T19:30:00-05:00",
@@ -87,7 +87,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_37",
+      "id": "evt_10",
       "titulo": "Detroit Pistons vs Milwaukee Bucks",
       "hora": "16:30",
       "fecha_completa": "2026-11-27T19:30:00-05:00",
@@ -103,7 +103,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_39",
+      "id": "evt_12",
       "titulo": "Boston Celtics vs Atlanta Hawks",
       "hora": "17:00",
       "fecha_completa": "2026-11-27T20:00:00-05:00",
@@ -119,7 +119,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_41",
+      "id": "evt_14",
       "titulo": "Colombia vs República Dominicana",
       "hora": "17:10",
       "fecha_completa": "2026-11-27T20:10:00-05:00",
@@ -135,7 +135,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_42",
+      "id": "evt_15",
       "titulo": "Minnesota Timberwolves vs Memphis Grizzlies",
       "hora": "17:30",
       "fecha_completa": "2026-11-27T20:30:00-05:00",
@@ -151,7 +151,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_44",
+      "id": "evt_17",
       "titulo": "Phoenix Suns vs Dallas Mavericks",
       "hora": "18:00",
       "fecha_completa": "2026-11-27T21:00:00-05:00",
@@ -167,7 +167,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_45",
+      "id": "evt_18",
       "titulo": "San Antonio Spurs vs Los Angeles Lakers",
       "hora": "18:30",
       "fecha_completa": "2026-11-27T21:30:00-05:00",
@@ -187,7 +187,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_46",
+      "id": "evt_19",
       "titulo": "Los Angeles Clippers vs New Orleans Pelicans",
       "hora": "18:30",
       "fecha_completa": "2026-11-27T21:30:00-05:00",
@@ -203,7 +203,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_47",
+      "id": "evt_20",
       "titulo": "Utah Jazz vs Denver Nuggets",
       "hora": "18:30",
       "fecha_completa": "2026-11-27T21:30:00-05:00",
@@ -219,7 +219,7 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_48",
+      "id": "evt_21",
       "titulo": "Portland Trail Blazers vs Golden State Warriors",
       "hora": "18:30",
       "fecha_completa": "2026-11-27T21:30:00-05:00",
@@ -231,22 +231,6 @@
         }
       ],
       "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA"
-    },
-    {
-      "id": "evt_50",
-      "titulo": "Panamá vs Puerto Rico",
-      "hora": "17:40",
-      "fecha_completa": "2026-11-26T20:40:00-05:00",
-      "status": "FINALIZADO",
-      "servidores": [
-        {
-          "nombre": "DSPORTS2",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsports2"
-        }
-      ],
-      "torneo": "FIBA Copa Mundial",
       "source": "json",
       "deporte": "NBA"
     }

@@ -1,22 +1,5 @@
 {
-  "fecha_actualizacion": "2026-11-27T11:52:55Z",
-  "total": 1,
-  "eventos": [
-    {
-      "id": "evt_25",
-      "titulo": "Pittsburgh Steelers vs Denver Broncos",
-      "hora": "12:00",
-      "fecha_completa": "2026-11-27T15:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "PRIME VIDEO 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=amazon1"
-        }
-      ],
-      "torneo": "NFL",
-      "source": "json",
-      "deporte": "OTROS"
-    }
-  ]
+  "fecha_actualizacion": "2026-11-27T23:18:56Z",
+  "total": 0,
+  "eventos": []
 }
