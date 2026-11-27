@@ -143,11 +143,62 @@
   let activeSlotIndex = 0;
   let targetSlotIndex = 0;
   const DEPORTE_ACTUAL = 'OTROS';
-  /* E4: Map con timestamp en vez de Set */
   const notifiedEventKeys = new Map();
   const _notificationData = {};
-  /* E6: flag anti race-condition */
   let isExpandingGrid = false;
+  let lastSyncOk = true;
+  let retryInProgress = false;
+
+  /* ============ BANNER OFFLINE ============ */
+  function ensureOfflineBanner(){
+    if(document.getElementById('offline-banner')) return;
+    const div = document.createElement('div');
+    div.id = 'offline-banner';
+    div.className = 'offline-banner';
+    div.innerHTML = `
+      <i class="fas fa-wifi" style="text-decoration: line-through;"></i>
+      <span id="offline-msg">Sin conexión. Mostrando datos en caché.</span>
+      <button class="retry-btn" onclick="manualRetry()">Reintentar</button>`;
+    document.body.insertBefore(div, document.body.firstChild);
+    const style = document.createElement('style');
+    style.textContent = `
+      .offline-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 99999; background: linear-gradient(90deg, #ff9500, #ffcc00); color: #000; padding: 8px 16px; font-size: 12px; font-weight: 800; text-align: center; display: none; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+      .offline-banner.visible { display: flex; }
+      .offline-banner .retry-btn { background: #000; color: #fff; border: none; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 800; cursor: pointer; margin-left: 8px; }
+      .offline-banner .retry-btn:hover { background: #333; }
+      .offline-banner .retry-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+      @media(max-width: 900px) { .offline-banner { font-size: 11px; padding: 6px 10px; } }
+    `;
+    document.head.appendChild(style);
+  }
+  function showOfflineBanner(msg){
+    ensureOfflineBanner();
+    const b = document.getElementById('offline-banner');
+    const m = document.getElementById('offline-msg');
+    if(!b || !m) return;
+    m.textContent = msg || 'Sin conexión. Mostrando datos en caché.';
+    b.classList.add('visible');
+  }
+  function hideOfflineBanner(){
+    const b = document.getElementById('offline-banner');
+    if(b) b.classList.remove('visible');
+  }
+
+  /* ============ BACKOFF ============ */
+  async function fetchWithBackoff(url, retries=3, baseDelayMs=1000){
+    for(let attempt=0; attempt<=retries; attempt++){
+      try{
+        const res = await fetch(url);
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res;
+      }catch(err){
+        if(attempt === retries) throw err;
+        const delay = baseDelayMs * Math.pow(2, attempt);
+        console.warn(`[Otros] Reintento ${attempt+1}/${retries} en ${delay}ms: ${err.message}`);
+        await new Promise(r => setTimeout(r, delay));
+      }
+    }
+  }
 
   function recargarBlog(btn){ btn.classList.add('spinning'); setTimeout(()=>location.reload(),500); }
   function escapeHTML(str){ if(!str) return ''; return String(str).replace(/[&<>'"]/g, t=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t])); }
@@ -155,18 +206,14 @@
   function normalizar(t){ return (t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase(); }
   function isValidStreamUrl(url){
     if(!url || typeof url !== 'string') return false;
-    try{
-      const u = new URL(url);
-      if(u.protocol !== 'https:' && u.protocol !== 'http:') return false;
-      return u.hostname.toLowerCase().startsWith('streamxhd');
-    }catch(e){ return false; }
+    try{ const u = new URL(url); if(u.protocol !== 'https:' && u.protocol !== 'http:') return false; return u.hostname.toLowerCase().startsWith('streamxhd'); }catch(e){ return false; }
   }
   function parseEventDate(e){
     if(e.fecha_completa){ let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d; if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){ let d2=new Date(e.fecha_completa.replace(" ","T")+":00-05:00"); if(!isNaN(d2.getTime())) return d2; } }
     if(e.hora && e.hora!=="00:00"){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
     return null;
   }
-  function getDynamicStatus(date, orig){ if(!date) return orig||"PRÓXIMO"; const diff=(new Date().getTime()-date.getTime())/(1000*60*60); if(diff<0) return "PRÓXIMO"; if(diff<=2) return "EN VIVO"; return "FINALIZADO"; }
+  function getDynamicStatus(date, orig){ if(!date) return orig||"PRÓXIMO"; const diff=(new Date().getTime()-date.getTime())/(1000*60*60); if(diff<0) return "PRÓXIMO"; if(diff<=2.5) return "EN VIVO"; return "FINALIZADO"; }
   function getSlotCount(){ return document.querySelectorAll('.stadium-monitor').length; }
   function findFirstEmptySlot(){ for(let i=0;i<getSlotCount();i++){ if(!slotData[i]||!slotData[i].url) return i; } return -1; }
 
@@ -218,7 +265,6 @@
     applyMuteStates();
     const next=findFirstEmptySlot(); if(next!==-1) targetSlotIndex=next;
   }
-  /* E6: flag anti race-condition */
   function openInNewSlot(url){
     if(!url || isExpandingGrid) return;
     if(!isValidStreamUrl(url)){ console.warn('[Otros] URL bloqueada:', url); return; }
@@ -263,11 +309,9 @@
     }
   }
 
-  /* Carga agenda_otros.json con detección de subdeporte */
   async function cargarAgenda(){
     try{
-      const res = await fetch(`../output/agenda_otros.json?v=${Date.now()}`);
-      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const res = await fetchWithBackoff(`../output/agenda_otros.json?v=${Date.now()}`);
       const data = await res.json();
       const lista = data.eventos || [];
       const ahora = new Date();
@@ -286,18 +330,26 @@
       datosOriginales = lista.filter(e => {
         if(!e.eventDateObj) return true;
         const diffHours = (ahora.getTime()-e.eventDateObj.getTime())/(1000*60*60);
-        return diffHours <= 2;
+        return diffHours <= 2.5;
       });
       datosOriginales.sort((a,b) => {
         if(!a.eventDateObj) return 1;
         if(!b.eventDateObj) return -1;
         return a.eventDateObj.getTime() - b.eventDateObj.getTime();
       });
+      lastSyncOk = true;
+      hideOfflineBanner();
       renderSidebarFeed(datosOriginales);
       checkUpcomingEvents();
     }catch(e){
       console.error(e);
-      document.getElementById('stadium-feed-target').innerHTML='<div style="padding:20px;opacity:.5;text-align:center;color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> No hay eventos en este momento.</div>';
+      lastSyncOk = false;
+      showOfflineBanner('Sin conexión. Mostrando datos en caché.');
+      if(datosOriginales.length > 0){
+        renderSidebarFeed(datosOriginales);
+      } else {
+        document.getElementById('stadium-feed-target').innerHTML='<div style="padding:20px;opacity:.5;text-align:center;color:#ff3b30;"><i class="fas fa-exclamation-triangle"></i> Sin conexión. Reintentando...</div>';
+      }
     }
   }
   function renderSidebarFeed(events){
@@ -355,8 +407,6 @@
     mainView.style.height=window.innerWidth<=900?'auto':'calc(100vh - 112px)';
     document.getElementById('exit-cinema-btn').style.display='none';
   }
-
-  /* E4: Map con limpieza por antigüedad */
   function checkUpcomingEvents(){
     const now = Date.now();
     const cutoff = now - 24*60*60*1000;
@@ -420,10 +470,33 @@
     if(t){ t.style.animation = 'toastSlideOut 0.3s ease'; setTimeout(() => t.remove(), 300); }
   }
 
+  async function manualRetry(){
+    if(retryInProgress) return;
+    retryInProgress = true;
+    const btn = document.querySelector('.offline-banner .retry-btn');
+    if(btn){ btn.textContent = 'Reintentando...'; btn.disabled = true; }
+    try{
+      await cargarAgenda();
+      if(lastSyncOk){
+        const msg = document.getElementById('offline-msg');
+        if(msg) msg.textContent = '✓ Reconectado';
+        setTimeout(hideOfflineBanner, 1500);
+      }
+    }finally{
+      retryInProgress = false;
+      if(btn){ btn.textContent = 'Reintentar'; btn.disabled = false; }
+    }
+  }
+
+  window.addEventListener('offline', () => showOfflineBanner('Sin conexión. Mostrando datos en caché.'));
+  window.addEventListener('online', () => { hideOfflineBanner(); manualRetry(); });
+
   document.addEventListener('DOMContentLoaded', ()=>{
+    if(!navigator.onLine) showOfflineBanner('Sin conexión. Mostrando datos en caché.');
     buildStadiumGrid(1, null);
     cargarAgenda();
     setInterval(checkUpcomingEvents, 60000);
+    setInterval(() => { if(!lastSyncOk && navigator.onLine) cargarAgenda(); }, 60000);
 
     (function handleDeepLink(){
       const params = new URLSearchParams(location.search);
