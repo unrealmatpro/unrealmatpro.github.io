@@ -15,7 +15,6 @@
     :root { --bg:#020d08; --surface:#041a10; --surface-card:#052c1a; --accent:#00ff88; --gold:#f4d03f; --live:#ff004c; --warn:#ff9500; --border:rgba(255,255,255,0.08); --text-main:#fff; --text-dim:#aed1c4; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: radial-gradient(circle at center, var(--surface) 0%, var(--bg) 100%); color: var(--text-main); font-family: 'Outfit', sans-serif; overflow-x: hidden; min-height: 100vh; padding-bottom: 50px; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
-    /* Banner offline */
     .offline-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 99999; background: linear-gradient(90deg, #ff9500, #ffcc00); color: #000; padding: 8px 16px; font-size: 12px; font-weight: 800; text-align: center; display: none; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
     .offline-banner.visible { display: flex; }
     .offline-banner .retry-btn { background: #000; color: #fff; border: none; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 800; cursor: pointer; margin-left: 8px; }
@@ -61,6 +60,9 @@
     .card-v4.has-live:hover { border-color: var(--live); box-shadow: 0 10px 20px rgba(255,0,76,0.2); }
     .card-v4:hover img { opacity: 0.9; filter: grayscale(0%); transform: scale(1.04); }
     .card-v4:hover h3 { color: #fff; }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-dim); font-size: 13px; font-family: 'JetBrains Mono', monospace; border: 1px dashed var(--border); border-radius: 12px; background: rgba(0,0,0,0.2); margin: 0 auto; max-width: 1400px; }
+    .empty-state i { font-size: 32px; margin-bottom: 12px; display: block; opacity: 0.5; }
+    .empty-state .debug-info { font-size: 10px; margin-top: 12px; opacity: 0.6; }
     .um-ticker-wrap { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 1000; background: #000; border-top: 2px solid var(--accent); height: 40px; display: flex; align-items: center; box-shadow: 0 -5px 25px rgba(0,0,0,0.8); }
     #ticker-updated { position: absolute; right: 8px; top: -20px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #6b8a7d; background: rgba(0,0,0,0.85); padding: 2px 8px; border-radius: 4px 4px 0 0; letter-spacing: 0.5px; }
     .ticker-label { background: var(--accent); color: #000; font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 900; padding: 0 15px; height: 100%; display: flex; align-items: center; z-index: 10; letter-spacing: 1px; white-space: nowrap; }
@@ -83,7 +85,6 @@
   </style>
 </head>
 <body>
-  <!-- Banner offline -->
   <div class='offline-banner' id='offline-banner'>
     <i class='fas fa-wifi' style='text-decoration: line-through;'></i>
     <span id='offline-msg'>Sin conexión. Mostrando datos en caché.</span>
@@ -113,6 +114,13 @@
     </div>
     <div class='live-grid' id='live-grid'></div>
   </section>
+
+  <!-- Diagnóstico si no hay eventos -->
+  <div class='empty-state' id='empty-state' style='display:none;'>
+    <i class='fas fa-satellite-dish'></i>
+    <div id='empty-msg'>No hay eventos disponibles ahora mismo.</div>
+    <div class='debug-info' id='debug-info'></div>
+  </div>
 
   <main class='grid-v4' id='grid'>
     <a class='card-v4' href='/futbol/' data-sport='FUTBOL'>
@@ -180,9 +188,12 @@
       ]
     };
     const SPORT_LABELS = { FUTBOL: 'Fútbol', NBA: 'NBA', F1: 'F1', OTROS: 'Otros Deportes' };
-    const CACHE_KEY = 'um_events_v16';
+    const CACHE_KEY = 'um_events_v17';
     const CACHE_TTL = 10 * 60 * 1000;
-    const HORAS_LIMITE_MS = 2.5 * 60 * 60 * 1000;
+    /* ⬆️ AMPLIADO a 6h para que un partido largo siga apareciendo como EN VIVO */
+    const HORAS_LIMITE_MS = 6 * 60 * 60 * 1000;
+    /* Ventana de "EN VIVO" (un evento es live si empezó en las últimas 6h) */
+    const LIVE_WINDOW_MS = 6 * 60 * 60 * 1000;
     let cachedPool = [];
     let lastTickerHtml = '';
     let lastSyncOk = true;
@@ -194,13 +205,22 @@
     function fmtTime(ts){ return new Date(ts).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'}); }
     function truncate(s,n){ s=String(s||''); return s.length>n?s.substring(0,n-1)+'…':s; }
     function timeElapsed(ts){ const m=Math.max(0,Math.floor((Date.now()-ts)/60000)); if(m<60) return `hace ${m} min`; const h=Math.floor(m/60); const r=m%60; return `hace ${h}h ${r}m`; }
-    function isLive(e){ const n=Date.now(); return e.time<=n && e.time>=n-HORAS_LIMITE_MS; }
+    function isLive(e){ const n=Date.now(); return e.time<=n && e.time>=n-LIVE_WINDOW_MS; }
     function parseEventDate(e){
       if(e.fecha_completa){ let d=new Date(e.fecha_completa); if(!isNaN(d.getTime())) return d; if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(e.fecha_completa)){ let d2=new Date(e.fecha_completa.replace(' ','T')+':00-05:00'); if(!isNaN(d2.getTime())) return d2; } }
       if(e.hora && e.hora!=='00:00'){ const now=new Date(); const utc=new Date(now.getTime()-(5*60*60*1000)); const iso=`${utc.getUTCFullYear()}-${String(utc.getUTCMonth()+1).padStart(2,'0')}-${String(utc.getUTCDate()).padStart(2,'0')}T${e.hora}:00-05:00`; let d3=new Date(iso); if(!isNaN(d3.getTime())) return d3; }
       return null;
     }
-    function buildDeepLink(e){ const p=new URLSearchParams(); if(e.streamUrl) p.set('auto',e.streamUrl); p.set('event',e.name); p.set('t',String(e.time)); return `${e.blogUrl}?${p.toString()}`; }
+    /* ⬇️ NUEVO: validación de URL compatible con streamxhd, streamxhd1.com, etc. */
+    function isValidStreamUrl(url){
+      if(!url || typeof url !== 'string') return false;
+      try{
+        const u = new URL(url);
+        if(u.protocol !== 'https:' && u.protocol !== 'http:') return false;
+        return /^streamxhd\d*\.[a-z]+$/.test(u.hostname.toLowerCase());
+      }catch(e){ return false; }
+    }
+    function buildDeepLink(e){ const p=new URLSearchParams(); if(e.streamUrl && isValidStreamUrl(e.streamUrl)) p.set('auto',e.streamUrl); p.set('event',e.name); p.set('t',String(e.time)); return `${e.blogUrl}?${p.toString()}`; }
     function dedupPool(pool){ const map=new Map(); for(const e of pool){ const norm=normalizar(e.name).replace(/[^A-Z0-9]/g,''); const hb=Math.floor(e.time/3600000); const k=`${e.sportKey}|${norm}|${hb}`; const ex=map.get(k); if(!ex) map.set(k,e); else if(ex.source==='calendar' && e.source==='json') map.set(k,e); } return Array.from(map.values()); }
 
     /* ============ BANNER OFFLINE ============ */
@@ -220,7 +240,7 @@
     async function fetchWithBackoff(url, retries=3, baseDelayMs=1000){
       for(let attempt=0; attempt<=retries; attempt++){
         try{
-          const res = await fetch(url);
+          const res = await fetch(url, { cache: 'no-store' });
           if(!res.ok) throw new Error(`HTTP ${res.status}`);
           return res;
         }catch(err){
@@ -234,31 +254,47 @@
 
     /* ============ FETCH DE TODAS LAS FUENTES ============ */
     async function fetchAllEvents(){
-      const pool=[]; const errors=[]; const timeMin=new Date(Date.now()-HORAS_LIMITE_MS).toISOString(); const nowTs=Date.now();
+      const pool=[]; const errors=[]; const statsPerSource = {};
+      const timeMin=new Date(Date.now()-HORAS_LIMITE_MS).toISOString(); const nowTs=Date.now();
       await Promise.all(APP_CONFIG.jsonSources.map(async src=>{
         try{
           const res = await fetchWithBackoff(`${src.jsonUrl}?v=${Date.now()}`);
           const data = await res.json();
+          let count = 0;
           (data.eventos||[]).forEach(e=>{
             const d=parseEventDate(e);
             if(d && d.getTime()>=nowTs-HORAS_LIMITE_MS){
               const servers=e.servidores||[];
-              pool.push({ name:e.titulo||'Evento', sportKey:src.sportKey, subTag:src.label, source:'json', torneo:e.torneo||src.label, time:d.getTime(), streamUrl:servers.length>0?servers[0].url:null, blogUrl:src.blogUrl });
+              const streamUrl = servers.length>0 ? servers[0].url : null;
+              pool.push({ name:e.titulo||'Evento', sportKey:src.sportKey, subTag:src.label, source:'json', torneo:e.torneo||src.label, time:d.getTime(), streamUrl, blogUrl:src.blogUrl });
+              count++;
             }
           });
-        }catch(err){ errors.push(`JSON ${src.sportKey}: ${err.message}`); }
+          statsPerSource[src.sportKey] = { ok: true, count, total: (data.eventos||[]).length };
+        }catch(err){
+          errors.push(`JSON ${src.sportKey}: ${err.message}`);
+          statsPerSource[src.sportKey] = { ok: false, error: err.message };
+        }
       }));
       await Promise.all(APP_CONFIG.calendars.map(async cal=>{
         try{
           const url=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(cal.id)}/events?key=${APP_CONFIG.apiKey}&timeMin=${timeMin}&maxResults=20&singleEvents=true&orderBy=startTime`;
           const res = await fetchWithBackoff(url);
           const data = await res.json();
+          let count = 0;
           (data.items||[]).forEach(ev=>{
             const raw=ev.start.dateTime||(ev.start.date+'T00:00:00');
             const evTs=new Date(raw).getTime()+(cal.timeOffset||0);
-            if(evTs>=nowTs-HORAS_LIMITE_MS){ pool.push({ name:ev.summary||'Sin título', sportKey:cal.sportKey, subTag:cal.label, source:'calendar', torneo:cal.label, time:evTs, streamUrl:null, blogUrl:cal.blogUrl }); }
+            if(evTs>=nowTs-HORAS_LIMITE_MS){
+              pool.push({ name:ev.summary||'Sin título', sportKey:cal.sportKey, subTag:cal.label, source:'calendar', torneo:cal.label, time:evTs, streamUrl:null, blogUrl:cal.blogUrl });
+              count++;
+            }
           });
-        }catch(err){ errors.push(`Cal ${cal.label}: ${err.message}`); }
+          statsPerSource[`CAL_${cal.label}`] = { ok: true, count };
+        }catch(err){
+          errors.push(`Cal ${cal.label}: ${err.message}`);
+          statsPerSource[`CAL_${cal.label}`] = { ok: false, error: err.message };
+        }
       }));
 
       /* F1: si hay JSON events, ocultar los Calendar de F1 */
@@ -268,10 +304,11 @@
         : pool;
 
       const deduped=dedupPool(filteredPool); deduped.sort((a,b)=>a.time-b.time);
-      return { pool: deduped, errors };
+      console.info('[HUB] Stats por fuente:', statsPerSource);
+      return { pool: deduped, errors, statsPerSource };
     }
 
-    /* ============ RENDER: TICKER (E13: solo si cambió) ============ */
+    /* ============ RENDER: TICKER ============ */
     function renderTicker(pool){
       const mount=document.getElementById('ticker-mount'); if(!mount) return;
       if(pool.length===0){
@@ -304,15 +341,30 @@
       });
     }
 
-    /* ============ RENDER: LIVE SECTION (E14: preservar scroll) ============ */
+    /* ============ RENDER: LIVE SECTION ============ */
     function renderLiveSection(pool){
       const liveEvents=pool.filter(e=>isLive(e));
       const section=document.getElementById('live-section'); const grid=document.getElementById('live-grid');
       const counter=document.getElementById('live-counter'); const counterSpan=document.getElementById('live-count');
-      if(liveEvents.length===0){ section.style.display='none'; counter.classList.remove('visible'); return; }
-      section.style.display='block'; counter.classList.add('visible'); counterSpan.textContent=liveEvents.length;
+      const emptyState=document.getElementById('empty-state'); const emptyMsg=document.getElementById('empty-msg'); const debugInfo=document.getElementById('debug-info');
 
-      /* E14: preservar scroll del documento (la live-grid puede ser alta) */
+      if(liveEvents.length===0){
+        section.style.display='none';
+        counter.classList.remove('visible');
+        /* Mostrar empty-state solo si no hay NADA en absoluto */
+        if(pool.length === 0){
+          emptyState.style.display='block';
+          emptyMsg.textContent = 'No hay eventos disponibles ahora mismo.';
+        } else {
+          emptyState.style.display='none';
+        }
+        return;
+      }
+      emptyState.style.display='none';
+      section.style.display='block';
+      counter.classList.add('visible');
+      counterSpan.textContent=liveEvents.length;
+
       const scrollY = window.scrollY;
       grid.innerHTML=liveEvents.map(e=>{
         const sportLabel=SPORT_LABELS[e.sportKey]||e.sportKey;
@@ -327,15 +379,20 @@
           </div>
         </div>`;
       }).join('');
-      /* Restaurar scroll (con requestAnimationFrame para esperar reflow) */
       requestAnimationFrame(()=>{ window.scrollTo(0, scrollY); });
     }
-    function refreshHome(){ const nowTs=Date.now(); const active=cachedPool.filter(e=>e.time>=nowTs-HORAS_LIMITE_MS); renderTicker(active); updateCards(active); renderLiveSection(active); }
+    function refreshHome(){
+      const nowTs=Date.now();
+      const active=cachedPool.filter(e=>e.time>=nowTs-HORAS_LIMITE_MS || isLive(e));
+      renderTicker(active);
+      updateCards(active);
+      renderLiveSection(active);
+    }
     function updateLastUpdated(ts){ const el=document.getElementById('ticker-updated'); if(el){ const d=ts?new Date(ts):new Date(); el.textContent='Actualizado '+d.toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'}); } }
 
-    /* ============ SYNC CON CACHE FALLBACK (E10) ============ */
+    /* ============ SYNC ============ */
     async function syncEvents(isManual=false){
-      let result=null; let cacheTs=null; let fromCache=false;
+      let result=null; let cacheTs=null;
       let staleCache = null;
       try{
         const raw=localStorage.getItem(CACHE_KEY);
@@ -345,7 +402,6 @@
             if(Date.now()-cached.ts < CACHE_TTL){
               result = { pool: cached.data };
               cacheTs = cached.ts;
-              fromCache = true;
             } else {
               staleCache = cached;
             }
@@ -368,7 +424,6 @@
         }catch(e){
           console.error('[HUB] Error fatal:', e);
           lastSyncOk = false;
-          /* E10: cache fallback */
           if(staleCache){
             result = { pool: staleCache.data };
             cacheTs = staleCache.ts;
@@ -388,7 +443,6 @@
       }
     }
 
-    /* ============ RETRY MANUAL ============ */
     async function manualRetry(){
       if(retryInProgress) return;
       retryInProgress = true;
@@ -407,7 +461,6 @@
       }
     }
 
-    /* ============ LISTENERS ONLINE/OFFLINE ============ */
     window.addEventListener('offline', () => showOfflineBanner('Sin conexión. Mostrando datos en caché.'));
     window.addEventListener('online', () => { hideOfflineBanner(); syncEvents(true); });
 
