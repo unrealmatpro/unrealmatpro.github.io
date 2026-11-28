@@ -1,17 +1,460 @@
 {
-  "fecha_actualizacion": "2026-11-27T23:18:56Z",
-  "total": 23,
+  "fecha_actualizacion": "2026-11-28T14:25:17Z",
+  "total": 77,
   "eventos": [
     {
+      "id": "evt_75",
+      "titulo": "Hertha BSC vs Karlsruher SC",
+      "hora": "06:00",
+      "fecha_completa": "2026-11-28T07:00:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "FOX Sports 3 AR",
+          "url": "live1.php?stream=fox3ar"
+        }
+      ],
+      "torneo": "Bundesliga 2",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_76",
+      "titulo": "Al Hazm vs Al Nassr",
+      "hora": "06:15",
+      "fecha_completa": "2026-11-28T07:15:00-05:00",
+      "status": "FINALIZADO",
+      "servidores": [
+        {
+          "nombre": "FOX Deportes USA",
+          "url": "live1.php?stream=fox_deportes_usa"
+        },
+        {
+          "nombre": "M Liga Campeones",
+          "url": "live1.php?stream=mligacampeones"
+        }
+      ],
+      "torneo": "Saudi Pro League",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
       "id": "evt_0",
-      "titulo": "Deportivo Cuenca vs Manta",
-      "hora": "13:30",
-      "fecha_completa": "2026-11-27T16:30:00-05:00",
+      "titulo": "Preston North End vs Norwich City",
+      "hora": "06:30",
+      "fecha_completa": "2026-11-28T07:30:00-05:00",
       "status": "EN VIVO",
       "servidores": [
         {
-          "nombre": "ZAPPING EC",
-          "url": "https://streamxhd.sbs/live1.php?stream=zapping_ec"
+          "nombre": "Fox Sports 2 AR",
+          "url": "live1.php?stream=fox2ar"
+        }
+      ],
+      "torneo": "Championship",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_1",
+      "titulo": "Real Betis vs Rayo Vallecano",
+      "hora": "07:00",
+      "fecha_completa": "2026-11-28T08:00:00-05:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney1"
+        },
+        {
+          "nombre": "ESPN 2",
+          "url": "live1.php?stream=espn2"
+        },
+        {
+          "nombre": "ESPN Deportes",
+          "url": "live1.php?stream=espndeportes"
+        },
+        {
+          "nombre": "Premier Sports 1",
+          "url": "live1.php?stream=premier1uk"
+        }
+      ],
+      "torneo": "LaLiga",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_2",
+      "titulo": "Las Palmas vs FC Andorra",
+      "hora": "07:00",
+      "fecha_completa": "2026-11-28T08:00:00-05:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "LaLiga Hypermotion",
+          "url": "live1.php?stream=laligahypermotion"
+        }
+      ],
+      "torneo": "LaLiga SmartBank",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_3",
+      "titulo": "GP Valencia – Sprint",
+      "hora": "07:30",
+      "fecha_completa": "2026-11-28T08:30:00-05:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "ESPN 3",
+          "url": "live1.php?stream=espn3"
+        }
+      ],
+      "torneo": "MotoGP",
+      "source": "json",
+      "deporte": "F1",
+      "deporte_upper": "F1"
+    },
+    {
+      "id": "evt_4",
+      "titulo": "Frosinone vs Parma",
+      "hora": "08:00",
+      "fecha_completa": "2026-11-28T09:00:00-05:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney2"
+        },
+        {
+          "nombre": "ESPN 5",
+          "url": "live1.php?stream=espn5"
+        }
+      ],
+      "torneo": "Serie A",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_5",
+      "titulo": "Al Ittifaq vs Al Hilal",
+      "hora": "08:20",
+      "fecha_completa": "2026-11-28T09:20:00-05:00",
+      "status": "EN VIVO",
+      "servidores": [
+        {
+          "nombre": "FOX Sports 2 USA",
+          "url": "live1.php?stream=f2usa"
+        }
+      ],
+      "torneo": "Saudi Pro League",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_6",
+      "titulo": "Hamburger SV vs Bayern München",
+      "hora": "08:30",
+      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney3"
+        },
+        {
+          "nombre": "ESPN",
+          "url": "live1.php?stream=espn"
+        },
+        {
+          "nombre": "Universo",
+          "url": "live1.php?stream=universo"
+        }
+      ],
+      "torneo": "Bundesliga",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_7",
+      "titulo": "Mainz 05 vs Union Berlin",
+      "hora": "08:30",
+      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney4"
+        }
+      ],
+      "torneo": "Bundesliga",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_8",
+      "titulo": "Paderborn vs Schalke 04",
+      "hora": "08:30",
+      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney5"
+        }
+      ],
+      "torneo": "Bundesliga",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_9",
+      "titulo": "Köln vs Elversberg",
+      "hora": "08:30",
+      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney6"
+        }
+      ],
+      "torneo": "Bundesliga",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_10",
+      "titulo": "GP Qatar – Práctica 3",
+      "hora": "08:30",
+      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney7"
+        },
+        {
+          "nombre": "FOX Sports 1 AR",
+          "url": "live1.php?stream=fox1ar"
+        },
+        {
+          "nombre": "DAZN F1",
+          "url": "live1.php?stream=daznf1"
+        },
+        {
+          "nombre": "Sportv 3 BR",
+          "url": "live1.php?stream=sporttvbr3"
+        }
+      ],
+      "torneo": "F1",
+      "source": "json",
+      "deporte": "F1",
+      "deporte_upper": "F1"
+    },
+    {
+      "id": "evt_11",
+      "titulo": "GP Qatar – Práctica 3 - On Board Colapinto",
+      "hora": "08:30",
+      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney8"
+        }
+      ],
+      "torneo": "F1",
+      "source": "json",
+      "deporte": "F1",
+      "deporte_upper": "F1"
+    },
+    {
+      "id": "evt_12",
+      "titulo": "GP Qatar – Práctica 3 - On Board Leclerc",
+      "hora": "08:30",
+      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney9"
+        }
+      ],
+      "torneo": "F1",
+      "source": "json",
+      "deporte": "F1",
+      "deporte_upper": "F1"
+    },
+    {
+      "id": "evt_13",
+      "titulo": "West Bromwich Albion vs Bristol City",
+      "hora": "09:00",
+      "fecha_completa": "2026-11-28T10:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "ESPN 7",
+          "url": "live1.php?stream=espn7"
+        }
+      ],
+      "torneo": "Championship",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_14",
+      "titulo": "Manchester United vs Brentford",
+      "hora": "09:00",
+      "fecha_completa": "2026-11-28T10:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney10"
+        },
+        {
+          "nombre": "ESPN AR",
+          "url": "live1.php?stream=espnar"
+        },
+        {
+          "nombre": "ESPN 2",
+          "url": "live1.php?stream=espn2"
+        }
+      ],
+      "torneo": "Premier League",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_15",
+      "titulo": "Leeds United vs Coventry City",
+      "hora": "09:00",
+      "fecha_completa": "2026-11-28T10:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney11"
+        }
+      ],
+      "torneo": "Premier League",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_16",
+      "titulo": "Málaga vs Athletic Club",
+      "hora": "09:15",
+      "fecha_completa": "2026-11-28T10:15:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "DSports",
+          "url": "live1.php?stream=dsports"
+        },
+        {
+          "nombre": "ESPN Deportes",
+          "url": "live1.php?stream=espndeportes"
+        }
+      ],
+      "torneo": "LaLiga",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_17",
+      "titulo": "Albacete vs Tenerife",
+      "hora": "09:15",
+      "fecha_completa": "2026-11-28T10:15:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "LaLiga Hypermotion",
+          "url": "live1.php?stream=laligahypermotion"
+        }
+      ],
+      "torneo": "LaLiga SmartBank",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_18",
+      "titulo": "Eldense vs Girona",
+      "hora": "09:15",
+      "fecha_completa": "2026-11-28T10:15:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "LaLiga Hypermotion 2",
+          "url": "live1.php?stream=laligahypermotion2"
+        }
+      ],
+      "torneo": "LaLiga SmartBank",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_19",
+      "titulo": "Angers SCO vs Lens",
+      "hora": "10:15",
+      "fecha_completa": "2026-11-28T11:15:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney12"
+        }
+      ],
+      "torneo": "Ligue 1",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_20",
+      "titulo": "GP Lusail – Carrera Sprint",
+      "hora": "10:15",
+      "fecha_completa": "2026-11-28T11:15:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "ESPN 3",
+          "url": "live1.php?stream=espn3"
+        }
+      ],
+      "torneo": "F2",
+      "source": "json",
+      "deporte": "F1",
+      "deporte_upper": "F1"
+    },
+    {
+      "id": "evt_21",
+      "titulo": "Universidad Católica vs Independiente del Valle",
+      "hora": "10:30",
+      "fecha_completa": "2026-11-28T11:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Zapping EC",
+          "url": "live1.php?stream=zapping_ec"
         }
       ],
       "torneo": "Liga Ecuador",
@@ -20,32 +463,604 @@
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_1",
-      "titulo": "Chile vs México",
-      "hora": "14:40",
-      "fecha_completa": "2026-11-27T17:40:00-05:00",
-      "status": "EN VIVO",
+      "id": "evt_22",
+      "titulo": "Torino vs Lazio",
+      "hora": "11:00",
+      "fecha_completa": "2026-11-28T12:00:00-05:00",
+      "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "DSPORTSPLUS",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsportsplus"
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney13"
         }
       ],
-      "torneo": "FIBA Copa Mundial",
+      "torneo": "Serie A",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_23",
+      "titulo": "España vs Chile",
+      "hora": "11:00",
+      "fecha_completa": "2026-11-28T12:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney14"
+        }
+      ],
+      "torneo": "Amistoso Internacional Femenino",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_24",
+      "titulo": "Charlotte vs Chicago Fire",
+      "hora": "11:30",
+      "fecha_completa": "2026-11-28T12:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Apple TV Español",
+          "url": "live1.php?stream=appletv1"
+        }
+      ],
+      "torneo": "MLS",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_25",
+      "titulo": "Al-Ahli vs Al Taawon",
+      "hora": "11:30",
+      "fecha_completa": "2026-11-28T12:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "M Liga Campeones",
+          "url": "live1.php?stream=mligacampeones"
+        }
+      ],
+      "torneo": "Saudi Pro League",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_26",
+      "titulo": "Elche vs Atlético Madrid",
+      "hora": "11:30",
+      "fecha_completa": "2026-11-28T12:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "DSports",
+          "url": "live1.php?stream=dsports"
+        },
+        {
+          "nombre": "ESPN +",
+          "url": "live1.php?stream=espnplus1"
+        },
+        {
+          "nombre": "ESPN Deportes",
+          "url": "live1.php?stream=espndeportes"
+        },
+        {
+          "nombre": "Premier Sports 2",
+          "url": "live1.php?stream=premier2uk"
+        }
+      ],
+      "torneo": "LaLiga",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_27",
+      "titulo": "Eibar vs Burgos",
+      "hora": "11:30",
+      "fecha_completa": "2026-11-28T12:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "LaLiga Hypermotion",
+          "url": "live1.php?stream=laligahypermotion"
+        }
+      ],
+      "torneo": "LaLiga SmartBank",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_28",
+      "titulo": "Stuttgart vs Eintracht Frankfurt",
+      "hora": "11:30",
+      "fecha_completa": "2026-11-28T12:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney16"
+        },
+        {
+          "nombre": "ESPN 5",
+          "url": "live1.php?stream=espn5"
+        }
+      ],
+      "torneo": "Bundesliga",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_29",
+      "titulo": "Ipswich Town vs Aston Villa",
+      "hora": "11:30",
+      "fecha_completa": "2026-11-28T12:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney15"
+        },
+        {
+          "nombre": "ESPN 2 AR",
+          "url": "live1.php?stream=espn2ar"
+        },
+        {
+          "nombre": "ESPN 2",
+          "url": "live1.php?stream=espn2"
+        },
+        {
+          "nombre": "Universo",
+          "url": "live1.php?stream=universo"
+        }
+      ],
+      "torneo": "Premier League",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_30",
+      "titulo": "PSV vs Go Ahead Eagles",
+      "hora": "11:45",
+      "fecha_completa": "2026-11-28T12:45:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney17"
+        },
+        {
+          "nombre": "ESPN 7",
+          "url": "live1.php?stream=espn7"
+        }
+      ],
+      "torneo": "Eredivisie",
+      "source": "json",
+      "deporte": "OTROS",
+      "deporte_upper": "OTROS"
+    },
+    {
+      "id": "evt_31",
+      "titulo": "GP Qatar – Clasificación",
+      "hora": "12:00",
+      "fecha_completa": "2026-11-28T13:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney18"
+        },
+        {
+          "nombre": "FOX Sports 1 AR",
+          "url": "live1.php?stream=fox1ar"
+        },
+        {
+          "nombre": "DAZN F1",
+          "url": "live1.php?stream=daznf1"
+        },
+        {
+          "nombre": "Sportv 3 BR",
+          "url": "live1.php?stream=sporttvbr3"
+        }
+      ],
+      "torneo": "F1",
+      "source": "json",
+      "deporte": "F1",
+      "deporte_upper": "F1"
+    },
+    {
+      "id": "evt_32",
+      "titulo": "GP Qatar – Clasificación - On Board Colapinto",
+      "hora": "12:00",
+      "fecha_completa": "2026-11-28T13:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney19"
+        }
+      ],
+      "torneo": "F1",
+      "source": "json",
+      "deporte": "F1",
+      "deporte_upper": "F1"
+    },
+    {
+      "id": "evt_33",
+      "titulo": "GP Qatar – Clasificación - On Board Leclerc",
+      "hora": "12:00",
+      "fecha_completa": "2026-11-28T13:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney20"
+        }
+      ],
+      "torneo": "F1",
+      "source": "json",
+      "deporte": "F1",
+      "deporte_upper": "F1"
+    },
+    {
+      "id": "evt_34",
+      "titulo": "Macará vs LDU Quito",
+      "hora": "13:00",
+      "fecha_completa": "2026-11-28T14:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Zapping EC",
+          "url": "live1.php?stream=zapping_ec"
+        }
+      ],
+      "torneo": "Liga Ecuador",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_35",
+      "titulo": "Houston Dynamo vs San Jose Earthquakes",
+      "hora": "13:30",
+      "fecha_completa": "2026-11-28T14:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Apple TV Español",
+          "url": "live1.php?stream=appletv2"
+        }
+      ],
+      "torneo": "MLS",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_36",
+      "titulo": "Osnabrück vs Hannover 96",
+      "hora": "13:30",
+      "fecha_completa": "2026-11-28T14:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "FOX Sports 2 AR",
+          "url": "live1.php?stream=fox2ar"
+        }
+      ],
+      "torneo": "Bundesliga 2",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_37",
+      "titulo": "Internazionale vs Genoa",
+      "hora": "13:45",
+      "fecha_completa": "2026-11-28T14:45:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney21"
+        },
+        {
+          "nombre": "ESPN 5",
+          "url": "live1.php?stream=espn5"
+        },
+        {
+          "nombre": "Telemundo",
+          "url": "live1.php?stream=telemundo"
+        }
+      ],
+      "torneo": "Serie A",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_38",
+      "titulo": "PSG vs Lorient",
+      "hora": "13:45",
+      "fecha_completa": "2026-11-28T14:45:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney22"
+        },
+        {
+          "nombre": "ESPN 3",
+          "url": "live1.php?stream=espn3"
+        }
+      ],
+      "torneo": "Ligue 1",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_39",
+      "titulo": "Le Havre vs Strasbourg",
+      "hora": "13:45",
+      "fecha_completa": "2026-11-28T14:45:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney23"
+        }
+      ],
+      "torneo": "Ligue 1",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_40",
+      "titulo": "Le Mans vs Lille",
+      "hora": "13:45",
+      "fecha_completa": "2026-11-28T14:45:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney24"
+        }
+      ],
+      "torneo": "Ligue 1",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_41",
+      "titulo": "Nice vs Troyes",
+      "hora": "13:45",
+      "fecha_completa": "2026-11-28T14:45:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney25"
+        }
+      ],
+      "torneo": "Ligue 1",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_42",
+      "titulo": "Real Madrid vs Deportivo Alavés",
+      "hora": "14:00",
+      "fecha_completa": "2026-11-28T15:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney26"
+        },
+        {
+          "nombre": "ESPN AR",
+          "url": "live1.php?stream=espnar"
+        },
+        {
+          "nombre": "ESPN 2",
+          "url": "live1.php?stream=espn2"
+        },
+        {
+          "nombre": "ESPN +",
+          "url": "live1.php?stream=espnplus2"
+        },
+        {
+          "nombre": "ESPN Deportes",
+          "url": "live1.php?stream=espndeportes"
+        }
+      ],
+      "torneo": "LaLiga",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_43",
+      "titulo": "Real Valladolid vs Real Sociedad II",
+      "hora": "14:00",
+      "fecha_completa": "2026-11-28T15:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "LaLiga Hypermotion",
+          "url": "live1.php?stream=laligahypermotion"
+        }
+      ],
+      "torneo": "LaLiga SmartBank",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_44",
+      "titulo": "Palmeiras vs Estudiantes | Final",
+      "hora": "14:00",
+      "fecha_completa": "2026-11-28T15:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney27"
+        },
+        {
+          "nombre": "ESPN",
+          "url": "live1.php?stream=espn"
+        },
+        {
+          "nombre": "FOX Sports 1 AR",
+          "url": "live1.php?stream=fox1ar"
+        },
+        {
+          "nombre": "Telefe",
+          "url": "live1.php?stream=evento1"
+        },
+        {
+          "nombre": "M Liga Campeones",
+          "url": "live1.php?stream=mligacampeones"
+        }
+      ],
+      "torneo": "Copa Libertadores",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_45",
+      "titulo": "Coquimbo Unido vs Deportes Limache",
+      "hora": "15:00",
+      "fecha_completa": "2026-11-28T16:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "TNT Sports Chile",
+          "url": "live1.php?stream=tntsportschile"
+        }
+      ],
+      "torneo": "Liga Chile",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_46",
+      "titulo": "Comunicaciones vs Xelajú",
+      "hora": "15:00",
+      "fecha_completa": "2026-11-28T16:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "FOX Deportes USA",
+          "url": "live1.php?stream=fox_deportes_usa"
+        }
+      ],
+      "torneo": "Liga Guatemala",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_47",
+      "titulo": "Barcelona vs Aucas",
+      "hora": "15:30",
+      "fecha_completa": "2026-11-28T16:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Zapping EC",
+          "url": "live1.php?stream=zapping_ec"
+        }
+      ],
+      "torneo": "Liga Ecuador",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_48",
+      "titulo": "Philadelphia Union vs New England",
+      "hora": "15:30",
+      "fecha_completa": "2026-11-28T16:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Apple TV Español",
+          "url": "live1.php?stream=appletv3"
+        }
+      ],
+      "torneo": "MLS",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_49",
+      "titulo": "Deportes Quindío vs Boca Juniors de Cali",
+      "hora": "15:30",
+      "fecha_completa": "2026-11-28T16:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Win Sports",
+          "url": "live1.php?stream=winsports"
+        },
+        {
+          "nombre": "Win Sports +",
+          "url": "live1.php?stream=winplus"
+        }
+      ],
+      "torneo": "Primera B",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_50",
+      "titulo": "Washington Wizards vs Orlando Magic",
+      "hora": "16:00",
+      "fecha_completa": "2026-11-28T17:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney28"
+        },
+        {
+          "nombre": "NBA League Pass 1",
+          "url": "live1.php?stream=nba1"
+        }
+      ],
+      "torneo": "NBA",
       "source": "json",
       "deporte": "NBA",
       "deporte_upper": "NBA"
     },
     {
-      "id": "evt_2",
-      "titulo": "Sportivo Luqueño vs Olimpia",
-      "hora": "15:00",
-      "fecha_completa": "2026-11-27T18:00:00-05:00",
-      "status": "EN VIVO",
+      "id": "evt_51",
+      "titulo": "Sportivo Trinidense vs Deportivo Recoleta",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-28T18:00:00-05:00",
+      "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "TIGO SPORTS 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=tigo1"
+          "nombre": "Tigo Sports",
+          "url": "live1.php?stream=tigo1"
         }
       ],
       "torneo": "Liga Paraguay",
@@ -54,19 +1069,112 @@
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_3",
-      "titulo": "Fluminense vs Cruzeiro",
-      "hora": "15:00",
-      "fecha_completa": "2026-11-27T18:00:00-05:00",
-      "status": "EN VIVO",
+      "id": "evt_52",
+      "titulo": "Vélez Sarsfield vs Independiente",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-28T18:00:00-05:00",
+      "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "SPORTV 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=sporttvbr1"
+          "nombre": "TNT Sports",
+          "url": "live1.php?stream=tntsports"
         },
         {
-          "nombre": "PREMIERE 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=premiere1"
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney29"
+        },
+        {
+          "nombre": "ESPN 2",
+          "url": "live1.php?stream=espn2"
+        }
+      ],
+      "torneo": "Liga Profesional",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_54",
+      "titulo": "Charlotte Hornets vs Brooklyn Nets",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-28T18:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "NBA League Pass 2",
+          "url": "live1.php?stream=nba2"
+        }
+      ],
+      "torneo": "NBA",
+      "source": "json",
+      "deporte": "NBA",
+      "deporte_upper": "NBA"
+    },
+    {
+      "id": "evt_53",
+      "titulo": "WarGames",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-28T18:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Netflix",
+          "url": "live1.php?stream=evento8"
+        }
+      ],
+      "torneo": "WWE Survivor Series",
+      "source": "json",
+      "deporte": "OTROS",
+      "deporte_upper": "OTROS"
+    },
+    {
+      "id": "evt_55",
+      "titulo": "Cincinnati vs Nashville SC",
+      "hora": "17:30",
+      "fecha_completa": "2026-11-28T18:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Apple TV Español",
+          "url": "live1.php?stream=appletv4"
+        }
+      ],
+      "torneo": "MLS",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_56",
+      "titulo": "Colo-Colo vs La Serena",
+      "hora": "17:30",
+      "fecha_completa": "2026-11-28T18:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "TNT Sports Chile",
+          "url": "live1.php?stream=tntsportschile"
+        }
+      ],
+      "torneo": "Liga Chile",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_57",
+      "titulo": "Botafogo vs Bahia",
+      "hora": "18:00",
+      "fecha_completa": "2026-11-28T19:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Sportv 1 BR",
+          "url": "live1.php?stream=sporttvbr1"
+        },
+        {
+          "nombre": "Premiere 1",
+          "url": "live1.php?stream=premiere1"
         }
       ],
       "torneo": "Brasileirão",
@@ -75,49 +1183,19 @@
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_4",
-      "titulo": "Brasil vs Estados Unidos",
-      "hora": "15:10",
-      "fecha_completa": "2026-11-27T18:10:00-05:00",
-      "status": "EN VIVO",
-      "servidores": [
-        {
-          "nombre": "DSPORTS2",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsports2"
-        }
-      ],
-      "torneo": "FIBA Copa Mundial",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_5",
-      "titulo": "Racing vs Liverpool",
-      "hora": "15:30",
-      "fecha_completa": "2026-11-27T18:30:00-05:00",
+      "id": "evt_58",
+      "titulo": "Santa Fe vs Atlético Nacional",
+      "hora": "18:30",
+      "fecha_completa": "2026-11-28T19:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "DISNEY+ 15",
-          "url": "https://streamxhd.sbs/live1.php?stream=disney15"
-        }
-      ],
-      "torneo": "Liga Uruguay",
-      "source": "json",
-      "deporte": "FUTBOL",
-      "deporte_upper": "FUTBOL"
-    },
-    {
-      "id": "evt_6",
-      "titulo": "Deportivo Cali vs Atlético Bucaramanga",
-      "hora": "15:35",
-      "fecha_completa": "2026-11-27T18:35:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
+          "nombre": "Win Sports +",
+          "url": "live1.php?stream=winplus"
+        },
         {
-          "nombre": "WIN SPORTS +",
-          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
+          "nombre": "FOX Deportes USA",
+          "url": "live1.php?stream=fox_deportes_usa"
         }
       ],
       "torneo": "Liga Colombia",
@@ -126,91 +1204,200 @@
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_7",
-      "titulo": "New York Knicks vs Miami Heat",
-      "hora": "16:00",
-      "fecha_completa": "2026-11-27T19:00:00-05:00",
+      "id": "evt_59",
+      "titulo": "Instituto vs River Plate",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-28T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "PRIME VIDEO 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=amazon1"
+          "nombre": "ESPN Premium",
+          "url": "live1.php?stream=espnpremium"
         },
         {
-          "nombre": "NBA LEAGUE PASS 1",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba1"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_8",
-      "titulo": "Indiana Pacers vs Philadelphia 76ers",
-      "hora": "16:30",
-      "fecha_completa": "2026-11-27T19:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "NBA LEAGUE PASS 2",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba2"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_9",
-      "titulo": "Toronto Raptors vs Brooklyn Nets",
-      "hora": "16:30",
-      "fecha_completa": "2026-11-27T19:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "NBA LEAGUE PASS 3",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba3"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_10",
-      "titulo": "Detroit Pistons vs Milwaukee Bucks",
-      "hora": "16:30",
-      "fecha_completa": "2026-11-27T19:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "NBA LEAGUE PASS 4",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba4"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_11",
-      "titulo": "Columbus Crew vs Inter Miami",
-      "hora": "17:00",
-      "fecha_completa": "2026-11-27T20:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "APPLETV1",
-          "url": "https://streamxhd.sbs/live1.php?stream=appletv1"
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney30"
         },
         {
-          "nombre": "APPLETV2",
-          "url": "https://streamxhd.sbs/live1.php?stream=appletv2"
+          "nombre": "ESPN",
+          "url": "live1.php?stream=espn"
+        },
+        {
+          "nombre": "Fanatiz",
+          "url": "live1.php?stream=fanatiz1"
+        },
+        {
+          "nombre": "M Liga Campeones",
+          "url": "live1.php?stream=mligacampeones"
+        }
+      ],
+      "torneo": "Liga Profesional",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_60",
+      "titulo": "Olimpia vs Estrella Roja",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-28T20:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Evento 2",
+          "url": "live1.php?stream=evento2"
+        }
+      ],
+      "torneo": "Liga Honduras",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_61",
+      "titulo": "Olancho vs Motagua",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-28T20:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Evento 3",
+          "url": "live1.php?stream=evento3"
+        }
+      ],
+      "torneo": "Liga Honduras",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_62",
+      "titulo": "Choloma vs Real España",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-28T20:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Evento 4",
+          "url": "live1.php?stream=evento4"
+        }
+      ],
+      "torneo": "Liga Honduras",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_63",
+      "titulo": "Atlas vs Toluca",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-28T20:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Canal 5 MX",
+          "url": "live1.php?stream=canal5mx"
+        },
+        {
+          "nombre": "TUDN MX",
+          "url": "live1.php?stream=tudnmx"
+        },
+        {
+          "nombre": "Azteca 7",
+          "url": "live1.php?stream=azteca7"
+        },
+        {
+          "nombre": "TUDN USA",
+          "url": "live1.php?stream=tudn_usa"
+        }
+      ],
+      "torneo": "Liga MX",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_64",
+      "titulo": "San Carlos vs Alajuelense",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-28T20:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Evento 5",
+          "url": "live1.php?stream=evento5"
+        }
+      ],
+      "torneo": "Liga Costa Rica",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_65",
+      "titulo": "Deportivo Saprissa vs Inter San Carlos",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-28T20:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Evento 6",
+          "url": "live1.php?stream=evento6"
+        }
+      ],
+      "torneo": "Liga Costa Rica",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_66",
+      "titulo": "Chicago Bulls vs Indiana Pacers",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-28T20:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "NBA League Pass 3",
+          "url": "live1.php?stream=nba3"
+        }
+      ],
+      "torneo": "NBA",
+      "source": "json",
+      "deporte": "NBA",
+      "deporte_upper": "NBA"
+    },
+    {
+      "id": "evt_67",
+      "titulo": "Milwaukee Bucks vs Oklahoma City Thunder",
+      "hora": "19:00",
+      "fecha_completa": "2026-11-28T20:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney1"
+        },
+        {
+          "nombre": "NBA League Pass 4",
+          "url": "live1.php?stream=nba4"
+        }
+      ],
+      "torneo": "NBA",
+      "source": "json",
+      "deporte": "NBA",
+      "deporte_upper": "NBA"
+    },
+    {
+      "id": "evt_68",
+      "titulo": "Los Angeles FC vs St. Louis City",
+      "hora": "19:30",
+      "fecha_completa": "2026-11-28T20:30:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Apple TV Español",
+          "url": "live1.php?stream=appletv5"
         }
       ],
       "torneo": "MLS",
@@ -219,15 +1406,49 @@
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_13",
-      "titulo": "Joel Mafauad vs Cristian Ayala",
-      "hora": "17:00",
-      "fecha_completa": "2026-11-27T20:00:00-05:00",
+      "id": "evt_69",
+      "titulo": "Houston Rockets vs Philadelphia 76ers",
+      "hora": "19:30",
+      "fecha_completa": "2026-11-28T20:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "ESPN 2",
-          "url": "https://streamxhd.sbs/live1.php?stream=espn2"
+          "nombre": "NBA League Pass 5",
+          "url": "live1.php?stream=nba5"
+        }
+      ],
+      "torneo": "NBA",
+      "source": "json",
+      "deporte": "NBA",
+      "deporte_upper": "NBA"
+    },
+    {
+      "id": "evt_70",
+      "titulo": "CA La Paz vs Atlético Morelia | Final",
+      "hora": "21:00",
+      "fecha_completa": "2026-11-28T22:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney2"
+        }
+      ],
+      "torneo": "Liga de Expansión MX",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_71",
+      "titulo": "Isaac Guevara vs Alan León Mendoza",
+      "hora": "21:00",
+      "fecha_completa": "2026-11-28T22:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "ESPN",
+          "url": "live1.php?stream=espn"
         }
       ],
       "torneo": "ESPN KnockOut",
@@ -236,175 +1457,68 @@
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_12",
-      "titulo": "Boston Celtics vs Atlanta Hawks",
-      "hora": "17:00",
-      "fecha_completa": "2026-11-27T20:00:00-05:00",
+      "id": "evt_72",
+      "titulo": "América vs Monterrey",
+      "hora": "21:10",
+      "fecha_completa": "2026-11-28T22:10:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "NBA LEAGUE PASS 5",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba5"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_14",
-      "titulo": "Colombia vs República Dominicana",
-      "hora": "17:10",
-      "fecha_completa": "2026-11-27T20:10:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
+          "nombre": "Canal 5 MX",
+          "url": "live1.php?stream=canal5mx"
+        },
         {
-          "nombre": "DSPORTS2",
-          "url": "https://streamxhd.sbs/live1.php?stream=dsports2"
-        }
-      ],
-      "torneo": "FIBA Copa Mundial",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_15",
-      "titulo": "Minnesota Timberwolves vs Memphis Grizzlies",
-      "hora": "17:30",
-      "fecha_completa": "2026-11-27T20:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
+          "nombre": "TUDN MX",
+          "url": "live1.php?stream=tudnmx"
+        },
         {
-          "nombre": "NBA LEAGUE PASS 6",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba6"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_16",
-      "titulo": "Millonarios vs América de Cali",
-      "hora": "17:40",
-      "fecha_completa": "2026-11-27T20:40:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
+          "nombre": "Azteca 7",
+          "url": "live1.php?stream=azteca7"
+        },
         {
-          "nombre": "WIN SPORTS +",
-          "url": "https://streamxhd.sbs/live1.php?stream=winplus"
+          "nombre": "TUDN USA",
+          "url": "live1.php?stream=tudn_usa"
         }
       ],
-      "torneo": "Liga Colombia",
+      "torneo": "Liga MX",
       "source": "json",
       "deporte": "FUTBOL",
       "deporte_upper": "FUTBOL"
     },
     {
-      "id": "evt_17",
-      "titulo": "Phoenix Suns vs Dallas Mavericks",
-      "hora": "18:00",
-      "fecha_completa": "2026-11-27T21:00:00-05:00",
+      "id": "evt_73",
+      "titulo": "Portland Timbers vs Dallas",
+      "hora": "21:30",
+      "fecha_completa": "2026-11-28T22:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
-          "nombre": "NBA LEAGUE PASS 7",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba7"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_18",
-      "titulo": "San Antonio Spurs vs Los Angeles Lakers",
-      "hora": "18:30",
-      "fecha_completa": "2026-11-27T21:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "PRIME VIDEO 2",
-          "url": "https://streamxhd.sbs/live1.php?stream=amazon2"
+          "nombre": "Apple TV Español",
+          "url": "live1.php?stream=appletv6"
         },
         {
-          "nombre": "NBA LEAGUE PASS 8",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba8"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_19",
-      "titulo": "Los Angeles Clippers vs New Orleans Pelicans",
-      "hora": "18:30",
-      "fecha_completa": "2026-11-27T21:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "NBA LEAGUE PASS 9",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba9"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_20",
-      "titulo": "Utah Jazz vs Denver Nuggets",
-      "hora": "18:30",
-      "fecha_completa": "2026-11-27T21:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "NBA10",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba10"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_21",
-      "titulo": "Portland Trail Blazers vs Golden State Warriors",
-      "hora": "18:30",
-      "fecha_completa": "2026-11-27T21:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "NBA11",
-          "url": "https://streamxhd.sbs/live1.php?stream=nba11"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA",
-      "deporte_upper": "NBA"
-    },
-    {
-      "id": "evt_22",
-      "titulo": "Real Salt Lake vs Vancouver Whitecaps",
-      "hora": "19:00",
-      "fecha_completa": "2026-11-27T22:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "APPLETV3",
-          "url": "https://streamxhd.sbs/live1.php?stream=appletv3"
+          "nombre": "FOX Deportes USA",
+          "url": "live1.php?stream=fox_deportes_usa"
         }
       ],
       "torneo": "MLS",
+      "source": "json",
+      "deporte": "FUTBOL",
+      "deporte_upper": "FUTBOL"
+    },
+    {
+      "id": "evt_74",
+      "titulo": "Japón vs Brasil",
+      "hora": "22:55",
+      "fecha_completa": "2026-11-28T23:55:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Sportv 1 BR",
+          "url": "live1.php?stream=sporttvbr1"
+        }
+      ],
+      "torneo": "Amistoso Internacional Femenino",
       "source": "json",
       "deporte": "FUTBOL",
       "deporte_upper": "FUTBOL"

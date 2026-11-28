@@ -1,5 +1,42 @@
 {
-  "fecha_actualizacion": "2026-11-27T23:18:56Z",
-  "total": 0,
-  "eventos": []
+  "fecha_actualizacion": "2026-11-28T14:25:17Z",
+  "total": 2,
+  "eventos": [
+    {
+      "id": "evt_30",
+      "titulo": "PSV vs Go Ahead Eagles",
+      "hora": "11:45",
+      "fecha_completa": "2026-11-28T12:45:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "live1.php?stream=disney17"
+        },
+        {
+          "nombre": "ESPN 7",
+          "url": "live1.php?stream=espn7"
+        }
+      ],
+      "torneo": "Eredivisie",
+      "source": "json",
+      "deporte": "OTROS"
+    },
+    {
+      "id": "evt_53",
+      "titulo": "WarGames",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-28T18:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Netflix",
+          "url": "live1.php?stream=evento8"
+        }
+      ],
+      "torneo": "WWE Survivor Series",
+      "source": "json",
+      "deporte": "OTROS"
+    }
+  ]
 }
