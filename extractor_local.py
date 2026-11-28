@@ -7,6 +7,7 @@ from typing import List, Dict, Tuple
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
+# Dominios base a escanear
 BASE_URLS = ["https://streamxhd.com/", "https://streamxhd.st/", "https://streamxhd.click/", "https://streamxhd.sbs/"]
 LOCAL_OUT = Path(__file__).parent / "output"
 LOCAL_OUT.mkdir(exist_ok=True)
@@ -48,8 +49,9 @@ NHL_KEYWORDS = [normalizar(k) for k in ["NHL", "HOCKEY", "AVALANCHE", "MAPLE LEA
 UFC_KEYWORDS = [normalizar(k) for k in ["UFC", "MMA", "BOXING", "BOXEO", "PELEA", "FIGHT", "BELLATOR", "PFL", "ONE CHAMPIONSHIP", "CANELO", "MCGREGOR", "MAKHACHEV", "JONES", "NOCHE DE PELEA"]]
 WRESTLING_KEYWORDS = [normalizar(k) for k in ["WWE", "AEW", "TNA", "NJPW", "IMPACT", "SMACKDOWN", "RAW", "WRESTLEMANIA", "ROYAL RUMBLE", "SUMMERSLAM", "SURVIVOR SERIES", "DYNAMITE", "RAMPAGE", "COLLISION", "WRESTLING"]]
 
-# ⬇️ REGEX ACTUALIZADO: acepta streamxhd.com, streamxhd1.com, streamxhd2.com, etc.
-SERVER_URL_RE = re.compile(r"https?://streamxhd\d*\.[a-z]+/(live\d+\.php\?(?:stream|channel|id)=[A-Za-z0-9_\-]+)")
+# ⬇️ REGEX ACTUALIZADO: Captura la URL completa (con dominio) y el path con los parámetros.
+# Acepta streamxhd.com, streamxhd1.com, streamxhd2.com, etc.
+SERVER_URL_RE = re.compile(r"(https?://streamxhd\d*\.[a-z]+/(?:live\d*\.php\?[^\s\"'<>]+))")
 GENERIC_STREAM_RE = re.compile(r"(https?://streamxhd\d*\.[a-z]+/[^\s\"'<>]+\.php\?[^\s\"'<>]+)")
 
 def extraer_stream_id(full_url: str) -> str:
@@ -185,9 +187,10 @@ async def _scrape_url(url: str) -> List[Dict]:
                         stream_url = btn.get("data-url") or btn.get("data-copy") or ""
 
                     if stream_url and "streamxhd" in stream_url:
+                        # Buscamos la URL completa
                         m = SERVER_URL_RE.search(stream_url) or GENERIC_STREAM_RE.search(stream_url)
                         if m:
-                            full_url = m.group(1) if m.groups() else m.group(0)
+                            full_url = m.group(1) # Ahora captura el grupo 1 que es la URL completa
                             stream_id = extraer_stream_id(full_url)
                             display_name = name if name else CANALES_NOMBRES.get(stream_id, stream_id.upper())
                             if full_url not in seen:
@@ -204,7 +207,7 @@ async def _scrape_url(url: str) -> List[Dict]:
                         if stream_url and "streamxhd" in stream_url:
                             m = SERVER_URL_RE.search(stream_url) or GENERIC_STREAM_RE.search(stream_url)
                             if m:
-                                full_url = m.group(1) if m.groups() else m.group(0)
+                                full_url = m.group(1)
                                 stream_id = extraer_stream_id(full_url)
                                 if full_url not in seen:
                                     seen.add(full_url)
@@ -217,7 +220,7 @@ async def _scrape_url(url: str) -> List[Dict]:
                         if stream_url and "streamxhd" in stream_url:
                             m = SERVER_URL_RE.search(stream_url) or GENERIC_STREAM_RE.search(stream_url)
                             if m:
-                                full_url = m.group(1) if m.groups() else m.group(0)
+                                full_url = m.group(1)
                                 stream_id = extraer_stream_id(full_url)
                                 if full_url not in seen:
                                     seen.add(full_url)
@@ -261,13 +264,22 @@ async def _scrape_url(url: str) -> List[Dict]:
     return eventos
 
 async def obtener_eventos() -> List[Dict]:
+    todos_los_eventos = []
+    # Iteramos sobre TODAS las URLs base para recopilar eventos de todas
     for url in BASE_URLS:
         try:
+            LOG.info(f"--- Iniciando scraping en {url} ---")
             eventos = await _scrape_url(url)
-            if eventos: return eventos
+            if eventos:
+                todos_los_eventos.extend(eventos)
+                LOG.info(f"Se agregaron {len(eventos)} eventos de {url}")
+            else:
+                LOG.warning(f"No se encontraron eventos en {url}")
         except Exception as e:
             LOG.error(f"Fallo total en {url}: {e}")
-    return []
+    
+    # La deduplicación se encargará de fusionar los eventos repetidos y agregar los servidores faltantes
+    return todos_los_eventos
 
 def deduplicar_eventos(eventos: List[Dict]) -> List[Dict]:
     dedup: Dict[str, Dict] = {}
@@ -276,11 +288,18 @@ def deduplicar_eventos(eventos: List[Dict]) -> List[Dict]:
         if clave not in dedup:
             dedup[clave] = e
         else:
+            # Si el evento ya existe, fusionamos los servidores
             urls_vistas = {s["url"] for s in dedup[clave]["servidores"]}
             for srv in e["servidores"]:
-                if srv["url"] not in urls_vistas: dedup[clave]["servidores"].append(srv)
-            if e["status"] == "EN VIVO": dedup[clave]["status"] = "EN VIVO"
-            elif e["status"] == "PRONTO" and dedup[clave]["status"] == "FINALIZADO": dedup[clave]["status"] = "PRONTO"
+                if srv["url"] not in urls_vistas: 
+                    dedup[clave]["servidores"].append(srv)
+            
+            # Actualizamos el estado si es más relevante (EN VIVO > PRONTO > FINALIZADO)
+            if e["status"] == "EN VIVO": 
+                dedup[clave]["status"] = "EN VIVO"
+            elif e["status"] == "PRONTO" and dedup[clave]["status"] == "FINALIZADO": 
+                dedup[clave]["status"] = "PRONTO"
+                
     return list(dedup.values())
 
 def clasificar_evento(titulo: str, torneo: str, sport_hint: str) -> Tuple[str, str]:
