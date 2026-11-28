@@ -1,21 +1,21 @@
 {
-  "fecha_actualizacion": "2026-11-28T14:25:17Z",
+  "fecha_actualizacion": "2026-11-28T17:03:29Z",
   "total": 2,
   "eventos": [
     {
-      "id": "evt_30",
+      "id": "evt_17",
       "titulo": "PSV vs Go Ahead Eagles",
-      "hora": "11:45",
+      "hora": "09:45",
       "fecha_completa": "2026-11-28T12:45:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
           "nombre": "Disney +",
-          "url": "live1.php?stream=disney17"
+          "url": "https://streamxhd1.com/live1.php?stream=disney17"
         },
         {
           "nombre": "ESPN 7",
-          "url": "live1.php?stream=espn7"
+          "url": "https://streamxhd1.com/live1.php?stream=espn7"
         }
       ],
       "torneo": "Eredivisie",
@@ -23,15 +23,15 @@
       "deporte": "OTROS"
     },
     {
-      "id": "evt_53",
+      "id": "evt_40",
       "titulo": "WarGames",
-      "hora": "17:00",
+      "hora": "15:00",
       "fecha_completa": "2026-11-28T18:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
           "nombre": "Netflix",
-          "url": "live1.php?stream=evento8"
+          "url": "https://streamxhd1.com/live1.php?stream=evento8"
         }
       ],
       "torneo": "WWE Survivor Series",

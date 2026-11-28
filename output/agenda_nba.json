@@ -1,21 +1,53 @@
 {
-  "fecha_actualizacion": "2026-11-28T14:25:17Z",
+  "fecha_actualizacion": "2026-11-28T17:03:29Z",
   "total": 5,
   "eventos": [
     {
-      "id": "evt_50",
+      "id": "evt_37",
       "titulo": "Washington Wizards vs Orlando Magic",
-      "hora": "16:00",
+      "hora": "14:00",
       "fecha_completa": "2026-11-28T17:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
           "nombre": "Disney +",
-          "url": "live1.php?stream=disney28"
+          "url": "https://streamxhd1.com/live1.php?stream=disney28"
         },
         {
           "nombre": "NBA League Pass 1",
-          "url": "live1.php?stream=nba1"
+          "url": "https://streamxhd1.com/live1.php?stream=nba1"
+        }
+      ],
+      "torneo": "NBA",
+      "source": "json",
+      "deporte": "NBA"
+    },
+    {
+      "id": "evt_41",
+      "titulo": "Charlotte Hornets vs Brooklyn Nets",
+      "hora": "15:00",
+      "fecha_completa": "2026-11-28T18:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "NBA League Pass 2",
+          "url": "https://streamxhd1.com/live1.php?stream=nba2"
+        }
+      ],
+      "torneo": "NBA",
+      "source": "json",
+      "deporte": "NBA"
+    },
+    {
+      "id": "evt_53",
+      "titulo": "Chicago Bulls vs Indiana Pacers",
+      "hora": "17:00",
+      "fecha_completa": "2026-11-28T20:00:00-05:00",
+      "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "NBA League Pass 3",
+          "url": "https://streamxhd1.com/live1.php?stream=nba3"
         }
       ],
       "torneo": "NBA",
@@ -24,50 +56,18 @@
     },
     {
       "id": "evt_54",
-      "titulo": "Charlotte Hornets vs Brooklyn Nets",
-      "hora": "17:00",
-      "fecha_completa": "2026-11-28T18:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "NBA League Pass 2",
-          "url": "live1.php?stream=nba2"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA"
-    },
-    {
-      "id": "evt_66",
-      "titulo": "Chicago Bulls vs Indiana Pacers",
-      "hora": "19:00",
-      "fecha_completa": "2026-11-28T20:00:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "NBA League Pass 3",
-          "url": "live1.php?stream=nba3"
-        }
-      ],
-      "torneo": "NBA",
-      "source": "json",
-      "deporte": "NBA"
-    },
-    {
-      "id": "evt_67",
       "titulo": "Milwaukee Bucks vs Oklahoma City Thunder",
-      "hora": "19:00",
+      "hora": "17:00",
       "fecha_completa": "2026-11-28T20:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
           "nombre": "Disney +",
-          "url": "live1.php?stream=disney1"
+          "url": "https://streamxhd1.com/live1.php?stream=disney1"
         },
         {
           "nombre": "NBA League Pass 4",
-          "url": "live1.php?stream=nba4"
+          "url": "https://streamxhd1.com/live1.php?stream=nba4"
         }
       ],
       "torneo": "NBA",
@@ -75,15 +75,15 @@
       "deporte": "NBA"
     },
     {
-      "id": "evt_69",
+      "id": "evt_56",
       "titulo": "Houston Rockets vs Philadelphia 76ers",
-      "hora": "19:30",
+      "hora": "17:30",
       "fecha_completa": "2026-11-28T20:30:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
           "nombre": "NBA League Pass 5",
-          "url": "live1.php?stream=nba5"
+          "url": "https://streamxhd1.com/live1.php?stream=nba5"
         }
       ],
       "torneo": "NBA",

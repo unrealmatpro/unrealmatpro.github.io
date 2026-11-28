@@ -1,45 +1,45 @@
 {
-  "fecha_actualizacion": "2026-11-28T14:25:17Z",
+  "fecha_actualizacion": "2026-11-28T17:03:29Z",
   "total": 8,
   "eventos": [
     {
-      "id": "evt_3",
-      "titulo": "GP Valencia – Sprint",
-      "hora": "07:30",
-      "fecha_completa": "2026-11-28T08:30:00-05:00",
+      "id": "evt_7",
+      "titulo": "GP Lusail – Carrera Sprint",
+      "hora": "08:15",
+      "fecha_completa": "2026-11-28T11:15:00-05:00",
       "status": "EN VIVO",
       "servidores": [
         {
           "nombre": "ESPN 3",
-          "url": "live1.php?stream=espn3"
+          "url": "https://streamxhd1.com/live1.php?stream=espn3"
         }
       ],
-      "torneo": "MotoGP",
+      "torneo": "F2",
       "source": "json",
       "deporte": "F1"
     },
     {
-      "id": "evt_10",
-      "titulo": "GP Qatar – Práctica 3",
-      "hora": "08:30",
-      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "id": "evt_18",
+      "titulo": "GP Qatar – Clasificación",
+      "hora": "10:00",
+      "fecha_completa": "2026-11-28T13:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
           "nombre": "Disney +",
-          "url": "live1.php?stream=disney7"
+          "url": "https://streamxhd1.com/live1.php?stream=disney18"
         },
         {
           "nombre": "FOX Sports 1 AR",
-          "url": "live1.php?stream=fox1ar"
+          "url": "https://streamxhd1.com/live1.php?stream=fox1ar"
         },
         {
           "nombre": "DAZN F1",
-          "url": "live1.php?stream=daznf1"
+          "url": "https://streamxhd1.com/live1.php?stream=daznf1"
         },
         {
           "nombre": "Sportv 3 BR",
-          "url": "live1.php?stream=sporttvbr3"
+          "url": "https://streamxhd1.com/live1.php?stream=sporttvbr3"
         }
       ],
       "torneo": "F1",
@@ -47,31 +47,15 @@
       "deporte": "F1"
     },
     {
-      "id": "evt_11",
-      "titulo": "GP Qatar – Práctica 3 - On Board Colapinto",
-      "hora": "08:30",
-      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "id": "evt_19",
+      "titulo": "GP Qatar – Clasificación - On Board Colapinto",
+      "hora": "10:00",
+      "fecha_completa": "2026-11-28T13:00:00-05:00",
       "status": "PRONTO",
       "servidores": [
         {
           "nombre": "Disney +",
-          "url": "live1.php?stream=disney8"
-        }
-      ],
-      "torneo": "F1",
-      "source": "json",
-      "deporte": "F1"
-    },
-    {
-      "id": "evt_12",
-      "titulo": "GP Qatar – Práctica 3 - On Board Leclerc",
-      "hora": "08:30",
-      "fecha_completa": "2026-11-28T09:30:00-05:00",
-      "status": "PRONTO",
-      "servidores": [
-        {
-          "nombre": "Disney +",
-          "url": "live1.php?stream=disney9"
+          "url": "https://streamxhd1.com/live1.php?stream=disney19"
         }
       ],
       "torneo": "F1",
@@ -80,42 +64,58 @@
     },
     {
       "id": "evt_20",
-      "titulo": "GP Lusail – Carrera Sprint",
-      "hora": "10:15",
-      "fecha_completa": "2026-11-28T11:15:00-05:00",
+      "titulo": "GP Qatar – Clasificación - On Board Leclerc",
+      "hora": "10:00",
+      "fecha_completa": "2026-11-28T13:00:00-05:00",
       "status": "PRONTO",
+      "servidores": [
+        {
+          "nombre": "Disney +",
+          "url": "https://streamxhd1.com/live1.php?stream=disney20"
+        }
+      ],
+      "torneo": "F1",
+      "source": "json",
+      "deporte": "F1"
+    },
+    {
+      "id": "evt_67",
+      "titulo": "GP Valencia – Sprint",
+      "hora": "05:30",
+      "fecha_completa": "2026-11-28T08:30:00-05:00",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "ESPN 3",
-          "url": "live1.php?stream=espn3"
+          "url": "https://streamxhd1.com/live1.php?stream=espn3"
         }
       ],
-      "torneo": "F2",
+      "torneo": "MotoGP",
       "source": "json",
       "deporte": "F1"
     },
     {
-      "id": "evt_31",
-      "titulo": "GP Qatar – Clasificación",
-      "hora": "12:00",
-      "fecha_completa": "2026-11-28T13:00:00-05:00",
-      "status": "PRONTO",
+      "id": "evt_74",
+      "titulo": "GP Qatar – Práctica 3",
+      "hora": "06:30",
+      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "Disney +",
-          "url": "live1.php?stream=disney18"
+          "url": "https://streamxhd1.com/live1.php?stream=disney7"
         },
         {
           "nombre": "FOX Sports 1 AR",
-          "url": "live1.php?stream=fox1ar"
+          "url": "https://streamxhd1.com/live1.php?stream=fox1ar"
         },
         {
           "nombre": "DAZN F1",
-          "url": "live1.php?stream=daznf1"
+          "url": "https://streamxhd1.com/live1.php?stream=daznf1"
         },
         {
           "nombre": "Sportv 3 BR",
-          "url": "live1.php?stream=sporttvbr3"
+          "url": "https://streamxhd1.com/live1.php?stream=sporttvbr3"
         }
       ],
       "torneo": "F1",
@@ -123,15 +123,15 @@
       "deporte": "F1"
     },
     {
-      "id": "evt_32",
-      "titulo": "GP Qatar – Clasificación - On Board Colapinto",
-      "hora": "12:00",
-      "fecha_completa": "2026-11-28T13:00:00-05:00",
-      "status": "PRONTO",
+      "id": "evt_75",
+      "titulo": "GP Qatar – Práctica 3 - On Board Colapinto",
+      "hora": "06:30",
+      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "Disney +",
-          "url": "live1.php?stream=disney19"
+          "url": "https://streamxhd1.com/live1.php?stream=disney8"
         }
       ],
       "torneo": "F1",
@@ -139,15 +139,15 @@
       "deporte": "F1"
     },
     {
-      "id": "evt_33",
-      "titulo": "GP Qatar – Clasificación - On Board Leclerc",
-      "hora": "12:00",
-      "fecha_completa": "2026-11-28T13:00:00-05:00",
-      "status": "PRONTO",
+      "id": "evt_76",
+      "titulo": "GP Qatar – Práctica 3 - On Board Leclerc",
+      "hora": "06:30",
+      "fecha_completa": "2026-11-28T09:30:00-05:00",
+      "status": "FINALIZADO",
       "servidores": [
         {
           "nombre": "Disney +",
-          "url": "live1.php?stream=disney20"
+          "url": "https://streamxhd1.com/live1.php?stream=disney9"
         }
       ],
       "torneo": "F1",
