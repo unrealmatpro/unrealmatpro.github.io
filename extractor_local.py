@@ -48,10 +48,22 @@ NHL_KEYWORDS = [normalizar(k) for k in ["NHL", "HOCKEY", "AVALANCHE", "MAPLE LEA
 UFC_KEYWORDS = [normalizar(k) for k in ["UFC", "MMA", "BOXING", "BOXEO", "PELEA", "FIGHT", "BELLATOR", "PFL", "ONE CHAMPIONSHIP", "CANELO", "MCGREGOR", "MAKHACHEV", "JONES", "NOCHE DE PELEA"]]
 WRESTLING_KEYWORDS = [normalizar(k) for k in ["WWE", "AEW", "TNA", "NJPW", "IMPACT", "SMACKDOWN", "RAW", "WRESTLEMANIA", "ROYAL RUMBLE", "SUMMERSLAM", "SURVIVOR SERIES", "DYNAMITE", "RAMPAGE", "COLLISION", "WRESTLING"]]
 
-# ⬇️ REGEX AMPLIADO: acepta live1/2/3 y otros formatos comunes
-SERVER_URL_RE = re.compile(r"https?://streamxhd\.[a-z]+/(live\d+\.php\?(?:stream|channel|id)=[A-Za-z0-9_\-]+)")
-# Fallback genérico: cualquier https://streamxhd.* que tenga algún .php?...
-GENERIC_STREAM_RE = re.compile(r"(https?://streamxhd\.[a-z]+/[^\s\"'<>]+\.php\?[^\s\"'<>]+)")
+# ⬇️ REGEX ACTUALIZADO: acepta streamxhd.com, streamxhd1.com, streamxhd2.com, etc.
+SERVER_URL_RE = re.compile(r"https?://streamxhd\d*\.[a-z]+/(live\d+\.php\?(?:stream|channel|id)=[A-Za-z0-9_\-]+)")
+GENERIC_STREAM_RE = re.compile(r"(https?://streamxhd\d*\.[a-z]+/[^\s\"'<>]+\.php\?[^\s\"'<>]+)")
+
+def extraer_stream_id(full_url: str) -> str:
+    """Extrae el ID de canal (stream=xxx) de una URL."""
+    try:
+        qs = full_url.split("?")[1] if "?" in full_url else ""
+        for part in qs.split("&"):
+            if "=" in part:
+                k, v = part.split("=", 1)
+                if k in ("stream", "channel", "id"):
+                    return v.lower()
+        return full_url.split("/")[-1].split("?")[0].lower()
+    except Exception:
+        return ""
 
 async def _scrape_url(url: str) -> List[Dict]:
     eventos: List[Dict] = []
@@ -80,13 +92,12 @@ async def _scrape_url(url: str) -> List[Dict]:
                     except Exception:
                         pass
 
-                # Extracción de título (múltiples fallbacks)
+                # ==== TÍTULO ====
                 titulo = None
                 h2 = art.find("h2", class_="event-title")
                 if h2 and h2.text.strip():
                     titulo = h2.text.strip()
                 if not titulo:
-                    # Fallback 1: cualquier h2 dentro del article
                     any_h2 = art.find("h2")
                     if any_h2 and any_h2.text.strip():
                         titulo = any_h2.text.strip()
@@ -95,14 +106,15 @@ async def _scrape_url(url: str) -> List[Dict]:
                     if len(partes) > 0 and partes[0].strip():
                         titulo = partes[0].strip()
                 if not titulo:
-                    # Fallback 2: data-titulo o title attribute
-                    titulo = art.get("data-titulo") or art.get("title") or ""
-                    titulo = titulo.strip() if titulo else ""
+                    name_div = art.find(class_="compact-list-name")
+                    if name_div and name_div.text.strip():
+                        titulo = name_div.text.strip()
 
                 if not titulo or len(titulo) < 3:
                     stats["sin_titulo"] += 1
                     continue
 
+                # ==== FECHA/HORA ====
                 time_div = art.find("div", class_="event-time") or art.find("span", class_="compact-list-time")
                 fecha_completa = None
                 time_str = "00:00"
@@ -115,17 +127,18 @@ async def _scrape_url(url: str) -> List[Dict]:
                                 fecha_completa += "-05:00"
                         else:
                             fecha_completa = raw_date.replace(" ", "T") + ":00-05:00"
-
                     match = re.search(r"(\d{1,2}:\d{2})", time_div.text)
                     if match:
                         time_str = match.group(1).zfill(5)
 
+                # ==== STATUS ====
                 status_elem = art.find(class_="status") or art.find(class_="compact-list-status")
                 status_text = status_elem.text.strip().upper() if status_elem else "PRONTO"
                 if "VIVO" in status_text: status_text = "EN VIVO"
                 elif "FINAL" in status_text: status_text = "FINALIZADO"
                 elif "PRONTO" in status_text: status_text = "PRONTO"
 
+                # ==== TORNEO ====
                 torneo = "DEPORTE"
                 if meta_text:
                     partes = meta_text.split('|')
@@ -135,9 +148,9 @@ async def _scrape_url(url: str) -> List[Dict]:
                     league_tag = art.find("span", class_="compact-list-league")
                     if league_tag: torneo = league_tag.text.strip()
 
+                # ==== SPORT HINT ====
                 sport_hint = ""
-                tags = art.find_all("span", class_="tag")
-                for tag in tags:
+                for tag in art.find_all("span", class_="tag"):
                     tag_txt = tag.text.strip()
                     if "Football" in tag_txt or "Soccer" in tag_txt: sport_hint = "FUTBOL"
                     elif "Basketball" in tag_txt: sport_hint = "NBA"
@@ -148,55 +161,69 @@ async def _scrape_url(url: str) -> List[Dict]:
                     elif "Wrestling" in tag_txt: sport_hint = "WRESTLING"
                     elif "MMA" in tag_txt or "UFC" in tag_txt or "Fight" in tag_txt: sport_hint = "UFC"
 
-                # Extracción de servidores (múltiples estrategias)
+                # ==== SERVIDORES (3 estrategias en orden) ====
                 servidores = []
                 seen = set()
-                candidatos = art.find_all("button", class_="compact-server-action") + art.find_all("button", class_="server")
-                # Fallback: cualquier button con data-url / data-copy / data-target
-                if not candidatos:
-                    candidatos = art.find_all("button", attrs={"data-url": True}) + art.find_all("button", attrs={"data-copy": True}) + art.find_all("button", attrs={"data-target": True})
-                # Fallback 2: cualquier anchor con href a streamxhd
-                if not candidatos:
-                    candidatos = art.find_all("a", href=re.compile(r"streamxhd"))
 
-                for a_tag in candidatos:
-                    stream_url = a_tag.get("data-url") or a_tag.get("data-copy") or a_tag.get("data-target") or a_tag.get("href")
-                    if not stream_url:
-                        continue
-                    # Si viene como iframe HTML, extraer src
-                    if "iframe" in stream_url or "<" in stream_url:
-                        m = re.search(r'src=["\']([^"\']+)["\']', stream_url)
-                        if m: stream_url = m.group(1)
-                    if not stream_url or "streamxhd" not in stream_url:
-                        continue
+                # Estrategia 1: div.compact-server-row (contiene nombre + url + botones)
+                rows = art.find_all("div", class_="compact-server-row")
+                for row in rows:
+                    name_div = row.find("div", class_="compact-server-name")
+                    name = ""
+                    if name_div:
+                        name = name_div.get("title") or name_div.text.strip()
+                        # Limpiar el número inicial (ej: "1 Disney +" → "Disney +")
+                        name = re.sub(r"^\d+\s*", "", name).strip()
 
-                    # Intentar regex estricto primero
-                    match = SERVER_URL_RE.search(stream_url)
-                    if not match:
-                        # Fallback: regex genérico
-                        match = GENERIC_STREAM_RE.search(stream_url)
-                    if match:
-                        full_url = match.group(1) if match.groups() else match.group(0)
-                        # Extraer stream id del query param
-                        try:
-                            qs = full_url.split("?")[1] if "?" in full_url else ""
-                            stream_id = ""
-                            for part in qs.split("&"):
-                                if "=" in part:
-                                    k, v = part.split("=", 1)
-                                    if k in ("stream", "channel", "id"):
-                                        stream_id = v.lower()
-                                        break
-                            if not stream_id:
-                                stream_id = full_url.split("/")[-1].lower()
-                        except Exception:
-                            stream_id = full_url.split("/")[-1].lower()
+                    url_div = row.find("div", class_="compact-server-url")
+                    stream_url = ""
+                    if url_div:
+                        stream_url = url_div.get("title") or url_div.text.strip()
 
-                        if full_url not in seen:
-                            seen.add(full_url)
-                            servidores.append({"nombre": CANALES_NOMBRES.get(stream_id, stream_id.upper()), "url": full_url})
+                    btn = row.find("button", class_="compact-server-action")
+                    if not stream_url and btn:
+                        stream_url = btn.get("data-url") or btn.get("data-copy") or ""
 
-                # REGLA DE ORO: descartar eventos SIN servidores válidos
+                    if stream_url and "streamxhd" in stream_url:
+                        m = SERVER_URL_RE.search(stream_url) or GENERIC_STREAM_RE.search(stream_url)
+                        if m:
+                            full_url = m.group(1) if m.groups() else m.group(0)
+                            stream_id = extraer_stream_id(full_url)
+                            display_name = name if name else CANALES_NOMBRES.get(stream_id, stream_id.upper())
+                            if full_url not in seen:
+                                seen.add(full_url)
+                                servidores.append({"nombre": display_name, "url": full_url})
+
+                # Estrategia 2: botones con data-url / data-copy
+                if not servidores:
+                    for btn in art.find_all("button", class_="compact-server-action") + art.find_all("button", class_="server"):
+                        stream_url = btn.get("data-url") or btn.get("data-copy") or ""
+                        if "iframe" in stream_url or "<" in stream_url:
+                            m = re.search(r'src=["\']([^"\']+)["\']', stream_url)
+                            if m: stream_url = m.group(1)
+                        if stream_url and "streamxhd" in stream_url:
+                            m = SERVER_URL_RE.search(stream_url) or GENERIC_STREAM_RE.search(stream_url)
+                            if m:
+                                full_url = m.group(1) if m.groups() else m.group(0)
+                                stream_id = extraer_stream_id(full_url)
+                                if full_url not in seen:
+                                    seen.add(full_url)
+                                    servidores.append({"nombre": CANALES_NOMBRES.get(stream_id, stream_id.upper()), "url": full_url})
+
+                # Estrategia 3: divs .compact-server-url con title o texto
+                if not servidores:
+                    for srv_div in art.find_all("div", class_="compact-server-url"):
+                        stream_url = srv_div.get("title") or srv_div.text.strip()
+                        if stream_url and "streamxhd" in stream_url:
+                            m = SERVER_URL_RE.search(stream_url) or GENERIC_STREAM_RE.search(stream_url)
+                            if m:
+                                full_url = m.group(1) if m.groups() else m.group(0)
+                                stream_id = extraer_stream_id(full_url)
+                                if full_url not in seen:
+                                    seen.add(full_url)
+                                    servidores.append({"nombre": CANALES_NOMBRES.get(stream_id, stream_id.upper()), "url": full_url})
+
+                # REGLA DE ORO: descartar sin servidores
                 if not servidores:
                     stats["sin_servidores"] += 1
                     continue
@@ -218,7 +245,6 @@ async def _scrape_url(url: str) -> List[Dict]:
                 LOG.info(f"✅ {url}: {stats['ok']} eventos válidos (descartados: {stats['sin_titulo']} sin título, {stats['sin_servidores']} sin servidores)")
                 return eventos
 
-            # Si no hay eventos, guardar HTML de debug para inspección
             LOG.warning(f"⚠️ {url}: 0 eventos válidos. Stats: {stats}")
             debug_file = DEBUG_DIR / f"debug_{url.replace('https://','').replace('/','_').replace('.','_')}.html"
             try:
@@ -264,25 +290,18 @@ def clasificar_evento(titulo: str, torneo: str, sport_hint: str) -> Tuple[str, s
 
     if hint_upper == "F1" or re.search(r"\bF1\b", torneo_upper) or re.search(r"\bF1\b", t) or any(k in t or k in torneo_upper for k in F1_KEYWORDS):
         return "f1", torneo
-
     if hint_upper == "NBA" or re.search(r"\bNBA\b", torneo_upper) or re.search(r"\bNBA\b", t) or any(k in t or k in torneo_upper for k in NBA_KEYWORDS):
         return "nba", torneo
-
     if hint_upper == "NFL" or re.search(r"\bNFL\b", torneo_upper) or re.search(r"\bNFL\b", t) or any(k in t or k in torneo_upper for k in NFL_KEYWORDS):
         return "otros", torneo if torneo_upper and torneo_upper != "DEPORTE" else "NFL"
-
     if hint_upper == "MLB" or re.search(r"\bMLB\b", torneo_upper) or re.search(r"\bMLB\b", t) or any(k in t or k in torneo_upper for k in MLB_KEYWORDS):
         return "otros", torneo if torneo_upper and torneo_upper != "DEPORTE" else "MLB"
-
     if hint_upper == "NHL" or re.search(r"\bNHL\b", torneo_upper) or re.search(r"\bNHL\b", t) or any(k in t or k in torneo_upper for k in NHL_KEYWORDS):
         return "otros", torneo if torneo_upper and torneo_upper != "DEPORTE" else "NHL"
-
     if hint_upper == "UFC" or re.search(r"\bUFC\b", torneo_upper) or re.search(r"\bUFC\b", t) or any(k in t or k in torneo_upper for k in UFC_KEYWORDS):
         return "otros", torneo if torneo_upper and torneo_upper != "DEPORTE" else "UFC"
-
     if hint_upper == "WRESTLING" or re.search(r"\bWWE\b", torneo_upper) or re.search(r"\bWWE\b", t) or any(k in t or k in torneo_upper for k in WRESTLING_KEYWORDS):
         return "otros", torneo if torneo_upper and torneo_upper != "DEPORTE" else "WRESTLING"
-
     return "futbol", torneo
 
 def clasificar_eventos(eventos: List[Dict]) -> Dict[str, List[Dict]]:
