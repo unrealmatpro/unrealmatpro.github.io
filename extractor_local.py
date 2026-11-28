@@ -4,13 +4,14 @@ import asyncio, base64, json, logging, os, re, sys, unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Dict, Tuple
-import requests
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
 BASE_URLS = ["https://streamxhd.com/", "https://streamxhd.st/", "https://streamxhd.click/", "https://streamxhd.sbs/"]
 LOCAL_OUT = Path(__file__).parent / "output"
 LOCAL_OUT.mkdir(exist_ok=True)
+DEBUG_DIR = Path(__file__).parent / "output_debug"
+DEBUG_DIR.mkdir(exist_ok=True)
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 TIMEOUT_MS = 30000
 WAIT_AFTER_LOAD = 5000
@@ -47,10 +48,14 @@ NHL_KEYWORDS = [normalizar(k) for k in ["NHL", "HOCKEY", "AVALANCHE", "MAPLE LEA
 UFC_KEYWORDS = [normalizar(k) for k in ["UFC", "MMA", "BOXING", "BOXEO", "PELEA", "FIGHT", "BELLATOR", "PFL", "ONE CHAMPIONSHIP", "CANELO", "MCGREGOR", "MAKHACHEV", "JONES", "NOCHE DE PELEA"]]
 WRESTLING_KEYWORDS = [normalizar(k) for k in ["WWE", "AEW", "TNA", "NJPW", "IMPACT", "SMACKDOWN", "RAW", "WRESTLEMANIA", "ROYAL RUMBLE", "SUMMERSLAM", "SURVIVOR SERIES", "DYNAMITE", "RAMPAGE", "COLLISION", "WRESTLING"]]
 
-SERVER_URL_RE = re.compile(r"https?://streamxhd\.[a-z]+/(live[12]\.php\?stream=[A-Za-z0-9_\-]+)")
+# ⬇️ REGEX AMPLIADO: acepta live1/2/3 y otros formatos comunes
+SERVER_URL_RE = re.compile(r"https?://streamxhd\.[a-z]+/(live\d+\.php\?(?:stream|channel|id)=[A-Za-z0-9_\-]+)")
+# Fallback genérico: cualquier https://streamxhd.* que tenga algún .php?...
+GENERIC_STREAM_RE = re.compile(r"(https?://streamxhd\.[a-z]+/[^\s\"'<>]+\.php\?[^\s\"'<>]+)")
 
 async def _scrape_url(url: str) -> List[Dict]:
     eventos: List[Dict] = []
+    stats = {"total_articles": 0, "sin_titulo": 0, "sin_servidores": 0, "ok": 0}
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True, args=["--no-sandbox"])
         try:
@@ -60,8 +65,10 @@ async def _scrape_url(url: str) -> List[Dict]:
             await page.goto(url, wait_until="domcontentloaded", timeout=TIMEOUT_MS)
             await page.wait_for_timeout(WAIT_AFTER_LOAD)
 
-            soup = BeautifulSoup(await page.content(), "lxml")
+            html_content = await page.content()
+            soup = BeautifulSoup(html_content, "lxml")
             articles = soup.find_all("article", class_="event")
+            stats["total_articles"] = len(articles)
             LOG.info(f"Encontrados {len(articles)} partidos válidos en {url}")
 
             for idx, art in enumerate(articles):
@@ -73,14 +80,27 @@ async def _scrape_url(url: str) -> List[Dict]:
                     except Exception:
                         pass
 
+                # Extracción de título (múltiples fallbacks)
+                titulo = None
                 h2 = art.find("h2", class_="event-title")
-                titulo = h2.text.strip() if h2 else None
+                if h2 and h2.text.strip():
+                    titulo = h2.text.strip()
+                if not titulo:
+                    # Fallback 1: cualquier h2 dentro del article
+                    any_h2 = art.find("h2")
+                    if any_h2 and any_h2.text.strip():
+                        titulo = any_h2.text.strip()
                 if not titulo and meta_text:
                     partes = meta_text.split('|')
-                    if len(partes) > 0:
-                        titulo = partes[0]
+                    if len(partes) > 0 and partes[0].strip():
+                        titulo = partes[0].strip()
+                if not titulo:
+                    # Fallback 2: data-titulo o title attribute
+                    titulo = art.get("data-titulo") or art.get("title") or ""
+                    titulo = titulo.strip() if titulo else ""
 
                 if not titulo or len(titulo) < 3:
+                    stats["sin_titulo"] += 1
                     continue
 
                 time_div = art.find("div", class_="event-time") or art.find("span", class_="compact-list-time")
@@ -128,26 +148,60 @@ async def _scrape_url(url: str) -> List[Dict]:
                     elif "Wrestling" in tag_txt: sport_hint = "WRESTLING"
                     elif "MMA" in tag_txt or "UFC" in tag_txt or "Fight" in tag_txt: sport_hint = "UFC"
 
+                # Extracción de servidores (múltiples estrategias)
                 servidores = []
                 seen = set()
-                for a_tag in art.find_all("button", class_="compact-server-action") + art.find_all("button", class_="server"):
-                    stream_url = a_tag.get("data-url") or a_tag.get("data-copy") or a_tag.get("data-target")
-                    if stream_url and "iframe" in stream_url:
-                        m = re.search(r'src="(https?://[^"]+)"', stream_url)
-                        if m: stream_url = m.group(1)
+                candidatos = art.find_all("button", class_="compact-server-action") + art.find_all("button", class_="server")
+                # Fallback: cualquier button con data-url / data-copy / data-target
+                if not candidatos:
+                    candidatos = art.find_all("button", attrs={"data-url": True}) + art.find_all("button", attrs={"data-copy": True}) + art.find_all("button", attrs={"data-target": True})
+                # Fallback 2: cualquier anchor con href a streamxhd
+                if not candidatos:
+                    candidatos = art.find_all("a", href=re.compile(r"streamxhd"))
 
-                    # REGLA DE ORO: solo guardar URLs streamxhd.*
-                    if stream_url and "streamxhd" in stream_url:
-                        match = SERVER_URL_RE.search(stream_url)
-                        if match:
-                            stream_id = match.group(1).split("stream=")[-1].lower()
-                            if stream_url not in seen:
-                                seen.add(stream_url)
-                                servidores.append({"nombre": CANALES_NOMBRES.get(stream_id, stream_id.upper()), "url": stream_url})
+                for a_tag in candidatos:
+                    stream_url = a_tag.get("data-url") or a_tag.get("data-copy") or a_tag.get("data-target") or a_tag.get("href")
+                    if not stream_url:
+                        continue
+                    # Si viene como iframe HTML, extraer src
+                    if "iframe" in stream_url or "<" in stream_url:
+                        m = re.search(r'src=["\']([^"\']+)["\']', stream_url)
+                        if m: stream_url = m.group(1)
+                    if not stream_url or "streamxhd" not in stream_url:
+                        continue
+
+                    # Intentar regex estricto primero
+                    match = SERVER_URL_RE.search(stream_url)
+                    if not match:
+                        # Fallback: regex genérico
+                        match = GENERIC_STREAM_RE.search(stream_url)
+                    if match:
+                        full_url = match.group(1) if match.groups() else match.group(0)
+                        # Extraer stream id del query param
+                        try:
+                            qs = full_url.split("?")[1] if "?" in full_url else ""
+                            stream_id = ""
+                            for part in qs.split("&"):
+                                if "=" in part:
+                                    k, v = part.split("=", 1)
+                                    if k in ("stream", "channel", "id"):
+                                        stream_id = v.lower()
+                                        break
+                            if not stream_id:
+                                stream_id = full_url.split("/")[-1].lower()
+                        except Exception:
+                            stream_id = full_url.split("/")[-1].lower()
+
+                        if full_url not in seen:
+                            seen.add(full_url)
+                            servidores.append({"nombre": CANALES_NOMBRES.get(stream_id, stream_id.upper()), "url": full_url})
 
                 # REGLA DE ORO: descartar eventos SIN servidores válidos
-                if not servidores: continue
+                if not servidores:
+                    stats["sin_servidores"] += 1
+                    continue
 
+                stats["ok"] += 1
                 eventos.append({
                     "id": f"evt_{idx}",
                     "titulo": titulo,
@@ -157,10 +211,22 @@ async def _scrape_url(url: str) -> List[Dict]:
                     "servidores": servidores,
                     "torneo": torneo,
                     "sport_hint": sport_hint,
-                    "source": "json"  # NUEVO: marca origen
+                    "source": "json"
                 })
 
-            if eventos: return eventos
+            if eventos:
+                LOG.info(f"✅ {url}: {stats['ok']} eventos válidos (descartados: {stats['sin_titulo']} sin título, {stats['sin_servidores']} sin servidores)")
+                return eventos
+
+            # Si no hay eventos, guardar HTML de debug para inspección
+            LOG.warning(f"⚠️ {url}: 0 eventos válidos. Stats: {stats}")
+            debug_file = DEBUG_DIR / f"debug_{url.replace('https://','').replace('/','_').replace('.','_')}.html"
+            try:
+                debug_file.write_text(html_content, encoding="utf-8")
+                LOG.warning(f"📄 HTML guardado en {debug_file}")
+            except Exception as e:
+                LOG.error(f"No se pudo guardar HTML de debug: {e}")
+
             await context.close()
         except Exception as e:
             LOG.error(f"Error en {url}: {e}")
@@ -230,7 +296,6 @@ def clasificar_eventos(eventos: List[Dict]) -> Dict[str, List[Dict]]:
     return clasificados
 
 def generar_agenda_all(clasificados: Dict[str, List[Dict]], ahora_iso: str) -> str:
-    """Genera un JSON unificado con todos los deportes + wrestling (para el HUB)."""
     todos = []
     for deporte, lista in clasificados.items():
         for e in lista:
@@ -253,14 +318,12 @@ async def main():
 
     LOG.info(f"Clasificación → Fútbol={len(clasificados['futbol'])} NBA={len(clasificados['nba'])} F1={len(clasificados['f1'])} OTROS={len(clasificados['otros'])}")
 
-    # Guardar cada deporte por separado
     for deporte, lista in clasificados.items():
         payload = {"fecha_actualizacion": ahora, "total": len(lista), "eventos": lista}
         contenido_json = json.dumps(payload, ensure_ascii=False, indent=2)
         (LOCAL_OUT / f"agenda_{deporte}.json").write_text(contenido_json, encoding="utf-8")
         LOG.info(f"✅ Guardado agenda_{deporte}.json ({len(lista)} eventos)")
 
-    # Guardar JSON unificado para el HUB
     contenido_all = generar_agenda_all(clasificados, ahora)
     (LOCAL_OUT / "agenda_all.json").write_text(contenido_all, encoding="utf-8")
     LOG.info("✅ Guardado agenda_all.json (unificado)")
